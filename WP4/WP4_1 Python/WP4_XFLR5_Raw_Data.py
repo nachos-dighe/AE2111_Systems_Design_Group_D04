@@ -20,7 +20,7 @@ def aero_coefficient(aero_data_AOA):
     ylst = aero_data_AOA[:,0]
     Cllst = aero_data_AOA[:,3]
     Cdlst = aero_data_AOA[:, 5]
-    print(Cdlst)
+    #print(Cdlst) #testing
     Cmlst = aero_data_AOA[:, 7] #pitching moment about c/4 point
     return(xlst,ylst,Cllst, Cdlst, Cmlst)
 
@@ -30,7 +30,7 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     rho_cruise = 0.37956
     q_cruise = 0.5*rho_cruise*v_cruise**2
     Llst = Cllst*xlst*q_cruise
-    Dlst = CDlst*xlst*q_cruise
+    Dlst = Cdlst*xlst*q_cruise
     Mlst = Cmlst*xlst**2*q_cruise #pitching moment about c/4 point
 
     #total aerodynamic loads
@@ -49,9 +49,29 @@ Llst_0,Dlst_0,Mlst_0, Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0
 Llst_10,Dlst_10,Mlst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
 
 
+#testing
+fig, axs = plt.subplots(2)
+fig.suptitle('Lift distribution along span')
+axs[0].plot(ylst_0, Llst_0)
+axs[0].set_title('0 deg AOA')
+axs[1].plot(ylst_10, Llst_10)
+axs[1].set_title('10 deg AOA')
+plt.show()
+
+
+
+#design lift coefficient distribution
+Cltot_des = 0.372976647
+Cltot_0 = 
+Cltot_10 = 
+Cllst_des =  Cllst_o + Cltot_des-
+
+
 
 #interpolation
 Cl_interp0 = sp.interpolate.interp1d(ylst_0,Cllst_0, kind = "cubic", fill_value="extrapolate")
 Cd_interp0 = sp.interpolate.interp1d(ylst_0,Cdlst_0, kind = "cubic", fill_value="extrapolate")
 Cm_interp0 = sp.interpolate.interp1d(ylst_0,Cmlst_0, kind = "cubic", fill_value="extrapolate")
+
+
 
