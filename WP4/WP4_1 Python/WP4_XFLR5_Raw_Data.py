@@ -29,9 +29,13 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     v_cruise = 243.13
     rho_cruise = 0.37956
     q_cruise = 0.5*rho_cruise*v_cruise**2
-    Llst = Cllst*xlst*q_cruise
-    Dlst = Cdlst*xlst*q_cruise
-    Mlst = Cmlst*xlst**2*q_cruise #pitching moment about c/4 point
+    
+    #Prandtl-Glauert compressibility correction
+    M_cr = 0.82
+    beta = (1-M_cr**2)**-0.5
+    Llst = Cllst*xlst*q_cruise*beta
+    Dlst = Cdlst*xlst*q_cruise*beta
+    Mlst = Cmlst*xlst**2*q_cruise*beta #pitching moment about c/4 point
 
     #total aerodynamic loads
     Ltot = np.sum(Llst)
@@ -49,22 +53,39 @@ Llst_0,Dlst_0,Mlst_0, Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0
 Llst_10,Dlst_10,Mlst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
 
 
-#testing
-fig, axs = plt.subplots(2)
-fig.suptitle('Lift distribution along span')
-axs[0].plot(ylst_0, Llst_0)
-axs[0].set_title('0 deg AOA')
-axs[1].plot(ylst_10, Llst_10)
-axs[1].set_title('10 deg AOA')
-plt.show()
-
-
-
 #design lift coefficient distribution
 Cltot_des = 0.372976647
-Cltot_0 = 
-Cltot_10 = 
-Cllst_des =  Cllst_o + Cltot_des-
+Cltot_0 = 0.264851185
+Cltot_10 = 1.324255925
+Cllst_des =  Cllst_0 + (Cltot_des-Cltot_0)/(Cltot_10-Cltot_0)*(Cllst_10-Cllst_0)
+
+#not sure if this is even allowed
+alpha_des = (10-0)*(np.sum(Cllst_des)-np.sum(Cllst_0))/(np.sum(Cllst_0)-np.sum(Cllst_10))
+Cdlst_des = alpha_des/(10-0)*(Cdlst_10-Cdlst_0)
+Cmlst_des = alpha_des/(10-0)*(Cmlst_10-Cmlst_0)
+
+
+Llst_des,Dlst_des,Mlst_des, Ltot_des, Dtot_des, Mtot_des = aero_loads(xlst_0, ylst_0,Cllst_des, Cdlst_des, Cmlst_des)
+
+#testing
+print(Ltot_des*2, Dtot_des*2, Mtot_des*2)
+
+#testing
+M_cr = 0.82
+beta = (1-M_cr**2)**-0.5
+
+fig, axs = plt.subplots(2,2)
+fig.suptitle('Lift distribution along span')
+axs[0,0].plot(ylst_0, Llst_0)
+axs[0,0].set_title('0 deg AOA')
+axs[0,1].plot(ylst_10, Llst_10)
+axs[0,1].set_title('10 deg AOA')
+axs[1,0].plot(ylst_10, Llst_des)
+axs[1,0].set_title('cruise deg AOA: \n comp correction')
+axs[1,1].plot(ylst_10, Llst_des/beta)
+axs[1,1].set_title('cruise deg AOA: \n w/o comp correction')
+fig.tight_layout()
+plt.show()
 
 
 
