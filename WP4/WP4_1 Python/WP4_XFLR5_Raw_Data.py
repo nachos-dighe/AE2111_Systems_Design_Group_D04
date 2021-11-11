@@ -29,6 +29,18 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     v_cruise = 243.13
     rho_cruise = 0.37956
     q_cruise = 0.5*rho_cruise*v_cruise**2
+    N_z_positive = 2.5  #change later
+    N_z_negative = 1.5  #change later
+   
+    #HALF-wing weight
+    W_wing =  40,209.08
+    W_half_wing = W_wing/2
+    taper = 0.4
+    b = 24.63
+    
+    W_root = 2*W_wing/((1+taper)*b)
+    Wlst = W_root*(1+2/b*(taper-1)*ylst)
+    
     
     #Prandtl-Glauert compressibility correction
     M_cr = 0.82
@@ -41,7 +53,11 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     Ltot = np.sum(Llst)
     Dtot = np.sum(Dlst)
     Mtot = np.sum(Mlst)
-    return(Llst,Dlst,Mlst, Ltot, Dtot, Mtot)
+    
+    #distributed load along span (coordinate system: downward)
+    Fzreslst = Wlst-Llst 
+    
+    return(Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot)
 
 
 #lists for aerodynamic coefficients
@@ -49,8 +65,8 @@ xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = aero_coefficient(aero_data_AOA_0)
 xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = aero_coefficient(aero_data_AOA_10)
 
 #lists for aerodynamic loads
-Llst_0,Dlst_0,Mlst_0, Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
-Llst_10,Dlst_10,Mlst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
+Llst_0,Dlst_0,Mlst_0, Fzreslst_0,Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
+Llst_10,Dlst_10,Mlst_10, Fzreslst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
 
 
 #design lift coefficient distribution
