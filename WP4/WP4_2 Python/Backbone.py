@@ -42,8 +42,8 @@ while (dT * j)<= Span/2 :
     Iy_totalList.append(Iy_total)
     j = j + 1
 
-print(CG_XList)
-print(CG_ZList)
+
+print(Ix_totalList,Iy_totalList)
     
 
 
