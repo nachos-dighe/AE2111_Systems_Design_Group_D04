@@ -11,6 +11,8 @@ CG_ZList = []
 
 import Chord_Length as Lengths
 import CG_wingbox as CG
+import Moment of Inertia Calculator project as MoI
+
 
 Theta2, Theta3, b2, DeltaX, Cr, y = Lengths.WingboxDimensions(RCr, TCr, Span, dT)
 
@@ -23,6 +25,10 @@ while (dT * i)<= Span/2 :
     CG_ZList.append(CG_z)
 
     i = i +1
+
+t = 0 # Needs to be defined somewhere!! (not here)
+
+ = MoI.Ixcalculator(DeltaX,b2,theta2,theta3,t,CG_X,CG_Z)
 print(CG_XList)
 print(CG_ZList)
     
