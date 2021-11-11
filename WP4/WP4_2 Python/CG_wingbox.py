@@ -1,13 +1,5 @@
 from math import tan, pi
 
-# deg to rad
-r = pi/180
-#input variables
-Theta2 = 2*r          #[deg]
-Theta3 = 0.8*r          #[deg]
-b2 = 1              #[m]
-DeltaX = 1          #[m]
-
 def cg_calculation(Theta2, Theta3, b2, DeltaX):
     
     #intermediate outputs
@@ -30,9 +22,17 @@ def cg_calculation(Theta2, Theta3, b2, DeltaX):
     CG_x = ((x1 * A1)+ (x2 * A2) + (x3 * A3))/(A1+ A2 + A3)
     CG_z = ((z1 * A1) + (z2 * A2) + (z3 * A3))/(A1 + A2 + A3)
 
-    return (CG_x, CG_z)
+    return CG_x, CG_z
 
-cg_calculation(
+# deg to rad
+r = pi/180
+
+#input variables
+Theta2 = 2*r          #[deg]
+Theta3 = 0.8*r          #[deg]
+b2 = 1              #[m]
+DeltaX = 1          #[m]
 
 
-
+CG_x, CG_z = cg_calculation(Theta2, Theta3, b2, DeltaX)
+print(CG_z)
