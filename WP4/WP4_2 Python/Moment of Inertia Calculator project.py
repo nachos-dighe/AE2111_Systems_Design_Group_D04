@@ -32,7 +32,7 @@ def Ixcalculator(l,b,theta,beta,t,x,y):
 
     Ix_total = Ix_rectangle_outer + Ix_upper_triangle_outer + Ix_lower_triangle_outer - Ix_upper_triangle_inner - Ix_lower_triangle_inner - Ix_rectangle_inner
 
-    return (Ix_rectangle_outer)
+    return (Ix_total)
 
 
 
