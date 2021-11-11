@@ -44,31 +44,13 @@ def WingboxDimensions(RCr, TCr, Span, dT):
         RSparL.append(round(0.05423628 * Cr,3)) # b The value given was generated in Catia
         LengthBox.append(round((0.75-0.2) * Cr,3)) # b
 
-        Theta2 = 2.54121433 # deg
-        Theta3 = 0.72736298  # deg
+        alpha = 2.54121433 # deg
+        beta = 0.72736298  # deg
 
         y = y + dT
 
-        b2 = RSparL
-        DeltaX = LengthBox
-
-    return  Theta2, Theta3, b2, DeltaX, Cr, y 
+    return  FSparL, RSparL, LengthBox, Cr, y, alpha, beta
 
 
 # FSparL, RSparL, LengthBox, Cr, y, alpha, beta = WingboxDimensions(RCr, TCr, Span, 0.1)
 # print(FSparL, RSparL, LengthBox, Cr, y, alpha, beta)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
