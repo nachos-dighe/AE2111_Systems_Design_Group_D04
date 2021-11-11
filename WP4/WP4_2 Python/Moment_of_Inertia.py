@@ -26,7 +26,7 @@ def Ixcalculator(l,b,theta,beta,t,x,y):
 
 
 
-#print(Ixcalculator(l,b,theta,beta,t,x,y))
+print(Ixcalculator(l,b,theta,beta,t,x,y))
 
    
 def Iycalculator(l,b,theta,beta,t,x,y):
@@ -47,7 +47,7 @@ def Iycalculator(l,b,theta,beta,t,x,y):
 
     return(Iy_total)
 
-#print(Iycalculator(l,b,theta,beta,t,x,y))
+print(Iycalculator(l,b,theta,beta,t,x,y))
 
 
 
