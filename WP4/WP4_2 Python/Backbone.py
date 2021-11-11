@@ -4,9 +4,12 @@ TCr = 1.76 # [m] Tip chord
 Span = 24.64 # [m] Span
 dT = 0.1
 i = 0
+j = 0 
 
 CG_XList = []
 CG_ZList = []
+Ix_totalList = []
+Iy_totalList = []
 
 
 import Chord_Length as Lengths
@@ -28,7 +31,17 @@ while (dT * i)<= Span/2 :
 
 t = 0 # Needs to be defined somewhere!! (not here)
 
- = MoI.Ixcalculator(DeltaX,b2,theta2,theta3,t,CG_X,CG_Z)
+
+
+while (dT * j)<= Span/2 :
+    
+    
+    Ix_total = MoI.Ixcalculator(DeltaX[j],b2,theta2,theta3,t,CG_XList[j],CG_ZList[j])
+    Iy_total = MoI.Iycalculator(DeltaX[j],b2,theta2,theta3,t,CG_XList[j],CG_ZList[j])
+    Ix_totalList.append(Ix_total)
+    Iy_totalList.append(Iy_total)
+    j = j + 1
+
 print(CG_XList)
 print(CG_ZList)
     
