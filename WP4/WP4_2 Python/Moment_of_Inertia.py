@@ -1,5 +1,11 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy as sp
+from scipy import interpolate
+
 from math import tan
 import math
+
 
 
 #Angles in radians!!!
@@ -26,7 +32,7 @@ def Ixcalculator(l,b,theta,beta,t,x,y):
 
 
 
-print(Ixcalculator(l,b,theta,beta,t,x,y))
+# print(Ixcalculator(l,b,theta,beta,t,x,y))
 
    
 def Iycalculator(l,b,theta,beta,t,x,y):

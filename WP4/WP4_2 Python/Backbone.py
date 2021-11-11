@@ -1,5 +1,10 @@
-from math import *
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy as sp
+from scipy import interpolate
 
+from math import tan
+import math
 
 # Geometric
 RCr = 4.4 # [m] Root chord
@@ -48,7 +53,12 @@ while (dT * j)<= Span/2 :
 
 print(Ix_totalList,Iy_totalList)
     
-
+# Note to myself
+# Fix the bug that casues Berkes code (MoI calc) to not work with this backbone
+# I changed the degrees from my code to radians, check it!
+# Think how you want your resutls to end up, do you want a list and if so, which values do you want to know
+# Think how to inplement the data from WP4.1 load diagrams
+# 
 
 
 
