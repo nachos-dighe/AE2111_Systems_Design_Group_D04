@@ -78,6 +78,32 @@ Llst_des,Dlst_des,Mlst_des, Ltot_des, Dtot_des, Mtot_des = aero_loads(xlst_0, yl
 #testing 
 print(Ltot_des*2, Dtot_des*2, Mtot_des*2)
 
+#interpolation
+Cl_interp0 = sp.interpolate.interp1d(ylst_0,Cllst_0, kind = "cubic", fill_value="extrapolate")
+Cd_interp0 = sp.interpolate.interp1d(ylst_0,Cdlst_0, kind = "cubic", fill_value="extrapolate")
+Cm_interp0 = sp.interpolate.interp1d(ylst_0,Cmlst_0, kind = "cubic", fill_value="extrapolate")
+x_interp0 = sp.interpolate.interp1d(ylst_0,xlst_0, kind = "linear", fill_value ="extrapolate")
+
+v_cruise = 243.13
+rho_cruise = 0.37956
+q_cruise = 0.5*rho_cruise*v_cruise**2
+
+
+#FOR ZERO ALPHA
+Llst = []
+for i in ylst_0:
+    Llst.append(Cl_interp0(i)*x_interp0(i)*q_cruise)
+Dlst = []
+for j in ylst_0:
+    Dlst.append(Cd_interp0(j)*x_interp0(j)*q_cruise)
+plt.plot(ylst_0,Llst)    #blue line
+plt.plot(ylst_0,Dlst)   #orange line
+print(len(Llst), len(Dlst))
+plt.show()
+#Mlst = Cm_interp0(i)*xlst**2*q_cruise
+
+
+
 #testing
 M_cr = 0.82
 beta = (1-M_cr**2)**-0.5
@@ -94,13 +120,5 @@ axs[1,1].plot(ylst_10, Llst_des/beta)
 axs[1,1].set_title('cruise deg AOA: \n w/o comp correction')
 fig.tight_layout()
 plt.show()
-
-
-
-#interpolation
-Cl_interp0 = sp.interpolate.interp1d(ylst_0,Cllst_0, kind = "cubic", fill_value="extrapolate")
-Cd_interp0 = sp.interpolate.interp1d(ylst_0,Cdlst_0, kind = "cubic", fill_value="extrapolate")
-Cm_interp0 = sp.interpolate.interp1d(ylst_0,Cmlst_0, kind = "cubic", fill_value="extrapolate")
-
 
 
