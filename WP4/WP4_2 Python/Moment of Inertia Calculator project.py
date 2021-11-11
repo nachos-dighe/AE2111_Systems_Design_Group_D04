@@ -1,6 +1,16 @@
 from math import tan
 import math
 
+l = 2
+b = 1
+theta = 0.7
+beta = 0.6
+t = 0.1
+x = 2
+y = 1
+
+
+
 
 #Angles in radians!!!
 
@@ -22,14 +32,13 @@ def Ixcalculator(l,b,theta,beta,t,x,y):
 
     Ix_total = Ix_rectangle_outer + Ix_upper_triangle_outer + Ix_lower_triangle_outer - Ix_upper_triangle_inner - Ix_lower_triangle_inner - Ix_rectangle_inner
 
-    return (Ix_total)
-
-
-print(Ixcalculator(l,b,theta,beta,t,x,y))
+    return (Ix_rectangle_outer)
 
 
 
-    
+#print(Ixcalculator(l,b,theta,beta,t,x,y))
+
+   
 def Iycalculator(l,b,theta,beta,t,x,y):
 
     Iy_rectangle_outer = (1/12) * (l**3) * b + l * b * ((l/2)-x)**2
@@ -48,7 +57,7 @@ def Iycalculator(l,b,theta,beta,t,x,y):
 
     return(Iy_total)
 
-print(Iycalculator(l,b,theta,beta,t,x,y))
+#print(Iycalculator(l,b,theta,beta,t,x,y))
 
 
 
