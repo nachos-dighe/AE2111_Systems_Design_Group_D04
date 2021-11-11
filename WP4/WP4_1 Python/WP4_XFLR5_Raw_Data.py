@@ -80,8 +80,12 @@ print(Ltot_des*2, Dtot_des*2, Mtot_des*2)
 
 
 ynew = np.linspace(0, 13, num=5000, endpoint=True)
+
+#Cl_interpnew = sp.interpolate.interp1d(ynew,Cllstnew, kind = "cubic", fill_value="extrapolate")
+
+
 #interpolation
-Cl_interp0 = sp.interpolate.interp1d(ylst_0,Cllst_0, kind = "cubic", fill_value="extrapolate")
+Cl_interp0 = sp.interpolate.interp1d(ynew,Cllst_0, kind = "cubic", fill_value="extrapolate")
 Cd_interp0 = sp.interpolate.interp1d(ylst_0,Cdlst_0, kind = "cubic", fill_value="extrapolate")
 Cm_interp0 = sp.interpolate.interp1d(ylst_0,Cmlst_0, kind = "cubic", fill_value="extrapolate")
 x_interp0 = sp.interpolate.interp1d(ylst_0,xlst_0, kind = "linear", fill_value ="extrapolate")
@@ -95,7 +99,6 @@ q_cruise = 0.5*rho_cruise*v_cruise**2
 Llst = []
 Dlst = []
 
-print(len(ynew),len(ylst_0),len(Cllst_0))
 for i in ylst_0:
     Llst.append(Cl_interp0(i)*x_interp0(i)*q_cruise)
     Dlst.append(Cd_interp0(i)*x_interp0(i)*q_cruise)
