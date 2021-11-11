@@ -6,14 +6,6 @@ import math
 
 #inputs needed: theta2 (defined as theta here), theta3 (beta here), delta x s (l here), b2 (b here), t (thickness defined for first time), position of cg (x and y here)
 
-l = 5
-b = 2
-theta = 0.85 #48.7 deg
-beta = 0.30 #17.2
-t = 0.1 #m
-x = 2
-y = 1
-
 def Ixcalculator(l,b,theta,beta,t,x,y):
     
     Ix_rectangle_outer = (1/12)* l * (b**3) + l * b * (y - (l*tan(beta)+(b/2)))**2 
@@ -30,15 +22,15 @@ def Ixcalculator(l,b,theta,beta,t,x,y):
 
     Ix_total = Ix_rectangle_outer + Ix_upper_triangle_outer + Ix_lower_triangle_outer - Ix_upper_triangle_inner - Ix_lower_triangle_inner - Ix_rectangle_inner
 
-    return (Ix_rectangle_outer)
-print
+    return (Ix_total)
 
-print(Ixcalculator(5,2,0.85,0.3,0.1,2,1))
+
+print(Ixcalculator(l,b,theta,beta,t,x,y))
 
 
 
     
-def Iycalculator():
+def Iycalculator(l,b,theta,beta,t,x,y):
 
     Iy_rectangle_outer = (1/12) * (l**3) * b + l * b * ((l/2)-x)**2
 
@@ -53,6 +45,10 @@ def Iycalculator():
     Iy_lower_triangle_inner = (1/36) * ((l-2*t)**3)*(l-2*t)*tan(beta)+((((l-2*t)**2)*tan(beta))/2)*(x+t-(t+((l-2*t)/3)))**2
 
     Iy_total = Iy_rectangle_outer + Iy_upper_triangle_outer + Iy_lower_triangle_outer - Iy_upper_triangle_inner - Iy_lower_triangle_inner - Iy_rectangle_inner
+
+    return(Iy_total)
+
+print(Iycalculator(l,b,theta,beta,t,x,y))
 
 
 
