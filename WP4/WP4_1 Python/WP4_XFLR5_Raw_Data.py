@@ -59,15 +59,23 @@ Cltot_0 = 0.264851185
 Cltot_10 = 1.324255925
 Cllst_des =  Cllst_0 + (Cltot_des-Cltot_0)/(Cltot_10-Cltot_0)*(Cllst_10-Cllst_0)
 
-#not sure if this is even allowed
+#obtain design angle of attack
+
+alpha_des = np.arcsin((np.sum(Cllst_des)-np.sum(Cllst_0))/(np.sum(Cllst_10)-np.sum(Cllst_0))*np.sin(np.deg2rad(10)))
+print("Design angle of attack is", np.rad2deg(alpha_des)) #testing works
+
+''' #do not use 
 alpha_des = (10-0)*(np.sum(Cllst_des)-np.sum(Cllst_0))/(np.sum(Cllst_0)-np.sum(Cllst_10))
+print(alpha_des) #testing
+'''
+
 Cdlst_des = alpha_des/(10-0)*(Cdlst_10-Cdlst_0)
 Cmlst_des = alpha_des/(10-0)*(Cmlst_10-Cmlst_0)
 
 
 Llst_des,Dlst_des,Mlst_des, Ltot_des, Dtot_des, Mtot_des = aero_loads(xlst_0, ylst_0,Cllst_des, Cdlst_des, Cmlst_des)
 
-#testing
+#testing 
 print(Ltot_des*2, Dtot_des*2, Mtot_des*2)
 
 #testing
