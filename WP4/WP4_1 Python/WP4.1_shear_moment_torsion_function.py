@@ -28,6 +28,10 @@ def bending(f,x) :
     return B
 
 
+#torsion calculator
+def torsion(f,x):
+    
+
 print(shear( f1(x) , x ) )
 print(bending( f1(x) , x ) )
 
