@@ -3,7 +3,7 @@ from math import tan, cos, pi
 def J_calculation(Theta2, Theta3, b2, DeltaX, t):
     
     #intermediate outputs
-    circumference = 2*b2 + DeltaX * (cos(Theta2) + tan(Theta2) + cos(Theta3) + tan(Theta3))
+    circumference = 2*b2 + DeltaX * ((1/cos(Theta2)) + (1/tan(Theta2)) + (1/cos(Theta3)) + (1/tan(Theta3)))
     A = t * circumference
     line_integral = circumference / t
     
