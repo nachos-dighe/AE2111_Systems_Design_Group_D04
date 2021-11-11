@@ -1,16 +1,6 @@
 from math import tan
 import math
 
-l = 2
-b = 1
-theta = 0.7
-beta = 0.6
-t = 0.1
-x = 2
-y = 1
-
-
-
 
 #Angles in radians!!!
 
