@@ -35,4 +35,4 @@ DeltaX = 1          #[m]
 
 
 CG_x, CG_z = cg_calculation(Theta2, Theta3, b2, DeltaX)
-print(CG_z)
+##print(CG_z)
