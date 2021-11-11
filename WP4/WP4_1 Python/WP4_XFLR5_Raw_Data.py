@@ -76,16 +76,13 @@ Cmlst_des = alpha_des/(10-0)*(Cmlst_10-Cmlst_0)
 Llst_des,Dlst_des,Mlst_des, Ltot_des, Dtot_des, Mtot_des = aero_loads(xlst_0, ylst_0,Cllst_des, Cdlst_des, Cmlst_des)
 
 #testing 
-print(Ltot_des*2, Dtot_des*2, Mtot_des*2)
+#print(Ltot_des*2, Dtot_des*2, Mtot_des*2)
 
 
-ynew = np.linspace(0, 13, num=5000, endpoint=True)
-
-#Cl_interpnew = sp.interpolate.interp1d(ynew,Cllstnew, kind = "cubic", fill_value="extrapolate")
-
+ynew = np.linspace(min(ylst_0), max(ylst_0), num=100, endpoint=True)
 
 #interpolation
-Cl_interp0 = sp.interpolate.interp1d(ynew,Cllst_0, kind = "cubic", fill_value="extrapolate")
+Cl_interp0 = sp.interpolate.interp1d(ylst_0,Cllst_0, kind = "cubic", fill_value="extrapolate")
 Cd_interp0 = sp.interpolate.interp1d(ylst_0,Cdlst_0, kind = "cubic", fill_value="extrapolate")
 Cm_interp0 = sp.interpolate.interp1d(ylst_0,Cmlst_0, kind = "cubic", fill_value="extrapolate")
 x_interp0 = sp.interpolate.interp1d(ylst_0,xlst_0, kind = "linear", fill_value ="extrapolate")
@@ -93,20 +90,40 @@ x_interp0 = sp.interpolate.interp1d(ylst_0,xlst_0, kind = "linear", fill_value =
 v_cruise = 243.13
 rho_cruise = 0.37956
 q_cruise = 0.5*rho_cruise*v_cruise**2
+#Making the size of interpolation lists the same (for angle 0)
+Cl_new0 = Cl_interp0(ynew)
+Cd_new0 = Cd_interp0(ynew)
+Cm_new0 = Cm_interp0(ynew)
+x_new0 = x_interp0(ynew)
+Llst = Cl_new0*q_cruise*x_new0
+Dlst = Cd_new0*q_cruise*x_new0
+Mlst = Cm_new0*x_new0**2*q_cruise
 
+fig, axs = plt.subplots(3, figsize=(8,8))
+axs[0].plot(ynew,Llst)
+axs[0].set_title('Lift')
+axs[1].plot(ynew,Dlst)
+axs[1].set_title('Drag')
+axs[2].plot(ynew, Mlst)
+axs[2].set_title('Moment')
+plt.show()
+'''
+ax[2,0].plot(ynew,Mlst)
+ax[2,0].set_title('Moment')
+plt.show()'''
 
-#FOR ZERO ALPHA
+'''
 Llst = []
 Dlst = []
 
 for i in ylst_0:
     Llst.append(Cl_interp0(i)*x_interp0(i)*q_cruise)
-    Dlst.append(Cd_interp0(i)*x_interp0(i)*q_cruise)
+    #Dlst.append(Cd_interp0(i)*x_interp0(i)*q_cruise)
 plt.plot(ylst_0,Llst)    #blue line
 plt.plot(ylst_0,Dlst)   #orange line
-plt.show()
+#plt.show()
 #Mlst = Cm_interp0(i)*xlst**2*q_cruise
-
+'''
 
 
 #testing
