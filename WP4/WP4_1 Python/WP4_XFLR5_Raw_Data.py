@@ -1,7 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy as sp
-from scipy import interpolate
+exec(open("Aircraft.py").read())
+
+
+#print(Wingspan) #testing works, but find a better implementation method
 
 #import XFLR5 data for AOA 0 and 10 deg
 aero_data_AOA_0 = np.genfromtxt('MainWing_a=0.00_v=10.00ms.txt', dtype = float, skip_header=2)
