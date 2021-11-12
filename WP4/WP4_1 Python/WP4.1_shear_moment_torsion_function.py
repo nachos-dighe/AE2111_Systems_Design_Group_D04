@@ -31,15 +31,16 @@ def bending(f,x) :
 #torsion calculator
 def torsion(f,x):
     
-
-print(shear( f1(x) , x ) )
-print(bending( f1(x) , x ) )
-
-sfunction = shear( f1(x) , x )
-bfunction = bending( f1(x) , x )
-
-sym.plot(sfunction,(x,0,12.32))
-sym.plot(bfunction,(x,0,12.32))
+    
+    print(shear( f1(x) , x ) )
+    print(bending( f1(x) , x ) )
+    
+    sfunction = shear( f1(x) , x )
+    bfunction = bending( f1(x) , x )
+    
+    sym.plot(sfunction,(x,0,12.32))
+    sym.plot(bfunction,(x,0,12.32))
+    return
 
 
  
