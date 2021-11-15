@@ -15,6 +15,9 @@ def f1(x) :
 def f2 (x) :
     return 2 * x ** 3
 
+def d (x):
+    return 2 * x - 1 
+
 # shear calculator 
 def shear(f, x):
     S = sym.integrate(f,x) * (-1)
@@ -29,19 +32,25 @@ def bending(f,x) :
 
 
 #torsion calculator
-def torsion(f,x):
+def torsion(f,x, d):
+    t = f * d
+    T = sym.integrate(t,x)
+    return T
     
     
-    print(shear( f1(x) , x ) )
-    print(bending( f1(x) , x ) )
-    
-    sfunction = shear( f1(x) , x )
-    bfunction = bending( f1(x) , x )
-    
-    sym.plot(sfunction,(x,0,12.32))
-    sym.plot(bfunction,(x,0,12.32))
-    return
+print(shear( f1(x) , x ) )
+print(bending( f1(x) , x ) )
 
+    
+sfunction = shear( f1(x) , x )
+bfunction = bending( f1(x) , x )
+tfunction = torsion(f1(x) , x , d(x) )
+    
+sym.plot(sfunction,(x,0,12.32))
+sym.plot(bfunction,(x,0,12.32))
+sym.plot(tfunction, (x,0,12.32))
+            
+    
 
  
 
