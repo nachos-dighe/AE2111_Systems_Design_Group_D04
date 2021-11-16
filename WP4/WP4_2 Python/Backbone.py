@@ -19,6 +19,9 @@ CG_ZList = []
 Ix_totalList = []
 Iy_totalList = []
 
+SpanTab = []
+Ixtab = [] 
+Iytab = []
 
 import Chord_Length as Lengths
 import CG_wingbox as CG
@@ -39,7 +42,7 @@ while (dT * i)<= Span/2 :
 
 t = 0 # Needs to be defined somewhere!! (not here)
 
-print(DeltaX[j],b2,Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
+#print(DeltaX[j],b2,Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
 
 while (dT * j)<= Span/2 :
     
@@ -48,21 +51,28 @@ while (dT * j)<= Span/2 :
     Iy_total = MoI.Iycalculator(DeltaX[j],b2[j],Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
     Ix_totalList.append(Ix_total)
     Iy_totalList.append(Iy_total)
+    SpanTab.append(dT * j)
     j = j + 1
 
 
 print(Ix_totalList,Iy_totalList)
     
 # Note to myself
-# Fix the bug that casues Berkes code (MoI calc) to not work with this backbone
-# I changed the degrees from my code to radians, check it!
-# Think how you want your resutls to end up, do you want a list and if so, which values do you want to know
-# Think how to inplement the data from WP4.1 load diagrams
-# 
+# [V] Fix the bug that casues Berkes code (MoI calc) to not work with this backbone
+# [V] I changed the degrees from my code to radians, check it!
+# [ ] Think how you want your resutls to end up, do you want a list and if so, which values do you want to know
+# [ ] Think how to inplement the data from WP4.1 load diagrams
+#
 
+plt.subplot(211)
+plt.plot(SpanTab, Iy_totalList)
+plt.title("Height of the wing")
 
+plt.subplot(212)
+plt.plot(SpanTab, Ix_totalList)
+plt.title("Height of the wing")
 
-
+plt.show()
 
 
 
