@@ -57,9 +57,14 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     W_half_wing = W_wing/2
     taper = 0.4
     b = 24.63
-    
     W_root = 2*W_wing/((1+taper)*b)
     Wlst = W_root*(1+2/b*(taper-1)*ylst)
+
+    #Engine weight
+    m_eng = 3448
+    g = 9.80665
+    W_eng = m_eng*g
+    y_eng = 0.35*b/2 
 
     #Prandtl-Glauert compressibility correction
     M_cr = 0.82
@@ -74,7 +79,8 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     Mtot = np.sum(Mlst)
     
     #distributed load along span (coordinate system: downward)
-    Fzreslst = Wlst-Llst 
+    
+    Fzreslst = Wlst-Llst+W_eng*np.heaviside(ylst-y_eng,0.5)
     return(Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot)
 
 def aero_plots(ylst,Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot):
@@ -142,7 +148,8 @@ Fzresdes_interp = sp.interpolate.interp1d(ylst_0,Fzreslst_des, kind = "cubic", f
 #print(Fzresdes_interp) #testing
 
 
-
+plt.plot(ylst_0,Fzreslst_des)
+plt.show()
 
 
 
@@ -170,6 +177,7 @@ Llst = Cl_new0*q_cruise*x_new0
 Dlst = Cd_new0*q_cruise*x_new0
 Mlst = Cm_new0*x_new0**2*q_cruise
 '''
+'''
 fig, axs = plt.subplots(3, figsize=(8,8))
 axs[0].plot(ynew,Llst)
 axs[0].set_title('Lift')
@@ -179,48 +187,16 @@ axs[2].plot(ynew, Mlst)
 axs[2].set_title('Moment')
 plt.show()
 '''
-ax[2,0].plot(ynew,Mlst)
-ax[2,0].set_title('Moment')
-plt.show()'''
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 '''
 ax[2,0].plot(ynew,Mlst)
 ax[2,0].set_title('Moment')
 plt.show()'''
 
-<<<<<<< HEAD
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
-=======
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
+'''
+ax[2,0].plot(ynew,Mlst)
+ax[2,0].set_title('Moment')
+plt.show()'''
+
 '''
 Llst = []
 Dlst = []
@@ -230,7 +206,7 @@ for i in ylst_0:
     #Dlst.append(Cd_interp0(i)*x_interp0(i)*q_cruise)
 plt.plot(ylst_0,Llst)    #blue line
 plt.plot(ylst_0,Dlst)   #orange line
-#plt.show()
+plt.show()
 #Mlst = Cm_interp0(i)*xlst**2*q_cruise
 '''
 
