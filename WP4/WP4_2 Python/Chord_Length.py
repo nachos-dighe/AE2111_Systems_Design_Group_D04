@@ -55,8 +55,8 @@ def WingboxDimensions(RCr, TCr, Span, dT):
     return  Theta2, Theta3, b2, DeltaX, Cr, y 
 
 ## Test code
-##Theta2, Theta3, b2, DeltaX, Cr, y = WingboxDimensions(RCr, TCr, Span, 0.1)
-##print(Theta2*3.1415, Theta3*3.1415)
+##Theta2, Theta3, b2, DeltaX, Cr, y = WingboxDimensions(RCr, TCr, Span, 1)
+##print(Theta2, Theta3, b2[0], DeltaX[0], Cr)
 
 
 
