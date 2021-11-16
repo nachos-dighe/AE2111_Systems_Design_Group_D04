@@ -32,7 +32,7 @@ def Ixcalculator(l,b,theta,beta,t,x,y):
     return (Ix_total)
 
 
-print(Ixcalculator(l,b,theta,beta,t,x,y))
+# print(Ixcalculator(l,b,theta,beta,t,x,y))
 
 # print(Ixcalculator(l,b,theta,beta,t,x,y))
 
