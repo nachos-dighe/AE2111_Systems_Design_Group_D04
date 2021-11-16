@@ -78,9 +78,13 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     Dtot = np.sum(Dlst)
     Mtot = np.sum(Mlst)
     
-    #distributed load along span (coordinate system: downward)
-    
-    Fzreslst = Wlst-Llst+W_eng*np.heaviside(ylst-y_eng,0.5)
+    #distributed load along span (coordinate system: downward) [N/m], point forces not included!
+    Fzreslst = -Wlst+Llst 
+
+    #Freslst = wzreslst*ylst-W_eng*np.heaviside(ylst-y_eng,0.5) #this logically does not mkae sense
+
+    #reaction force at wing root
+    F_y_react = Ltot-W_half_wing-W_eng
     return(Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot)
 
 def aero_plots(ylst,Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot):
@@ -144,10 +148,14 @@ Llst_des,Dlst_des,Mlst_des, Fzreslst_des,Ltot_des, Dtot_des, Mtot_des = aero_loa
 aero_plots(ylst_0, Llst_des, Dlst_des, Mlst_des, Fzreslst_des, Ltot_des, Dtot_des, Mtot_des)
 
 #interpolation of load distribution function
-Fzresdes_interp = sp.interpolate.interp1d(ylst_0,Fzreslst_des, kind = "cubic", fill_value="extrapolate")
+wzresdes_interp = sp.interpolate.interp1d(ylst_0,Fzreslst_des, kind = "cubic", fill_value="extrapolate")
+
+#interpolation of load function
+
+
 #print(Fzresdes_interp) #testing
 
-
+#testing 
 plt.plot(ylst_0,Fzreslst_des)
 plt.show()
 
