@@ -78,10 +78,15 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     Dtot = np.sum(Dlst)
     Mtot = np.sum(Mlst)
     
-    #distributed load along span (coordinate system: downward)
-    
-    Fzreslst = Wlst-Llst+W_eng*np.heaviside(ylst-y_eng,0.5)
-    return(Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot)
+    #distributed load along span (coordinate system: downward) [N/m], point forces not included!
+    wzreslst = -Wlst+Llst 
+
+    Freslst = wzreslst*ylst+    
+    -W_eng*np.heaviside(ylst-y_eng,0.5) #this logically does not mkae sense
+
+    #reaction force at wing root
+    F_y_react = Ltot-W_half_wing-W_eng
+    return(Llst,Dlst,Mlst, wzreslst, Ltot, Dtot, Mtot)
 
 def aero_plots(ylst,Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot):
     
@@ -136,18 +141,21 @@ print(alpha_des) #testing
 #print(Ltot_des*2, Dtot_des*2, Mtot_des*2)
 
 #lists for aerodynamic loads
-Llst_0,Dlst_0,Mlst_0, Fzreslst_0,Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
-Llst_10,Dlst_10,Mlst_10, Fzreslst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
-Llst_des,Dlst_des,Mlst_des, Fzreslst_des,Ltot_des, Dtot_des, Mtot_des = aero_loads(xlst_0, ylst_0,Cllst_des, Cdlst_des, Cmlst_des)
+Llst_0,Dlst_0,Mlst_0, wzreslst_0,Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
+Llst_10,Dlst_10,Mlst_10, wzreslst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
+Llst_des,Dlst_des,Mlst_des, wzreslst_des,Ltot_des, Dtot_des, Mtot_des = aero_loads(xlst_0, ylst_0,Cllst_des, Cdlst_des, Cmlst_des)
 
 #plot for design condition
 aero_plots(ylst_0, Llst_des, Dlst_des, Mlst_des, Fzreslst_des, Ltot_des, Dtot_des, Mtot_des)
 
 #interpolation of load distribution function
-Fzresdes_interp = sp.interpolate.interp1d(ylst_0,Fzreslst_des, kind = "cubic", fill_value="extrapolate")
+wzresdes_interp = sp.interpolate.interp1d(ylst_0,Fzreslst_des, kind = "cubic", fill_value="extrapolate")
+#interpolation of load function
+
+
 #print(Fzresdes_interp) #testing
 
-
+#testing 
 plt.plot(ylst_0,Fzreslst_des)
 plt.show()
 
