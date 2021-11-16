@@ -22,27 +22,23 @@ def Ixcalculator(l,b,theta,beta,t,x,y):
 
     Ix_lower_triangle_outer = (1/36) * l * ((l* tan(beta))**3) + ((l*l*tan(beta))/2)*(y-((2/3)*l*tan(beta)))**2 
 
-    Ix_rectangle_inner = (1/12)*(l-2*t)*((b-2*t)**3)+(l-2*t)*(b-2*t)*(y-((l-2*t)*tan(beta)+((b-2*t)/2)))**2 
+    Ix_rectangle_inner = (1/12)*(l-2*t)*((b-2*t)**3)+(l-2*t)*(b-2*t)*(y-(t+(l-2*t)*tan(beta)+((b-2*t)/2)))**2 
 
     Ix_upper_triangle_inner = (1/36) * (l-2*t)*(((l-2*t)*tan(theta))**3)+(((l-2*t)*(l-2*t)*tan(theta))/2)*(t+(l-2*t)*tan(beta)+(b-2*t)+(((l-2*t)*tan(theta))/3) - y)**2 
 
     Ix_lower_triangle_inner = (1/36) * (l-2*t)*(((l-2*t)*tan(beta))**3)+(((l-2*t)*(l-2*t)*tan(beta))/2)*(y-(t+(2/3)*(l-2*t)*tan(beta)))**2 
 
     Ix_total = Ix_rectangle_outer + Ix_upper_triangle_outer + Ix_lower_triangle_outer - Ix_upper_triangle_inner - Ix_lower_triangle_inner - Ix_rectangle_inner
-
     return (Ix_total)
 
 
-
-<<<<<<< HEAD
-<<<<<<< HEAD
 #print(Ixcalculator(l,b,theta,beta,t,x,y))
-=======
+
 # print(Ixcalculator(l,b,theta,beta,t,x,y))
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
-=======
+
+
 # print(Ixcalculator(l,b,theta,beta,t,x,y))
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
+
 
    
 def Iycalculator(l,b,theta,beta,t,x,y):
@@ -60,6 +56,7 @@ def Iycalculator(l,b,theta,beta,t,x,y):
     Iy_lower_triangle_inner = (1/36) * ((l-2*t)**3)*(l-2*t)*tan(beta)+((((l-2*t)**2)*tan(beta))/2)*(x-(t+((l-2*t)/3)))**2 
 
     Iy_total = Iy_rectangle_outer + Iy_upper_triangle_outer + Iy_lower_triangle_outer - Iy_upper_triangle_inner - Iy_lower_triangle_inner - Iy_rectangle_inner
+
 
     return(Iy_total)
 
