@@ -22,7 +22,7 @@ def Ixcalculator(l,b,theta,beta,t,x,y):
 
     Ix_lower_triangle_outer = (1/36) * l * ((l* tan(beta))**3) + ((l*l*tan(beta))/2)*(y-((2/3)*l*tan(beta)))**2 
 
-    Ix_rectangle_inner = (1/12)*(l-2*t)*((b-2*t)**3)+(l-2*t)*(b-2*t)*(y-(t+(l-2*t)*tan(beta)+((b-2*t)/2)))**2 
+    Ix_rectangle_inner = (1/12)*(l-2*t)*((b-2*t)**3)+(l-2*t)*(b-2*t)*(y-((l-2*t)*tan(beta)+((b-2*t)/2)))**2 
 
     Ix_upper_triangle_inner = (1/36) * (l-2*t)*(((l-2*t)*tan(theta))**3)+(((l-2*t)*(l-2*t)*tan(theta))/2)*(t+(l-2*t)*tan(beta)+(b-2*t)+(((l-2*t)*tan(theta))/3) - y)**2 
 
