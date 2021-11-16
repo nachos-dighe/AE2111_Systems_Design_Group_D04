@@ -39,13 +39,13 @@ while (dT * i)<= Span/2 :
 
 t = 0 # Needs to be defined somewhere!! (not here)
 
-
+print(DeltaX[j],b2,Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
 
 while (dT * j)<= Span/2 :
     
     
-    Ix_total = MoI.Ixcalculator(DeltaX[j],b2,Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
-    Iy_total = MoI.Iycalculator(DeltaX[j],b2,Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
+    Ix_total = MoI.Ixcalculator(DeltaX[j],b2[j],Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
+    Iy_total = MoI.Iycalculator(DeltaX[j],b2[j],Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
     Ix_totalList.append(Ix_total)
     Iy_totalList.append(Iy_total)
     j = j + 1
