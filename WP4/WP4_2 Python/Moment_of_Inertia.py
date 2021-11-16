@@ -35,7 +35,11 @@ def Ixcalculator(l,b,theta,beta,t,x,y):
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #print(Ixcalculator(l,b,theta,beta,t,x,y))
+=======
+# print(Ixcalculator(l,b,theta,beta,t,x,y))
+>>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 =======
 # print(Ixcalculator(l,b,theta,beta,t,x,y))
 >>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b

@@ -53,7 +53,11 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
    
     #HALF-wing weight
 <<<<<<< HEAD
+<<<<<<< HEAD
     W_wing =  40,209.08
+=======
+    W_wing =  40209.08
+>>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 =======
     W_wing =  40209.08
 >>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
@@ -64,7 +68,10 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     W_root = 2*W_wing/((1+taper)*b)
     Wlst = W_root*(1+2/b*(taper-1)*ylst)
 <<<<<<< HEAD
+<<<<<<< HEAD
     
+=======
+>>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 =======
 >>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
     
@@ -83,9 +90,13 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     #distributed load along span (coordinate system: downward)
     Fzreslst = Wlst-Llst 
 <<<<<<< HEAD
+<<<<<<< HEAD
     
     return(Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot)
 
+=======
+    return(Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot)
+>>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 =======
     return(Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot)
 >>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
@@ -111,9 +122,15 @@ xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = aero_coefficient(aero_data_AOA_0)
 xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = aero_coefficient(aero_data_AOA_10)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #lists for aerodynamic loads
 Llst_0,Dlst_0,Mlst_0, Fzreslst_0,Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
 Llst_10,Dlst_10,Mlst_10, Fzreslst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
+=======
+#interpolation of above aero coefficients
+xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = interpolation(xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
+xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = interpolation(xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
+>>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 =======
 #interpolation of above aero coefficients
 xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = interpolation(xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
@@ -148,6 +165,12 @@ Llst_des,Dlst_des,Mlst_des, Fzreslst_des,Ltot_des, Dtot_des, Mtot_des = aero_loa
 
 #plot for design condition
 aero_plots(ylst_0, Llst_des, Dlst_des, Mlst_des, Fzreslst_des, Ltot_des, Dtot_des, Mtot_des)
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 
 
 
@@ -155,12 +178,16 @@ aero_plots(ylst_0, Llst_des, Dlst_des, Mlst_des, Fzreslst_des, Ltot_des, Dtot_de
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #testing 
 #print(Ltot_des*2, Dtot_des*2, Mtot_des*2)
 
+=======
+>>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 
 ynew = np.linspace(min(ylst_0), max(ylst_0), num=100, endpoint=True)
 
+<<<<<<< HEAD
 #interpolation
 Cl_interp0 = sp.interpolate.interp1d(ylst_0,Cllst_0, kind = "cubic", fill_value="extrapolate")
 Cd_interp0 = sp.interpolate.interp1d(ylst_0,Cdlst_0, kind = "cubic", fill_value="extrapolate")
@@ -196,6 +223,9 @@ plt.show()'''
 
 
 
+=======
+
+>>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 
 
 
@@ -219,14 +249,20 @@ plt.show()'''
 
 
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 '''
 ax[2,0].plot(ynew,Mlst)
 ax[2,0].set_title('Moment')
 plt.show()'''
 
+<<<<<<< HEAD
+>>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
+=======
 >>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 '''
 Llst = []
