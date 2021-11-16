@@ -41,6 +41,7 @@ def torsion(f,x, d):
 print(shear( f1(x) , x ) )
 print(bending( f1(x) , x ) )
 
+
     
 sfunction = shear( f1(x) , x )
 bfunction = bending( f1(x) , x )
