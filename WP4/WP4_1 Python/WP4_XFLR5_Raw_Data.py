@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy as sp
 from scipy import interpolate
-exec(open("Aircraft.py").read())
+#exec(open("Aircraft.py").read())
 
 
 #print(Wingspan) #testing works, but find a better implementation method
