@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy as sp
-exec(open("Aircraft.py").read())
+from scipy import interpolate
+#exec(open("Aircraft.py").read())
 
 
 #print(Wingspan) #testing works, but find a better implementation method
@@ -52,29 +53,19 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     N_z_negative = 1.5  #change later
    
     #HALF-wing weight
-<<<<<<< HEAD
-<<<<<<< HEAD
-    W_wing =  40,209.08
-=======
     W_wing =  40209.08
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
-=======
-    W_wing =  40209.08
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
     W_half_wing = W_wing/2
     taper = 0.4
     b = 24.63
-    
     W_root = 2*W_wing/((1+taper)*b)
     Wlst = W_root*(1+2/b*(taper-1)*ylst)
-<<<<<<< HEAD
-<<<<<<< HEAD
-    
-=======
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
-=======
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
-    
+
+    #Engine weight
+    m_eng = 3448
+    g = 9.80665
+    W_eng = m_eng*g
+    y_eng = 0.35*b/2 
+
     #Prandtl-Glauert compressibility correction
     M_cr = 0.82
     beta = (1-M_cr**2)**-0.5
@@ -88,18 +79,9 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     Mtot = np.sum(Mlst)
     
     #distributed load along span (coordinate system: downward)
-    Fzreslst = Wlst-Llst 
-<<<<<<< HEAD
-<<<<<<< HEAD
     
+    Fzreslst = Wlst-Llst+W_eng*np.heaviside(ylst-y_eng,0.5)
     return(Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot)
-
-=======
-    return(Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot)
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
-=======
-    return(Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot)
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 
 def aero_plots(ylst,Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot):
     
@@ -121,21 +103,17 @@ def aero_plots(ylst,Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot):
 xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = aero_coefficient(aero_data_AOA_0)
 xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = aero_coefficient(aero_data_AOA_10)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 #lists for aerodynamic loads
 Llst_0,Dlst_0,Mlst_0, Fzreslst_0,Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
 Llst_10,Dlst_10,Mlst_10, Fzreslst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
-=======
+
 #interpolation of above aero coefficients
 xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = interpolation(xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
 xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = interpolation(xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
-=======
+
 #interpolation of above aero coefficients
 xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = interpolation(xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
 xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = interpolation(xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 
 
 #design lift coefficient distribution
@@ -154,7 +132,6 @@ Cmlst_des = alpha_des/(10-0)*(Cmlst_10-Cmlst_0)
 alpha_des = (10-0)*(np.sum(Cllst_des)-np.sum(Cllst_0))/(np.sum(Cllst_0)-np.sum(Cllst_10))
 print(alpha_des) #testing
 '''
-
 #testing 
 #print(Ltot_des*2, Dtot_des*2, Mtot_des*2)
 
@@ -165,29 +142,23 @@ Llst_des,Dlst_des,Mlst_des, Fzreslst_des,Ltot_des, Dtot_des, Mtot_des = aero_loa
 
 #plot for design condition
 aero_plots(ylst_0, Llst_des, Dlst_des, Mlst_des, Fzreslst_des, Ltot_des, Dtot_des, Mtot_des)
-<<<<<<< HEAD
-=======
+
+#interpolation of load distribution function
+Fzresdes_interp = sp.interpolate.interp1d(ylst_0,Fzreslst_des, kind = "cubic", fill_value="extrapolate")
+#print(Fzresdes_interp) #testing
+
+
+plt.plot(ylst_0,Fzreslst_des)
+plt.show()
 
 
 
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 
 
-
-
-
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-#testing 
-#print(Ltot_des*2, Dtot_des*2, Mtot_des*2)
-
-=======
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
-
+#old code: made into functions (SO IGNORE!)
+'''
 ynew = np.linspace(min(ylst_0), max(ylst_0), num=100, endpoint=True)
 
-<<<<<<< HEAD
 #interpolation
 Cl_interp0 = sp.interpolate.interp1d(ylst_0,Cllst_0, kind = "cubic", fill_value="extrapolate")
 Cd_interp0 = sp.interpolate.interp1d(ylst_0,Cdlst_0, kind = "cubic", fill_value="extrapolate")
@@ -205,7 +176,8 @@ x_new0 = x_interp0(ynew)
 Llst = Cl_new0*q_cruise*x_new0
 Dlst = Cd_new0*q_cruise*x_new0
 Mlst = Cm_new0*x_new0**2*q_cruise
-
+'''
+'''
 fig, axs = plt.subplots(3, figsize=(8,8))
 axs[0].plot(ynew,Llst)
 axs[0].set_title('Lift')
@@ -215,55 +187,16 @@ axs[2].plot(ynew, Mlst)
 axs[2].set_title('Moment')
 plt.show()
 '''
-ax[2,0].plot(ynew,Mlst)
-ax[2,0].set_title('Moment')
-plt.show()'''
-
-=======
-
-
-
-=======
-
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
 '''
 ax[2,0].plot(ynew,Mlst)
 ax[2,0].set_title('Moment')
 plt.show()'''
 
-<<<<<<< HEAD
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
-=======
->>>>>>> 9ffd309e4bf6484aebb75e502dca7dbd7e4ab40b
+'''
+ax[2,0].plot(ynew,Mlst)
+ax[2,0].set_title('Moment')
+plt.show()'''
+
 '''
 Llst = []
 Dlst = []
@@ -273,7 +206,7 @@ for i in ylst_0:
     #Dlst.append(Cd_interp0(i)*x_interp0(i)*q_cruise)
 plt.plot(ylst_0,Llst)    #blue line
 plt.plot(ylst_0,Dlst)   #orange line
-#plt.show()
+plt.show()
 #Mlst = Cm_interp0(i)*xlst**2*q_cruise
 '''
 

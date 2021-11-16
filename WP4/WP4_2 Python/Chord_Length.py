@@ -54,9 +54,9 @@ def WingboxDimensions(RCr, TCr, Span, dT):
 
     return  Theta2, Theta3, b2, DeltaX, Cr, y 
 
-
-#FSparL, RSparL, LengthBox, Cr, y, alpha, beta = WingboxDimensions(RCr, TCr, Span, 0.1)
-#print(FSparL, RSparL, LengthBox, Cr, y, alpha, beta)
+## Test code
+##Theta2, Theta3, b2, DeltaX, Cr, y = WingboxDimensions(RCr, TCr, Span, 0.1)
+##print(Theta2*3.1415, Theta3*3.1415)
 
 
 
