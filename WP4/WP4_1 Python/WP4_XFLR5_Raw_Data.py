@@ -108,6 +108,8 @@ def shear(ylst,Llst, Fzreslst, Ltot):
     #print('Reaction force is', F_y_react, ' ' ,'Total distributed load is', np.sum(Fzreslst)*delta_y, ' ' , 'Engine weight is', W_eng, ' ' ,sep ='\n')
     #print(Vlst[-1]) #should be close to 0
     return(Vlst)
+
+
     
 
 def aero_plots(ylst,Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot):
