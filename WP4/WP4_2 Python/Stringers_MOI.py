@@ -3,7 +3,7 @@ from math import sin, cos, tan
 #inputs
 nr_top = 2      #This is the number of stringers on the top side of the wingbox)
 nr_bot = 2      #Nr of stringers on the bottem side)
-                #(how to do do the stringer distribution over the span, but should be an input as well)
+#(how to do do the stringer distribution over the span, but should be an input as well)
 L_s  = 0.1      #Length [m] of the base and height of the stringers, assuming it's symmetric
 t = 0.0015      #Thickness [m] of the wingbox
 t_s = 0.001     #Thickness [m] of the stringer
@@ -51,7 +51,7 @@ def moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax):
     for m in range(0,len(lst_stringers)):
         I_s = I_s + (A*m*m)
 
-    return I_s, A
+    return I_s
 
 
 

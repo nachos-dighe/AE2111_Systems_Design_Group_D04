@@ -2,10 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy as sp
 from scipy import interpolate
+from scipy.integrate import simps, cumtrapz
+from WP4_1_shear_moment_torsion_function import moment, torsion
 #exec(open("Aircraft.py").read())
 
 
-#print(Wingspan) #testing works, but find a better implementation method
+#print(Wingspan) #testing works, but find a better implementation method. Ignore use of parametric python file for now.
 
 #import XFLR5 data for AOA 0 and 10 deg
 aero_data_AOA_0 = np.genfromtxt('MainWing_a=0.00_v=10.00ms.txt', dtype = float, skip_header=2)
@@ -30,7 +32,7 @@ def aero_coefficient(aero_data_AOA):
 
 #interpolation
 def interpolation(xlst_init,ylst_init,Cllst_init, Cdlst_init, Cmlst_init):
-    ylst = np.linspace(min(ylst_init), max(ylst_init), num=100, endpoint=True)
+    ylst = np.linspace(min(ylst_init), max(ylst_init), num=1000, endpoint=True)
     
     Cl_interp = sp.interpolate.interp1d(ylst_init,Cllst_init, kind = "cubic", fill_value="extrapolate")
     Cd_interp = sp.interpolate.interp1d(ylst_init,Cdlst_init, kind = "cubic", fill_value="extrapolate")
@@ -49,22 +51,14 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     v_cruise = 243.13
     rho_cruise = 0.37956
     q_cruise = 0.5*rho_cruise*v_cruise**2
-    N_z_positive = 2.5  #change later
-    N_z_negative = 1.5  #change later
    
-    #HALF-wing weight
+    #half-wing weight
     W_wing =  40209.08
     W_half_wing = W_wing/2
     taper = 0.4
     b = 24.63
     W_root = 2*W_wing/((1+taper)*b)
-    Wlst = W_root*(1+2/b*(taper-1)*ylst)
-
-    #Engine weight
-    m_eng = 3448
-    g = 9.80665
-    W_eng = m_eng*g
-    y_eng = 0.35*b/2 
+    Wlst = W_root*(1+2/b*(taper-1)*ylst) 
 
     #Prandtl-Glauert compressibility correction
     M_cr = 0.82
@@ -73,25 +67,118 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     Dlst = Cdlst*xlst*q_cruise*beta
     Mlst = Cmlst*xlst**2*q_cruise*beta #pitching moment about c/4 point
 
+    delta_y = (max(ylst)-min(ylst))/len(ylst)
+
     #total aerodynamic loads
-    Ltot = np.sum(Llst)
-    Dtot = np.sum(Dlst)
-    Mtot = np.sum(Mlst)
+    Ltot = np.sum(Llst*delta_y)
+    Dtot = np.sum(Dlst*delta_y)
+    Mtot = np.sum(Mlst*delta_y)
     
-    #distributed load along span (coordinate system: downward) [N/m], point forces not included!
+    #distributed load along span (coordinate system: downward) [N/m], point forces not included yet!
     Fzreslst = -Wlst+Llst 
 
     #Freslst = wzreslst*ylst-W_eng*np.heaviside(ylst-y_eng,0.5) #this logically does not mkae sense
-
-    #reaction force at wing root
-    F_y_react = Ltot-W_half_wing-W_eng
     return(Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot)
 
+
+def shear(ylst,Llst, Fzreslst, Ltot):
+    #wing
+    b = 24.63
+    W_wing =  40209.08
+    W_half_wing = W_wing/2
+    
+    #engine weight
+    m_eng = 3448
+    g = 9.80665
+    W_eng = m_eng*g
+    y_eng = 0.35*b/2
+    
+    #reaction force at wing root
+    delta_y = (max(ylst)-min(ylst))/len(ylst)
+    F_y_react = Ltot-W_half_wing-W_eng
+    Vlst = -F_y_react*np.heaviside(ylst,1)-W_eng*np.heaviside(ylst-y_eng,1)+np.cumsum(Fzreslst)*delta_y
+
+    #testing #works
+    #print('Reaction force is', F_y_react, ' ' ,'Total distributed load is', np.sum(Fzreslst)*delta_y, ' ' , 'Engine weight is', W_eng, ' ' ,sep ='\n')
+    #print(Vlst[-1]) #should be close to 0
+    return(Vlst)    
+'''
+def bending_moment(ylst,Vlst,Fzreslst):
+    #wing
+    b = 24.63
+    
+    #engine weight
+    m_eng = 3448
+    g = 9.80665
+    W_eng = m_eng*g
+    y_eng = 0.35*b/2
+    
+    delta_y = (max(ylst)-min(ylst))/len(ylst)
+    
+    #distributed loads
+    #Fzres_tot_sum = np.sum(Fzreslst)*delta_y #Riemann Sum 
+    Fzres_tot = simps(Fzreslst, dx=delta_y) #Simpson's Rule 
+    
+    #testing
+    #print(Fzres_tot_sum, Fzres_tot) #negligible differences between Riemann sum and Simpon's Rule
+    
+    y_res = 1/Fzres_tot*(simps(Fzreslst*ylst, dx=delta_y))
+    
+    #reaction moment at wing root
+    M_x_react = -y_eng*W_eng+y_res*Fzres_tot
+    
+    #bending moment arrayM_x_react*np.heaviside(ylst,1)
+    BMlst = M_x_react*np.heaviside(ylst,1)+cumtrapz(Vlst,initial=0, dx=delta_y)
+    
+    #testing #works
+    #print(M_x_react, Fzres_tot, y_res, Mlst[-1], Mlst[0])
+    return(BMlst)
+'''
+'''
+def torsion(ylst, xlst):
+    #torsion is taken about c/4 (span axis of lift)
+    #torsion along span-axis, at c/4, independent of design condition (depend only on thrust setting)
+    
+    #wing
+    b = 24.63
+    #half-wing weight
+    W_wing =  40209.08
+    W_half_wing = W_wing/2
+    taper = 0.4
+    b = 24.63
+    W_root = 2*W_wing/((1+taper)*b)
+    Wlst = W_root*(1+2/b*(taper-1)*ylst) 
+    
+    #engine 
+    m_eng = 3448
+    g = 9.80665
+    W_eng = m_eng*g
+    T_eng = 164600 
+    x_eng = 1.122915488 #from c/4 to X_eng #check
+    y_eng = 0.35*b/2 
+    z_eng = 1.372452263 #check
+    
+    delta_y = (max(ylst)-min(ylst))/len(ylst)
+    
+    #torsional loads (y-axis, span-outwards, +ve)
+    TMreslst = xlst*(0.5-0.25)*Wlst
+    TMres_tot = simps(TMreslst, dx=delta_y) #Simpson's Rule 
+    TM_eng = z_eng*T_eng-x_eng*W_eng
+    
+    #reaction torsion at wing root
+    TM_y_react = T_eng+TMres_tot
+    
+    #torsional moment array-cumtrapz(TMreslst,initial=0, dx=delta_y)+
+    TMlst = TM_y_react*np.heaviside(ylst,1)-TMreslst- TM_eng*np.heaviside(ylst-y_eng,1)
+    #testing #works
+    #print(TM_y_react, TM_eng, TMres_tot,TMlst[-1], TMlst[0])
+    return(TMlst)
+'''
 def aero_plots(ylst,Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot):
     
     print('Total lift is', Ltot, ' ' ,'Total drag is', Dtot, ' ' , 'Total moment is', Mtot, ' ' ,sep ='\n')
     
-    fig, axs = plt.subplots(3, figsize=(8,8))
+    fig, axs = plt.subplots(3, figsize=(8,8), sharex=True)
     axs[0].plot(ylst,Llst)
     axs[0].set_title('Lift')
     axs[1].plot(ylst,Dlst)
@@ -103,19 +190,35 @@ def aero_plots(ylst,Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot):
     plt.show()
     return()
 
-#lists for aerodynamic coefficients 
+def internal_plots(ylst,Vlst, BMlst, TMlst):
+    
+    #print('Total lift is', Ltot, ' ' ,'Total drag is', Dtot, ' ' , 'Total moment is', Mtot, ' ' ,sep ='\n')
+
+    fig, axs = plt.subplots(3, figsize=(8,8), sharex= True)
+    axs[0].plot(ylst,Vlst)
+    axs[0].set_title('Shear Force')
+    axs[1].plot(ylst,BMlst)
+    axs[1].set_title('Bending Moment')
+    axs[2].plot(ylst,TMlst)
+    axs[2].set_title('Torsional Moment')
+    fig.suptitle('Internal Force Digrams', fontsize=16)
+    fig.tight_layout()
+    plt.show()
+    return()
+
+#lists for aerodynamic coefficients (AOA=0, 10)
 xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = aero_coefficient(aero_data_AOA_0)
 xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = aero_coefficient(aero_data_AOA_10)
 
-#lists for aerodynamic loads
+#lists for aerodynamic loads (AOA=0, 10)
 Llst_0,Dlst_0,Mlst_0, Fzreslst_0,Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
 Llst_10,Dlst_10,Mlst_10, Fzreslst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
 
-#interpolation of above aero coefficients
+#interpolation of above aero coefficients (AOA=0, 10)
 xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = interpolation(xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
 xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = interpolation(xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
 
-#interpolation of above aero coefficients
+#interpolation of above aero coefficients (AOA=0, 10)
 xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = interpolation(xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
 xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = interpolation(xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
 
@@ -132,35 +235,81 @@ Cdlst_des = alpha_des/(10-0)*(Cdlst_10-Cdlst_0)
 Cmlst_des = alpha_des/(10-0)*(Cmlst_10-Cmlst_0)
 #print("Design angle of attack is", np.rad2deg(alpha_des)) #testing works
 
-''' #do not use 
-alpha_des = (10-0)*(np.sum(Cllst_des)-np.sum(Cllst_0))/(np.sum(Cllst_0)-np.sum(Cllst_10))
-print(alpha_des) #testing
-'''
 #testing 
 #print(Ltot_des*2, Dtot_des*2, Mtot_des*2)
 
-#lists for aerodynamic loads
-Llst_0,Dlst_0,Mlst_0, Fzreslst_0,Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
-Llst_10,Dlst_10,Mlst_10, Fzreslst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
-Llst_des,Dlst_des,Mlst_des, Fzreslst_des,Ltot_des, Dtot_des, Mtot_des = aero_loads(xlst_0, ylst_0,Cllst_des, Cdlst_des, Cmlst_des)
 
-#plot for design condition
-aero_plots(ylst_0, Llst_des, Dlst_des, Mlst_des, Fzreslst_des, Ltot_des, Dtot_des, Mtot_des)
+#critical load factors
+N_z_positive = 2.5  #change later
+N_z_negative = 1.5  #change later
+
+
+#lists for aerodynamic loads (desgin point)
+Llst_des,Dlst_des,Mlst_des, Fzreslst_des,Ltot_des, Dtot_des, Mtot_des = aero_loads(xlst_0, ylst_0,Cllst_des, Cdlst_des, Cmlst_des)
+Llst_poscrit,Dlst_poscrit,Mlst_poscrit, Fzreslst_poscrit,Ltot_poscrit, Dtot_poscrit, Mtot_poscrit = aero_loads(xlst_0, ylst_0,Cllst_des*N_z_positive, Cdlst_des, Cmlst_des) #positive critical load factor
+Llst_negcrit,Dlst_negcrit,Mlst_negcrit, Fzreslst_negcrit,Ltot_negcrit, Dtot_negcrit, Mtot_negcrit = aero_loads(xlst_0, ylst_0,Cllst_des*N_z_negative, Cdlst_des, Cmlst_des)  #negatve critical load factor
 
 #interpolation of load distribution function
 wzresdes_interp = sp.interpolate.interp1d(ylst_0,Fzreslst_des, kind = "cubic", fill_value="extrapolate")
 
-#interpolation of load function
+#shear
+Vres_des=shear(ylst_0,Llst_des, Fzreslst_des, Ltot_des)
+Vres_poscrit=shear(ylst_0,Llst_poscrit, Fzreslst_poscrit, Ltot_poscrit)
+Vres_negcrit=shear(ylst_0,Llst_negcrit, Fzreslst_negcrit, Ltot_negcrit)
+
+#bending moment
+BMres_des=moment(Vres_des,ylst_0)
+BMres_poscrit=moment(Vres_poscrit,ylst_0)
+BMres_negcrit=moment(Vres_negcrit,ylst_0)
+
+#torsional moment
+TMres_des=torsion(ylst_0,Llst_des,xlst_0, Ltot_des)
+TMres_poscrit=torsion(ylst_0,Llst_poscrit,xlst_0, Ltot_poscrit)
+TMres_negcrit=torsion(ylst_0,Llst_negcrit,xlst_0, Ltot_negcrit)
+
+#aerodynamic plots: design and critical conditions (uncomment)
+'''
+aero_plots(ylst_0, Llst_des, Dlst_des, Mlst_des, Fzreslst_des, Ltot_des, Dtot_des, Mtot_des)
+aero_plots(ylst_0, Llst_poscrit,Dlst_poscrit,Mlst_poscrit, Fzreslst_poscrit,Ltot_poscrit, Dtot_poscrit, Mtot_poscrit)
+aero_plots(ylst_0, Llst_negcrit,Dlst_negcrit,Mlst_negcrit, Fzreslst_negcrit,Ltot_negcrit, Dtot_negcrit, Mtot_negcrit)
+'''
+
+#internal load plots: design and critical conditions (uncomment)
+'''
+internal_plots(ylst,Vres_des, BMres_des, TMres_des)
+internal_plots(ylst_0, Vres_poscrit,BMres_poscrit,TMres_poscrit)
+internal_plots(ylst_0, Vres_negcrit,BMres_negcrit,TMres_negcrit)
+'''
 
 
-#print(Fzresdes_interp) #testing
 
-#testing 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#print(Fzresdes_interp) #testing (prints an embedded function, not explicitly algebraic)
+#testing
+'''
 plt.plot(ylst_0,Fzreslst_des)
 plt.show()
+'''
 
-
-
+'''
+#testing
+b = 24.63
+print(len(ylst_0), ylst_0[-1], ylst_0[0], b/2-ylst_0[-1]+ylst_0[0])
+'''
 
 
 #old code: made into functions (SO IGNORE!)
