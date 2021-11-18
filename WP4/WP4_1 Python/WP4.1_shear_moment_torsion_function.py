@@ -78,7 +78,7 @@ def torsion(ylst, Llst, xlst, Ltot):
     print('reaction torque:',T_r)
 
     # distribution
-    Tlst = T_r * np.heaviside(ylst,1) + T_t * np.heaviside(ylst - y_eng, 1)- T_w * np.heaviside(ylst - y_eng, 1 ) + t_l
+    Tlst = T_r + T_t * np.heaviside(ylst - y_eng, 1)- T_w * np.heaviside(ylst - y_eng, 1 ) + t_l
 
     #plotting
     plt.plot(ylst,Tlst)
