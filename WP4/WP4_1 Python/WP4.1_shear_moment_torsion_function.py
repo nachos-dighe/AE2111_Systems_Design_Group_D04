@@ -3,7 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.integrate as sp
-import sympy as sym
+#import sympy as sym
 from WP4_XFLR5_Raw_Data import * 
 from WP4_XFLR5_Raw_Data import Vres_des
 from WP4_XFLR5_Raw_Data import ylst_0
@@ -16,12 +16,13 @@ def moment(Vlst,ylst):
     Mlst = sp.integrate.cumtrapz( Vlst , ylst, initial=0) - M_0 #points of integrated function
 
     #generate plots 
+    '''
     plt.plot(ylst,Mlst)
     plt.title('Moment diagram')
     plt.xlabel('Spanwise position')
     plt.ylabel('Bending moment')
     plt.show()
-
+    '''
     return Mlst
 
 # call function 
@@ -81,12 +82,13 @@ def torsion(ylst, Llst, xlst, Ltot):
     Tlst = T_r + T_t * np.heaviside(ylst - y_eng, 1)- T_w * np.heaviside(ylst - y_eng, 1 ) + t_l
 
     #plotting
+    '''
     plt.plot(ylst,Tlst)
     plt.title('Torsion distribution')
     plt.xlabel('Spanwise position [m]')
     plt.ylabel('Torsion [Nm]')
     plt.show()
-    
+    '''
     return Tlst 
 
 Tres_des = torsion(ylst_0, Llst_des, xlst_0, Ltot_0)
