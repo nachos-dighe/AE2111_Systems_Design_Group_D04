@@ -1,9 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import scipy as sp
+import matplotlib.pyplot as plt
 from scipy import interpolate
 from scipy.integrate import simps, cumtrapz
-from WP4_1_shear_moment_torsion_function import moment, torsion
 #exec(open("Aircraft.py").read())
 
 
@@ -80,28 +79,21 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     #Freslst = wzreslst*ylst-W_eng*np.heaviside(ylst-y_eng,0.5) #this logically does not mkae sense
     return(Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot)
 
-
-def shear(ylst,Llst, Fzreslst, Ltot):
-    #wing
-    b = 24.63
-    W_wing =  40209.08
-    W_half_wing = W_wing/2
+def aero_plots(ylst,Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot):
     
-    #engine weight
-    m_eng = 3448
-    g = 9.80665
-    W_eng = m_eng*g
-    y_eng = 0.35*b/2
+    print('Total lift is', Ltot, ' ' ,'Total drag is', Dtot, ' ' , 'Total moment is', Mtot, ' ' ,sep ='\n')
     
-    #reaction force at wing root
-    delta_y = (max(ylst)-min(ylst))/len(ylst)
-    F_y_react = Ltot-W_half_wing-W_eng
-    Vlst = -F_y_react*np.heaviside(ylst,1)-W_eng*np.heaviside(ylst-y_eng,1)+np.cumsum(Fzreslst)*delta_y
-
-    #testing #works
-    #print('Reaction force is', F_y_react, ' ' ,'Total distributed load is', np.sum(Fzreslst)*delta_y, ' ' , 'Engine weight is', W_eng, ' ' ,sep ='\n')
-    #print(Vlst[-1]) #should be close to 0
-    return(Vlst)    
+    fig, axs = plt.subplots(3, figsize=(8,8), sharex=True)
+    axs[0].plot(ylst,Llst)
+    axs[0].set_title('Lift')
+    axs[1].plot(ylst,Dlst)
+    axs[1].set_title('Drag')
+    axs[2].plot(ylst, Mlst)
+    axs[2].set_title('Moment')
+    fig.suptitle('Aerodynamic loading', fontsize=16)
+    fig.tight_layout()
+    plt.show()
+    return()
 '''
 def bending_moment(ylst,Vlst,Fzreslst):
     #wing
@@ -174,37 +166,6 @@ def torsion(ylst, xlst):
     #print(TM_y_react, TM_eng, TMres_tot,TMlst[-1], TMlst[0])
     return(TMlst)
 '''
-def aero_plots(ylst,Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot):
-    
-    print('Total lift is', Ltot, ' ' ,'Total drag is', Dtot, ' ' , 'Total moment is', Mtot, ' ' ,sep ='\n')
-    
-    fig, axs = plt.subplots(3, figsize=(8,8), sharex=True)
-    axs[0].plot(ylst,Llst)
-    axs[0].set_title('Lift')
-    axs[1].plot(ylst,Dlst)
-    axs[1].set_title('Drag')
-    axs[2].plot(ylst, Mlst)
-    axs[2].set_title('Moment')
-    fig.suptitle('Aerodynamic loading', fontsize=16)
-    fig.tight_layout()
-    plt.show()
-    return()
-
-def internal_plots(ylst,Vlst, BMlst, TMlst):
-    
-    #print('Total lift is', Ltot, ' ' ,'Total drag is', Dtot, ' ' , 'Total moment is', Mtot, ' ' ,sep ='\n')
-
-    fig, axs = plt.subplots(3, figsize=(8,8), sharex= True)
-    axs[0].plot(ylst,Vlst)
-    axs[0].set_title('Shear Force')
-    axs[1].plot(ylst,BMlst)
-    axs[1].set_title('Bending Moment')
-    axs[2].plot(ylst,TMlst)
-    axs[2].set_title('Torsional Moment')
-    fig.suptitle('Internal Force Digrams', fontsize=16)
-    fig.tight_layout()
-    plt.show()
-    return()
 
 #lists for aerodynamic coefficients (AOA=0, 10)
 xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = aero_coefficient(aero_data_AOA_0)
@@ -252,20 +213,7 @@ Llst_negcrit,Dlst_negcrit,Mlst_negcrit, Fzreslst_negcrit,Ltot_negcrit, Dtot_negc
 #interpolation of load distribution function
 wzresdes_interp = sp.interpolate.interp1d(ylst_0,Fzreslst_des, kind = "cubic", fill_value="extrapolate")
 
-#shear
-Vres_des=shear(ylst_0,Llst_des, Fzreslst_des, Ltot_des)
-Vres_poscrit=shear(ylst_0,Llst_poscrit, Fzreslst_poscrit, Ltot_poscrit)
-Vres_negcrit=shear(ylst_0,Llst_negcrit, Fzreslst_negcrit, Ltot_negcrit)
 
-#bending moment
-BMres_des=moment(Vres_des,ylst_0)
-BMres_poscrit=moment(Vres_poscrit,ylst_0)
-BMres_negcrit=moment(Vres_negcrit,ylst_0)
-
-#torsional moment
-TMres_des=torsion(ylst_0,Llst_des,xlst_0, Ltot_des)
-TMres_poscrit=torsion(ylst_0,Llst_poscrit,xlst_0, Ltot_poscrit)
-TMres_negcrit=torsion(ylst_0,Llst_negcrit,xlst_0, Ltot_negcrit)
 
 #aerodynamic plots: design and critical conditions (uncomment)
 '''
@@ -273,20 +221,6 @@ aero_plots(ylst_0, Llst_des, Dlst_des, Mlst_des, Fzreslst_des, Ltot_des, Dtot_de
 aero_plots(ylst_0, Llst_poscrit,Dlst_poscrit,Mlst_poscrit, Fzreslst_poscrit,Ltot_poscrit, Dtot_poscrit, Mtot_poscrit)
 aero_plots(ylst_0, Llst_negcrit,Dlst_negcrit,Mlst_negcrit, Fzreslst_negcrit,Ltot_negcrit, Dtot_negcrit, Mtot_negcrit)
 '''
-
-#internal load plots: design and critical conditions (uncomment)
-'''
-internal_plots(ylst,Vres_des, BMres_des, TMres_des)
-internal_plots(ylst_0, Vres_poscrit,BMres_poscrit,TMres_poscrit)
-internal_plots(ylst_0, Vres_negcrit,BMres_negcrit,TMres_negcrit)
-'''
-
-
-
-
-
-
-
 
 
 
