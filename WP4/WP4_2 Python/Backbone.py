@@ -41,9 +41,9 @@ t = 1 # Needs to be defined somewhere!! (not here)
 
 while (dT * j)<= Span/2 :
     Ix_total = MoI.Ixcalculator(DeltaX[j],b2[j],Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
-#    Iz_total = MoI.Izcalculator(DeltaX[j],b2[j],Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
+    Iz_total = MoI.Izcalculator(DeltaX[j],b2[j],Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
     Ix_totalList.append(Ix_total)
-#    Iz_totalList.append(Iz_total)
+    Iz_totalList.append(Iz_total)
     SpanTab.append(dT * j)
     j = j + 1
 
@@ -52,9 +52,9 @@ plt.subplot(211)
 plt.plot(SpanTab, Ix_totalList)
 plt.title("The moment of inertia of the X against the span")
 
-#plt.subplot(212)
-#plt.plot(SpanTab, Iz_totalList)
-#plt.title("The moment of inertia of the Z against the span")
+plt.subplot(212)
+plt.plot(SpanTab, Iz_totalList)
+plt.title("The moment of inertia of the Z against the span")
 
 plt.show()
 
