@@ -41,7 +41,7 @@ t = 1 # Needs to be defined somewhere!! (not here)
 
 while (dT * j)<= Span/2 :
     Ix_total = MoI.Ixcalculator(DeltaX[j],b2[j],Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
-    Iy_total = MoI.Iycalculator(DeltaX[j],b2[j],Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
+    Iy_total = MoI.Izcalculator(DeltaX[j],b2[j],Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
     Ix_totalList.append(Ix_total)
     Iy_totalList.append(Iy_total)
     SpanTab.append(dT * j)
@@ -67,7 +67,8 @@ plt.show()
 # [ ] Putting the stringer MoI in backbone
 # [ ] Making all the values in the other code use the same name
 # [ ] Making the graphs more nice
-#
+# [ ] Putting formulas in the code (Lynn)
+#  
 #
 
 
