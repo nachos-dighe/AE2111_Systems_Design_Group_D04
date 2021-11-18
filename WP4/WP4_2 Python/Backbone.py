@@ -40,21 +40,13 @@ t = 1 # Needs to be defined somewhere!! (not here)
 
 
 while (dT * j)<= Span/2 :
-    
-    
     Ix_total = MoI.Ixcalculator(DeltaX[j],b2[j],Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
     Iy_total = MoI.Iycalculator(DeltaX[j],b2[j],Theta2,Theta3,t,CG_XList[j],CG_ZList[j])
     Ix_totalList.append(Ix_total)
     Iy_totalList.append(Iy_total)
     SpanTab.append(dT * j)
     j = j + 1
-    
-# Note to myself (Frank)
-# [V] Fix the bug that casues Berkes code (MoI calc) to not work with this backbone
-# [V] I changed the degrees from my code to radians, check it!
-# [ ] Think how you want your resutls to end up, do you want a list and if so, which values do you want to know
-# [ ] Think how to inplement the data from WP4.1 load diagrams
-#
+
 
 plt.subplot(211)
 plt.plot(SpanTab, Ix_totalList)
@@ -67,7 +59,16 @@ plt.title("The moment of inertia of the Z against the span")
 plt.show()
 
 
-
+# Note to myself (Frank)
+# [V] Fix the bug that casues Berkes code (MoI calc) to not work with this backbone
+# [V] I changed the degrees from my code to radians, check it!
+# [ ] Think how you want your resutls to end up, do you want a list and if so, which values do you want to know
+# [ ] Think how to inplement the data from WP4.1 load diagrams
+# [ ] Putting the stringer MoI in backbone
+# [ ] Making all the values in the other code use the same name
+# [ ] Making the graphs more nice
+#
+#
 
 
 
