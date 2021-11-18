@@ -39,13 +39,13 @@ def Izcalculator(deltax,b,alpha,beta,t,x,z):
 
     Iz_rectangle_outer = (1/12) * (deltax**3) * b + deltax * b * ((l/2)-x)**2 
 
-    Iz_upper_triangle_outer = (1/36) * (deltax**3) * deltax * tan(alpha) + ((deltax*deltax*tan(alpha))/2)*(x- (l/3))**2 
+    Iz_upper_triangle_outer = (1/36) * (deltax**3) * deltax * tan(alpha) + ((deltax*deltax*tan(alpha))/2)*(x- (deltax/3))**2 
 
-    Iz_lower_triangle_outer = (1/36) * (deltax**3) * deltax * tan(beta) + ((deltax*deltax*tan(beta))/2)*(x- (l/3))**2 
+    Iz_lower_triangle_outer = (1/36) * (deltax**3) * deltax * tan(beta) + ((deltax*deltax*tan(beta))/2)*(x- (deltax/3))**2 
 
     Iz_rectangle_inner = (1/12) * ((deltax - 2 *t)**3)*(b-2*t) + (deltax-2*t) * (b - 2*t)*((t+(1/2)*(deltax-2*t))-x)**2 
 
-    Iz_upper_triangle_inner = (1/36) * ((deltax-2*t)**3)*(deltax-2*t)*tan(alpha)+((((deltax-2*t)**2)*tan(alpha))/2)*(x-(t+((l-2*t)/3)))**2 
+    Iz_upper_triangle_inner = (1/36) * ((deltax-2*t)**3)*(deltax-2*t)*tan(alpha)+((((deltax-2*t)**2)*tan(alpha))/2)*(x-(t+((deltax-2*t)/3)))**2 
 
     Iz_lower_triangle_inner = (1/36) * ((deltax-2*t)**3)*(deltax-2*t)*tan(beta)+((((deltax-2*t)**2)*tan(beta))/2)*(x-(t+((deltax-2*t)/3)))**2 
 
