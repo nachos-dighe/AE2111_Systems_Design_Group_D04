@@ -20,9 +20,13 @@ def shear(ylst,Llst, Fzreslst, Ltot):
     W_eng = m_eng*g
     y_eng = 0.35*b/2
     
+    #fuel weight
+    W_fuel_tot =  12964*g
+    W_fuel_half_wing = 0.3*W_fuel_tot
+    
     #reaction force at wing root
     delta_y = (max(ylst)-min(ylst))/len(ylst)
-    F_y_react = Ltot-W_half_wing-W_eng
+    F_y_react = Ltot-W_half_wing-W_eng-W_fuel_half_wing
     Vlst = -F_y_react*np.heaviside(ylst,1)-W_eng*np.heaviside(ylst-y_eng,1)+np.cumsum(Fzreslst)*delta_y
 
     #testing #works
