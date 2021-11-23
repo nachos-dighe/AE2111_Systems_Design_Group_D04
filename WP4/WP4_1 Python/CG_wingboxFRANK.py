@@ -37,7 +37,7 @@ def cg_calculation(dy):
     TCr = 1.76 # [m] Tip chord
     Span = 24.64 # [m] Span
     i = 0
-    dT = 1/dy
+    dT = Span/dy
     alpha, beta, b2, DeltaX, Cr, y = Lengths.WingboxDimensions(RCr, TCr, Span, dT)
     
     while (dT * i ) <= Span/2 :
@@ -66,10 +66,7 @@ def cg_calculation(dy):
         CG_zList.append(CG_z)
         i = i + 1
 
-    return CG_xList, CG_zList
-
-
-CG_xList, CG_zList = cg_calculation(1000)
+    return CG_xList, CG_zList, Cr
 
 
 
