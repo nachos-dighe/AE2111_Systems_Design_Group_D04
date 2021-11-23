@@ -50,12 +50,24 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     v_cruise = 243.13
     rho_cruise = 0.37956
     q_cruise = 0.5*rho_cruise*v_cruise**2
-   
+    g = 9.80665
+    
+    #wing
+    taper = 0.4
+    b = 24.63
+    
+    #fuel weight
+    W_fuel_tot =  12964*g
+    #based on ref data, approx. 30% of fuel weight is stored in wing (from root to 0.55/2 spar: consider inner tank only)
+    y_fuel = b /2*0.55
+    W_fuel_half_wing = 0.3*W_fuel_tot
+    W_fuel_root = 2*W_fuel_half_wing/((1+taper*0.55)*b*0.275)
+    Wlst_fuel = W_fuel_root*(1+2/b*(taper-1)*ylst)
+    #Wlst_fuel = W_fuel_root*(1+2/y_fuel*(taper-1)*ylst) 
+    
     #half-wing weight
     W_wing =  40209.08
     W_half_wing = W_wing/2
-    taper = 0.4
-    b = 24.63
     W_root = 2*W_wing/((1+taper)*b)
     Wlst = W_root*(1+2/b*(taper-1)*ylst) 
 
@@ -74,7 +86,7 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     Mtot = np.sum(Mlst*delta_y)
     
     #distributed load along span (coordinate system: downward) [N/m], point forces not included yet!
-    Fzreslst = -Wlst+Llst 
+    Fzreslst = -Wlst+Llst -Wlst_fuel*np.heaviside(y_fuel-ylst,1)
 
     #Freslst = wzreslst*ylst-W_eng*np.heaviside(ylst-y_eng,0.5) #this logically does not mkae sense
     return(Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot)
