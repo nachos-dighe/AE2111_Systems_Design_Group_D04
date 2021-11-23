@@ -69,8 +69,6 @@ def cg_calculation(dy):
     return CG_xList, CG_zList
 
 
-a, b = cg_calculation(1000)
-print(a,b)
 
 
 
