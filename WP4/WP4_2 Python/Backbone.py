@@ -14,6 +14,8 @@ dT = 0.1
 i = 0 
 j = 0 
 
+t = 1 # Needs to be defined somewhere!! (not here)
+
 CG_XList = []
 CG_ZList = []
 Ix_totalList = []
@@ -25,7 +27,8 @@ Iytab = []
 
 import Chord_Length as Lengths
 import CG_wingbox as CG
-import Moment_of_Inertia as MoI
+import Moment_of_Inertia as MOI
+import Stringer_MOI as Stringer_MOI
 
 
 alpha, beta, b2, DeltaX, Cr, y = Lengths.WingboxDimensions(RCr, TCr, Span, dT)
@@ -36,12 +39,9 @@ while (dT * i)<= Span/2 :
     CG_ZList.append(CG_z)
     i = i +1
 
-t = 1 # Needs to be defined somewhere!! (not here)
-
-
 while (dT * j)<= Span/2 :
-    Ix_total = MoI.Ixcalculator(DeltaX[j],b2[j],alpha,beta,t,CG_XList[j],CG_ZList[j])
-    Iz_total = MoI.Izcalculator(DeltaX[j],b2[j],alpha,beta,t,CG_XList[j],CG_ZList[j])
+    Ix_total = MOI.Ixcalculator(DeltaX[j],b2[j],alpha,beta,t,CG_XList[j],CG_ZList[j])
+    Iz_total = MOI.Izcalculator(DeltaX[j],b2[j],alpha,beta,t,CG_XList[j],CG_ZList[j])
     Ix_totalList.append(Ix_total)
     Iz_totalList.append(Iz_total)
     SpanTab.append(dT * j)
