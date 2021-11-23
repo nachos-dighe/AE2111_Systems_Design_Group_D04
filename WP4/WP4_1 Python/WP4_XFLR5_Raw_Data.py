@@ -213,9 +213,12 @@ Cmlst_des = alpha_des/(10-0)*(Cmlst_10-Cmlst_0)
 
 
 #critical load factors
-N_z_positive = 2.5  #change later
-N_z_negative = 1.5  #change later
+N_z_positive = 2.5  #change later #done
+N_z_negative = -1  #change later #done
 
+#angle of attack during critical load cases
+alpha_des_positive = N_z_positive*alpha_des
+alpha_des_negative = N_z_negative*alpha_des
 
 #lists for aerodynamic loads (desgin point)
 Llst_des,Dlst_des,Mlst_des, Fzreslst_des,Ltot_des, Dtot_des, Mtot_des = aero_loads(xlst_0, ylst_0,Cllst_des, Cdlst_des, Cmlst_des)
