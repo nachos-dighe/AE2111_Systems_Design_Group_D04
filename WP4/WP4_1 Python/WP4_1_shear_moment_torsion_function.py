@@ -57,6 +57,28 @@ print("reaction moment:", Mres_des[0])
 print("moment at tip:",Mres_des[-1])
 
 
+def torsion(xlst, alpha, x_centroid, Cl_lst, Cd_lst):
+    # AOA
+    alpha = alpha
+
+    # location ac
+    ac_lstx = ( 1 / 4 ) * xlst 
+
+    # location centroid
+    x_centroid = #FRANK
+
+    # offset
+    dx_lst = x_centroid - ac_lstx
+
+    # normal force
+    Cn_lst = Cl_lst * np.cos(alpha) + Cd_lst * np.sin(alpha)
+
+    #resultant moment due to aerodynamic normal force
+    T_ad = Cn_lst * dx_lst 
+
+
+
+""""
 # torsion distribution
 
 def torsion(ylst, Llst, xlst, Ltot):
@@ -116,6 +138,7 @@ def torsion(ylst, Llst, xlst, Ltot):
     return Tlst 
 
 Tres_des = torsion(ylst_0, Llst_des, xlst_0, Ltot_0)
+"""
 
 
  
