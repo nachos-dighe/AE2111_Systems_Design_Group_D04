@@ -51,7 +51,8 @@ def moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax):
     for m in range(0,len(lst_stringers)):
         I_s = I_s + (A*m*m)
 
-    return I_s
+    return I_s, A
+#Need to have a list of the positions of the stringers, x and z
 
 
 

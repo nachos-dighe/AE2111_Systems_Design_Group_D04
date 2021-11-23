@@ -5,9 +5,33 @@ import matplotlib.pyplot as plt
 import scipy.integrate as sp
 #import sympy as sym
 from WP4_XFLR5_Raw_Data import * 
-from WP4_XFLR5_Raw_Data import Vres_des
-from WP4_XFLR5_Raw_Data import ylst_0
+#from WP4_XFLR5_Raw_Data import Vres_des
+from WP4_XFLR5_Raw_Data import ylst_0, Llst_des, Fzreslst_des, Ltot_des
 
+def shear(ylst,Llst, Fzreslst, Ltot):
+    #wing
+    b = 24.63
+    W_wing =  40209.08
+    W_half_wing = W_wing/2
+    
+    #engine weight
+    m_eng = 3448
+    g = 9.80665
+    W_eng = m_eng*g
+    y_eng = 0.35*b/2
+    
+    #reaction force at wing root
+    delta_y = (max(ylst)-min(ylst))/len(ylst)
+    F_y_react = Ltot-W_half_wing-W_eng
+    Vlst = -F_y_react*np.heaviside(ylst,1)-W_eng*np.heaviside(ylst-y_eng,1)+np.cumsum(Fzreslst)*delta_y
+
+    #testing #works
+    #print('Reaction force is', F_y_react, ' ' ,'Total distributed load is', np.sum(Fzreslst)*delta_y, ' ' , 'Engine weight is', W_eng, ' ' ,sep ='\n')
+    #print(Vlst[-1]) #should be close to 0
+    return(Vlst)    
+
+# call function 
+Vres_des=shear(ylst_0, Llst_des, Fzreslst_des, Ltot_des)
 
 # bending moment distribution 
 def moment(Vlst,ylst):

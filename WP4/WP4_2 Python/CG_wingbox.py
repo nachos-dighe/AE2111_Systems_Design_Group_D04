@@ -1,4 +1,4 @@
-from math import tan, pi
+from math import tan, pi 
 
 Theta2 = (2.54) * 0.0174532925
 Theta3 = (0.73) * 0.0174532925
@@ -19,7 +19,11 @@ def cg_calculation(Theta2, Theta3, b2, DeltaX):
 
     z3 = DeltaX * 2/3
     z1 = c + (b2 /2 )
+<<<<<<< HEAD
     z2 = c+b2 + (c/3)
+=======
+    z2 = c + b2 + (c/3)
+>>>>>>> 2101fed15090727303c211bbe5c641311eb79b83
 
     A1 = b2 * DeltaX
     A2 = 1/2 * a * DeltaX
@@ -29,6 +33,12 @@ def cg_calculation(Theta2, Theta3, b2, DeltaX):
     CG_x = ((x1 * A1)+ (x2 * A2) + (x3 * A3))/(A1+ A2 + A3)
     CG_z = ((z1 * A1) + (z2 * A2) + (z3 * A3))/(A1 + A2 + A3)
 
+<<<<<<< HEAD
     return CG_x, CG_z, c, a
 CG_x, CG_z, c, a = cg_calculation(Theta2, Theta3, b2, DeltaX)
 print(CG_x, CG_z, c, a)
+=======
+    return CG_x, CG_z
+#This is basically wrong, need to consider edges instead of the inner area
+#Also need to introduce stringers
+>>>>>>> 2101fed15090727303c211bbe5c641311eb79b83
