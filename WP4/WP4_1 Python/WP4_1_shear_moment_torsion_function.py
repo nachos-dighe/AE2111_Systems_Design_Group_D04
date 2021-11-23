@@ -63,7 +63,7 @@ def torsion(xlst, alpha, Cl_lst, Cd_lst, ylst, CG_xList, CG_zList):
     alpha = alpha
     v_cruise = 243.13
     rho_cruise = 0.37956
-    q_lst = ( 1 / 2 ) * rho_cruise * V_cruise ** 2
+    q_lst = ( 1 / 2 ) * rho_cruise * v_cruise ** 2
     b = 24.63
 
     # location ac
