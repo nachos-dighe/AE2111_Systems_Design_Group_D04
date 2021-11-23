@@ -37,7 +37,7 @@ def Ixcalculator(deltax,b,alpha,beta,t,x,z):
    
 def Izcalculator(deltax,b,alpha,beta,t,x,z):
 
-    Iz_rectangle_outer = (1/12) * (deltax**3) * b + deltax * b * ((l/2)-x)**2 
+    Iz_rectangle_outer = (1/12) * (deltax**3) * b + deltax * b * ((deltax/2)-x)**2 
 
     Iz_upper_triangle_outer = (1/36) * (deltax**3) * deltax * tan(alpha) + ((deltax*deltax*tan(alpha))/2)*(x- (deltax/3))**2 
 
