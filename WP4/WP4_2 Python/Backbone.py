@@ -48,6 +48,9 @@ while (dT * j)<= Span/2 :
     j = j + 1
 
 
+
+
+
 plt.subplot(211)
 plt.plot(SpanTab, Ix_totalList)
 plt.title("The moment of inertia of the X against the span")

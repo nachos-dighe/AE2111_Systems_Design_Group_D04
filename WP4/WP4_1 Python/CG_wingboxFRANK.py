@@ -66,7 +66,7 @@ def cg_calculation(dy):
         CG_zList.append(CG_z)
         i = i + 1
 
-    return CG_xList, CG_zList
+    return CG_xList, CG_zList, Cr
 
 
 
