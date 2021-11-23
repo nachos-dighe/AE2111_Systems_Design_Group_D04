@@ -15,7 +15,7 @@ def shear(ylst,Llst, Fzreslst, Ltot):
     W_half_wing = W_wing/2
     
     #engine weight
-    m_eng = 3448
+    m_eng = 3448+393.0809081 #one engine and one nacelle
     g = 9.80665
     W_eng = m_eng*g
     y_eng = 0.35*b/2
