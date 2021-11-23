@@ -7,6 +7,7 @@ import scipy.integrate as sp
 from WP4_XFLR5_Raw_Data import * 
 #from WP4_XFLR5_Raw_Data import Vres_des
 from WP4_XFLR5_Raw_Data import ylst_0, Llst_des, Fzreslst_des, Ltot_des
+from CG_wingboxFRANK import CG_xList, CG_zList
 
 def shear(ylst,Llst, Fzreslst, Ltot):
     #wing
@@ -20,13 +21,9 @@ def shear(ylst,Llst, Fzreslst, Ltot):
     W_eng = m_eng*g
     y_eng = 0.35*b/2
     
-    #fuel weight
-    W_fuel_tot =  12964*g
-    W_fuel_half_wing = 0.3*W_fuel_tot
-    
     #reaction force at wing root
     delta_y = (max(ylst)-min(ylst))/len(ylst)
-    F_y_react = Ltot-W_half_wing-W_eng-W_fuel_half_wing
+    F_y_react = Ltot-W_half_wing-W_eng
     Vlst = -F_y_react*np.heaviside(ylst,1)-W_eng*np.heaviside(ylst-y_eng,1)+np.cumsum(Fzreslst)*delta_y
 
     #testing #works
@@ -60,26 +57,31 @@ Mres_des=moment(Vres_des,ylst_0)
 print("reaction moment:", Mres_des[0])
 print("moment at tip:",Mres_des[-1])
 
-
-def torsion(xlst, alpha, x_centroid, Cl_lst, Cd_lst):
+#torsion function 
+def torsion(xlst, alpha, Cl_lst, Cd_lst, ylst, CG_xList, CG_zList):
     # AOA
     alpha = alpha
+    v_cruise = 243.13
+    rho_cruise = 0.37956
+    q_lst = ( 1 / 2 ) * rho_cruise * V_cruise ** 2
+    b = 24.63
 
     # location ac
     ac_lstx = ( 1 / 4 ) * xlst 
 
     # location centroid
-    x_centroid = #FRANK
-    z_centroid = #FRANK
+    xlst_centroid = CG_xList  # !!! CAREFUL with CS !!!! 
+    zlst_centroid = CG_zList
 
     # offset
-    dx_lst = x_centroid - ac_lstx
+    dx_lst = xlst_centroid - ac_lstx
 
     # normal force
     Cn_lst = Cl_lst * np.cos(alpha) + Cd_lst * np.sin(alpha)
+    N_lst = Cn_lst * xlst * q 
 
     #resultant moment due to aerodynamic normal force
-    T_ad = Cn_lst * dx_lst
+    Tlst_ad = N_lst * dx_lst
 
     # engine weight and thrust
     m_eng = 3448 + 393.0809081 #one engine and one nacelle
@@ -87,17 +89,35 @@ def torsion(xlst, alpha, x_centroid, Cl_lst, Cd_lst):
     W_eng = m_eng*g
     Thrust = 154520 #[N]
 
-    # engine offsets from cg
-    x_eng = 2.5 # [m]
-    z_eng = 1.125 # [m]
+    # engine offsets from cg 
+    x_eng = 2.5 # [m] #measured from half chord 
+    z_eng = 1.125 # [m]    # measured from chord downwards 
+    y_eng = 0.35*b/2
+    x_half = xlst[350] / 2 
 
-    dx_eng = x_eng + x_centroid
-    dz_eng = z_eng + z_centroid
+    dx_eng = x_eng - x_c/2 + 0.2 * xlst[350] + xlst_centroid[350] # distance between engine and centroid in x direction 
+    dz_eng = z_eng - 0.0285 * xlst[350] + zlst_centroid[350] # distance between engine and centroid in z direction
 
     #moments due to engine
     T_thr = T_eng * dz_eng
     T_w = ( -1 ) * W_eng * dx_eng
-    T_eng = T_thr + T_w 
+    T_eng = T_thr + T_w
+
+    #everything together
+    delta_y = (max(ylst)-min(ylst))/len(ylst)
+    T_lst = np.cumsum(Tlst_ad) * delta_y + T_eng * np.heaviside(ylst-y_eng,1) # add internal moment ?
+
+    return T_lst
+
+
+T_distr = torsion(xlst_0, 0, Cllst_0, Cdlst_0, ylst_0, CG_xList, CG_zList)
+
+plt.plot(T_distr,ylst_0)
+plt.title("Torsion distribution")
+plt.xlabel("Spanwise location")
+plt.ylabel("Torsion")
+plt.show() 
+
 
     
 

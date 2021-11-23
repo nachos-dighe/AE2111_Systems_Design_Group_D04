@@ -211,14 +211,23 @@ Cmlst_des = alpha_des/(10-0)*(Cmlst_10-Cmlst_0)
 #testing 
 #print(Ltot_des*2, Dtot_des*2, Mtot_des*2)
 
-
 #critical load factors
 N_z_positive = 2.5  #change later #done
 N_z_negative = -1  #change later #done
 
+#lift coefficient during critical load cases
+Cltot_des_positive = N_z_positive*Cltot_des
+Cltot_des_negative = N_z_negative*Cltot_des
+
+
+#print(np.sum(Cllst_des*N_z_positive), Cltot_des_positive) #testing #please note that the two values are not the same: 444.9274579865405 and 0.9324416175
+
 #angle of attack during critical load cases
-alpha_des_positive = N_z_positive*alpha_des
-alpha_des_negative = N_z_negative*alpha_des
+alpha_des_positive = np.arcsin((np.sum(Cllst_des*N_z_positive)-np.sum(Cllst_0))/(np.sum(Cllst_10)-np.sum(Cllst_0))*np.sin(np.deg2rad(10))) #4.3337
+alpha_des_negative = np.arcsin((np.sum(Cllst_des*N_z_negative)-np.sum(Cllst_0))/(np.sum(Cllst_10)-np.sum(Cllst_0))*np.sin(np.deg2rad(10))) #-3.4053
+
+
+#print(np.rad2deg(alpha_des_positive), np.rad2deg(alpha_des_negative)) #testing
 
 #lists for aerodynamic loads (desgin point)
 Llst_des,Dlst_des,Mlst_des, Fzreslst_des,Ltot_des, Dtot_des, Mtot_des = aero_loads(xlst_0, ylst_0,Cllst_des, Cdlst_des, Cmlst_des)
