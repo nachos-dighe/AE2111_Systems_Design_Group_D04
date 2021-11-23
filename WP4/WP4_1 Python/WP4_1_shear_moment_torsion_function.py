@@ -15,14 +15,18 @@ def shear(ylst,Llst, Fzreslst, Ltot):
     W_half_wing = W_wing/2
     
     #engine weight
-    m_eng = 3448+393.0809081 #one engine and one nacelle
+    m_eng = 3448 + 393.0809081 #one engine and one nacelle
     g = 9.80665
     W_eng = m_eng*g
     y_eng = 0.35*b/2
     
+    #fuel weight
+    W_fuel_tot =  12964*g
+    W_fuel_half_wing = 0.3*W_fuel_tot
+    
     #reaction force at wing root
     delta_y = (max(ylst)-min(ylst))/len(ylst)
-    F_y_react = Ltot-W_half_wing-W_eng
+    F_y_react = Ltot-W_half_wing-W_eng-W_fuel_half_wing
     Vlst = -F_y_react*np.heaviside(ylst,1)-W_eng*np.heaviside(ylst-y_eng,1)+np.cumsum(Fzreslst)*delta_y
 
     #testing #works
@@ -57,6 +61,47 @@ print("reaction moment:", Mres_des[0])
 print("moment at tip:",Mres_des[-1])
 
 
+def torsion(xlst, alpha, x_centroid, Cl_lst, Cd_lst):
+    # AOA
+    alpha = alpha
+
+    # location ac
+    ac_lstx = ( 1 / 4 ) * xlst 
+
+    # location centroid
+    x_centroid = #FRANK
+    z_centroid = #FRANK
+
+    # offset
+    dx_lst = x_centroid - ac_lstx
+
+    # normal force
+    Cn_lst = Cl_lst * np.cos(alpha) + Cd_lst * np.sin(alpha)
+
+    #resultant moment due to aerodynamic normal force
+    T_ad = Cn_lst * dx_lst
+
+    # engine weight and thrust
+    m_eng = 3448 + 393.0809081 #one engine and one nacelle
+    g = 9.80665
+    W_eng = m_eng*g
+    Thrust = 154520 #[N]
+
+    # engine offsets from cg
+    x_eng = 2.5 # [m]
+    z_eng = 1.125 # [m]
+
+    dx_eng = x_eng + x_centroid
+    dz_eng = z_eng + z_centroid
+
+    #moments due to engine
+    T_thr = T_eng * dz_eng
+    T_w = ( -1 ) * W_eng * dx_eng
+    T_eng = T_thr + T_w 
+
+    
+
+""""
 # torsion distribution
 
 def torsion(ylst, Llst, xlst, Ltot):
@@ -116,6 +161,7 @@ def torsion(ylst, Llst, xlst, Ltot):
     return Tlst 
 
 Tres_des = torsion(ylst_0, Llst_des, xlst_0, Ltot_0)
+"""
 
 
  
