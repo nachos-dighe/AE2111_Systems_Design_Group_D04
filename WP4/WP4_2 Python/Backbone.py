@@ -71,7 +71,7 @@ plt.show()
 # [V] Making all the values in the other code use the same name
 # [ ] Making the graphs more nice
 # [ ] Putting formulas in the code (Lynn)
-# [ ] AMking a way to put the 
+# [ ] Making a way to put the input for the strinegrs nicely
 
 
 
