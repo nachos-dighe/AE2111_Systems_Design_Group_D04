@@ -78,7 +78,8 @@ def torsion(xlst, alpha, Cl_lst, Cd_lst, ylst, CG_xList, CG_zList):
 
     # normal force
     Cn_lst = Cl_lst * np.cos(alpha) + Cd_lst * np.sin(alpha)
-    N_lst = Cn_lst * xlst * q_lst 
+    N_lst = Cn_lst * xlst * q_lst
+
 
     #resultant moment due to aerodynamic normal force
     Tlst_ad = N_lst * dx_lst
@@ -108,21 +109,33 @@ def torsion(xlst, alpha, Cl_lst, Cd_lst, ylst, CG_xList, CG_zList):
     T_lst = np.cumsum(Tlst_ad) * delta_y + T_eng * np.heaviside(ylst-y_eng,1) # add internal moment ?
     #T_lst = Tlst_ad + T_eng * np.heaviside(ylst-y_eng,1) experiment without integration . 
 
-    return T_lst,dx_lst, N_lst
+    return T_lst, N_lst, Tlst_ad, dx_lst
 
 
-T_distr, dx_distr, Nlst  = torsion(xlst_0, 0, Cllst_0, Cdlst_0, ylst_0, CG_xList, CG_zList)
+T_distr, Nlst, T_ad, dxlist = torsion(xlst_0, 0, Cllst_0, Cdlst_0, ylst_0, CG_xList, CG_zList)
 
+
+plt.subplot(4,1,1)
 plt.plot(ylst_0,T_distr)
-plt.title("Torsion distribution")
-plt.xlabel("Spanwise location")
-plt.ylabel("Torsion")
+plt.title(" total Torsion distribution")
+
+plt.subplot(4,1,2)
+plt.plot(ylst_0,Nlst)
+plt.title("Spanwise normal force")
+
+plt.subplot(4,1,3)
+plt.plot(ylst_0,T_ad)
+plt.title("Torsion due to ad forces spanwise")
+
+plt.subplot(4,1,4)
+plt.plot(ylst_0, (-1) * dxlist)
+plt.title("Spanwise momentarm") 
+
+
 plt.show() 
 
-Tlift = dx_distr * Nlst
-plt.plot(ylst_0,Tlift)
-plt.title("Torsion due to ad forces")
-plt.show()
+print(dxlist[0])
+
     
 
 
