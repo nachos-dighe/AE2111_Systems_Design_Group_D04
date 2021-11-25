@@ -1,4 +1,4 @@
-from math import tan, pi 
+from math import * 
 
 alpha = (2.54) * 0.0174532925
 beta = (0.73) * 0.0174532925
