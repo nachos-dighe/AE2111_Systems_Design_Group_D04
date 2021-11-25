@@ -39,24 +39,25 @@ def cg_calculation(dy):
     i = 0
     dT = ( Span / 2 ) / dy
     alpha, beta, b2, DeltaX, Cr, y = Lengths.WingboxDimensions(RCr, TCr, Span, dT)
-    
+    print(len(DeltaX))
     while (dT * i ) <= Span/2 :
-        c = DeltaX[i] * tan(alpha)
-        d = DeltaX[i] * tan(beta)
+        j = i - 1
+        c = DeltaX[j] * tan(alpha)
+        d = DeltaX[j] * tan(beta)
 
-        m1 = ((DeltaX[i]) / (cos(alpha)))
-        m2 = b2[i] + c + d
-        m3 = b2[i]
-        m4 = ((DeltaX[i]) / (cos(beta)))
+        m1 = ((DeltaX[j]) / (cos(alpha)))
+        m2 = b2[j] + c + d
+        m3 = b2[j]
+        m4 = ((DeltaX[j]) / (cos(beta)))
         
-        x1 = 0.5 * DeltaX[i]
+        x1 = 0.5 * DeltaX[j]
         x2 = 0
-        x3 = DeltaX[i]
-        x4 = 0.5 * DeltaX[i]
+        x3 = DeltaX[j]
+        x4 = 0.5 * DeltaX[j]
 
-        z1 = b2[i] + d + 0.5 * c
-        z2 = d + 0.5 * b2[i]
-        z3 = d + 0.5 * b2[i]
+        z1 = b2[j] + d + 0.5 * c
+        z2 = d + 0.5 * b2[j]
+        z3 = d + 0.5 * b2[j]
         z4 = 0.5 * d
 
         CG_x = (m1*x1 + m2*x2 + m3*x3 + m4*x4)/(m1 + m2 + m3 + m4)
@@ -70,6 +71,7 @@ def cg_calculation(dy):
 
 CG_xList, CG_zList, Cr = cg_calculation(1000)
 
+print(CG_xList, CG_zList, Cr)
 
 
 
