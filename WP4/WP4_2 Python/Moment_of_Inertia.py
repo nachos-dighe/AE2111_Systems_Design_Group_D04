@@ -39,7 +39,6 @@ def Ixx(DeltaX,beta,alpha,x,z,b):
     return Ixx
 
 
-<<<<<<< HEAD
 def Izz(Deltax,beta,alpha,x,z,b):
 
 
@@ -53,8 +52,7 @@ def Izz(Deltax,beta,alpha,x,z,b):
 
     Izz = Izz1+Izz2+Izz3+Izz4
 
-=======
->>>>>>> c071b0bb72cff6fe6f33ac239e7e6ea3027d4f20
+
 def Izz(DeltaX,beta,alpha,x,z,b):
 
 
@@ -80,15 +78,7 @@ def thickness_selection(Ixx,Izz,Ixx_required,Izz_required):
 
     tx = Ixx_required/Ixx
     tz = Izz_required/Izz
-<<<<<<< HEAD
 
-#tx is thickness determined by using Ixx. We will obtain tz from Izz. Whichever is greater is the design thickness as we have to satisfy both cases
-
-    tx = Ixx_required/Ixx
-    tz = Izz_required/Izz
-=======
-
->>>>>>> c071b0bb72cff6fe6f33ac239e7e6ea3027d4f20
 
     t_minimum = max(tx, tz)
 
