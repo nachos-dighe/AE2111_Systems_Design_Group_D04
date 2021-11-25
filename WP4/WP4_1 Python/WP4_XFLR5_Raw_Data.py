@@ -24,9 +24,16 @@ def aero_coefficient(aero_data_AOA):
     xlst_init = aero_data_AOA[:,1]
     ylst_init = aero_data_AOA[:,0]
     Cllst_init = aero_data_AOA[:,3]
-    Cdlst_init = aero_data_AOA[:, 5]
-    #print(Cdlst) #testing
+    Cdlst_init = aero_data_AOA[:, 5] #induced drag
     Cmlst_init = aero_data_AOA[:, 7] #pitching moment about c/4 point
+    
+    #airfoil characteristics 
+    Cm_airfoil = 8.42E-02
+    Cd_airfoil = 0.01 #form drag
+    
+    Cdlst_init = Cdlst_init + Cd_airfoil
+    #print(Cdlst_init) #testing
+
     return(xlst_init,ylst_init,Cllst_init, Cdlst_init, Cmlst_init)
 
 #interpolation
@@ -72,8 +79,6 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     Wlst = W_root*(1+2/b*(taper-1)*ylst) 
 
     #Prandtl-Glauert compressibility correction
-    Cm_airfoil = 8.42E-02
-    Cd_airfoil = 8.42E-02
     M_cr = 0.82
     beta = (1-M_cr**2)**-0.5
     Llst = Cllst*xlst*q_cruise*beta
@@ -84,7 +89,7 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
 
     #total aerodynamic loads
     Ltot = np.sum(Llst*delta_y)
-    Dtot = np.sum(Dlst*delta_y)
+    Dtot = np.sum(Dlst)
     Mtot = np.sum(Mlst*delta_y)
     
     #distributed load along span (coordinate system: downward) [N/m], point forces not included yet!
@@ -185,6 +190,7 @@ def torsion(ylst, xlst):
 xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = aero_coefficient(aero_data_AOA_0)
 xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = aero_coefficient(aero_data_AOA_10)
 
+print(Cdlst_0, Cdlst_10)
 #lists for aerodynamic loads (AOA=0, 10)
 Llst_0,Dlst_0,Mlst_0, Fzreslst_0,Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
 Llst_10,Dlst_10,Mlst_10, Fzreslst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
@@ -242,12 +248,12 @@ wzresdes_interp = sp.interpolate.interp1d(ylst_0,Fzreslst_des, kind = "cubic", f
 
 
 #aerodynamic plots: design and critical conditions (uncomment)
-
+'''
 aero_plots(ylst_0, Llst_des, Dlst_des, Mlst_des, Fzreslst_des, Ltot_des, Dtot_des, Mtot_des)
 aero_plots(ylst_0, Llst_poscrit,Dlst_poscrit,Mlst_poscrit, Fzreslst_poscrit,Ltot_poscrit, Dtot_poscrit, Mtot_poscrit)
 aero_plots(ylst_0, Llst_negcrit,Dlst_negcrit,Mlst_negcrit, Fzreslst_negcrit,Ltot_negcrit, Dtot_negcrit, Mtot_negcrit)
 
-
+'''
 
 
 
