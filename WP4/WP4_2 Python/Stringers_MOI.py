@@ -51,9 +51,12 @@ def moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax):
 #calculation of additional moment of inertia due to stringers
     I_s = 0
     for m in range(0,len(lst_stringers)):
-        I_s = I_s + (A*m*m)
+        I_s = I_s + (A*m*m)    
 
-#Checking feasibility of overlap stringers (printed the results)
+    return I_s, A, s_top, s_bot
+
+#function feasibility of the stringers space wize
+def feasibility_stringers(s_top, s_bot, nr_top, nr_bot, L_s):
     feas_top = s_top - (nr_top*L_s)
     feas_bot = s_bot - (nr_bot*L_s)
     s = 0
@@ -65,9 +68,6 @@ def moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax):
         print("design is unfeasible stringer overlap wise")
     if s == 0:
         print("design is feasible stringer overlap wise")
-    
-
-    return I_s, A
 #Need to have a list of the positions of the stringers, x and z
 
 print(moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax))
