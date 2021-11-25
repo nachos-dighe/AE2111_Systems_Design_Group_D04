@@ -17,7 +17,7 @@ def shear(ylst,Llst, Fzreslst, Ltot):
     W_half_wing = W_wing/2
     
     #engine weight
-    m_eng = 3448 + 393.0809081 #one engine and one nacelle
+    m_eng = 1724 + 393.0809081 #one engine and one nacelle
     g = 9.80665
     W_eng = m_eng*g
     y_eng = 0.35*b/2
@@ -154,12 +154,15 @@ def torsion(xlst, alpha, Llst, Dlst, ylst, CG_xList, CG_zList):
     return T_lst_shift, N_lst, Tlst_ad, dx_lst
 
 
-T_distr, Nlst, T_ad, dxlist = torsion(xlst_0, 0, Llst_0, Dlst_0, ylst_0, CG_xList, CG_zList)
+T_distr = torsion(xlst_0, 0, Llst_0, Dlst_0, ylst_0, CG_xList, CG_zList)
 
 
+#testing #works
+'''
 plt.subplot(4,1,1)
 plt.plot(ylst_0,T_distr)
 plt.title(" total Torsion distribution")
+
 
 plt.subplot(4,1,2)
 plt.plot(ylst_0,Nlst)
@@ -175,18 +178,4 @@ plt.title("Spanwise momentarm")
 
 
 plt.show() 
-
-
-
-    
-
-
-    
-
-
- 
-
-
-
-
-
+'''
