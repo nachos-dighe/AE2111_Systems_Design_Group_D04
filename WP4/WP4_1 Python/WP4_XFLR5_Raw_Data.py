@@ -47,8 +47,8 @@ def interpolation(xlst_init,ylst_init,Cllst_init, Cdlst_init, Cmlst_init):
 
 #aerodynamics loads (dimensional)
 def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
-    v_cruise = 243.13
-    rho_cruise = 0.37956
+    v_cruise = 243.13 #this may change depending on critical loading case
+    rho_cruise = 0.37956 #this may change depending on critical loading case
     q_cruise = 0.5*rho_cruise*v_cruise**2
     g = 9.80665
     
@@ -72,6 +72,8 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     Wlst = W_root*(1+2/b*(taper-1)*ylst) 
 
     #Prandtl-Glauert compressibility correction
+    Cm_airfoil = 8.42E-02
+    Cd_airfoil = 8.42E-02
     M_cr = 0.82
     beta = (1-M_cr**2)**-0.5
     Llst = Cllst*xlst*q_cruise*beta
@@ -240,11 +242,11 @@ wzresdes_interp = sp.interpolate.interp1d(ylst_0,Fzreslst_des, kind = "cubic", f
 
 
 #aerodynamic plots: design and critical conditions (uncomment)
-'''
+
 aero_plots(ylst_0, Llst_des, Dlst_des, Mlst_des, Fzreslst_des, Ltot_des, Dtot_des, Mtot_des)
 aero_plots(ylst_0, Llst_poscrit,Dlst_poscrit,Mlst_poscrit, Fzreslst_poscrit,Ltot_poscrit, Dtot_poscrit, Mtot_poscrit)
 aero_plots(ylst_0, Llst_negcrit,Dlst_negcrit,Mlst_negcrit, Fzreslst_negcrit,Ltot_negcrit, Dtot_negcrit, Mtot_negcrit)
-'''
+
 
 
 
