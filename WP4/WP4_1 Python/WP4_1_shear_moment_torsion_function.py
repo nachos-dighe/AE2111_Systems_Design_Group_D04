@@ -145,11 +145,13 @@ def torsion(xlst, alpha, Llst, Dlst, ylst, CG_xList, CG_zList):
     delta_y = (max(ylst)-min(ylst))/len(ylst)
 
     T_lst = Tlst_ad + T_eng * np.heaviside(ylst-y_eng,1) #experiment without integration .
-    T_0 = sp.integrate.trapz(T_lst,ylst)
-    T_lst_shift = 
+    T_0 = sp.integrate.trapz(Tlst_ad,ylst) + T_eng 
+    T_lst_shift = T_lst
+    print(T_eng)
+
     print(T_0)
 
-    return T_lst, N_lst, Tlst_ad, dx_lst
+    return T_lst_shift, N_lst, Tlst_ad, dx_lst
 
 
 T_distr, Nlst, T_ad, dxlist = torsion(xlst_0, 0, Llst_0, Dlst_0, ylst_0, CG_xList, CG_zList)
