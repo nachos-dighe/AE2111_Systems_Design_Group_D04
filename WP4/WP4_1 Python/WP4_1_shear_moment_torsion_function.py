@@ -58,27 +58,35 @@ print("reaction moment:", Mres_des[0])
 print("moment at tip:",Mres_des[-1])
 
 #torsion function 
-def torsion(xlst, alpha, Cl_lst, Cd_lst, ylst, CG_xList, CG_zList):
+def torsion(xlst, alpha, L_lst, D_lst, ylst, CG_xList, CG_zList):
     # AOA
     alpha = alpha
     v_cruise = 243.13
     rho_cruise = 0.37956
     q_lst = ( 1 / 2 ) * rho_cruise * v_cruise ** 2
     b = 24.63
+    span_rev = ylst * (-1) 
 
     # location ac
-    ac_lstx = ( 1 / 4 ) * xlst 
+    ac_lstx = ( 1 / 4 ) * xlst  #okay like this 
+
+##    plt.plot(ylst_0,ac_lstx)
+##    plt.show()
 
     # location centroid
     xlst_centroid = CG_xList  # !!! CAREFUL with CS !!!! 
     zlst_centroid = CG_zList
 
     # offset
-    dx_lst = xlst_centroid - ac_lstx
+    
+    dx_lst = xlst_centroid - ac_lstx # - ac_lstx
+    dx_lst = np.flip(dx_lst)
+    plt.plot(ylst_0,dx_lst)
+    plt.show()
 
     # normal force
-    Cn_lst = Cl_lst * np.cos(alpha) + Cd_lst * np.sin(alpha)
-    N_lst = Cn_lst * xlst * q_lst
+    N_lst = L_lst * np.cos(alpha) + D_lst * np.sin(alpha)
+    #N_lst = Cn_lst * xlst * q_lst
 
 
     #resultant moment due to aerodynamic normal force
@@ -106,13 +114,13 @@ def torsion(xlst, alpha, Cl_lst, Cd_lst, ylst, CG_xList, CG_zList):
 
     #everything together
     delta_y = (max(ylst)-min(ylst))/len(ylst)
-    T_lst = np.cumsum(Tlst_ad) * delta_y + T_eng * np.heaviside(ylst-y_eng,1) # add internal moment ?
-    #T_lst = Tlst_ad + T_eng * np.heaviside(ylst-y_eng,1) experiment without integration . 
+    #T_lst = np.cumsum(Tlst_ad) * delta_y + T_eng * np.heaviside(ylst-y_eng,1) # add internal moment ?
+    T_lst = Tlst_ad + T_eng * np.heaviside(ylst-y_eng,1) #experiment without integration . 
 
     return T_lst, N_lst, Tlst_ad, dx_lst
 
 
-T_distr, Nlst, T_ad, dxlist = torsion(xlst_0, 0, Cllst_0, Cdlst_0, ylst_0, CG_xList, CG_zList)
+T_distr, Nlst, T_ad, dxlist = torsion(xlst_0, 0, Llst_0, Dlst_0, ylst_0, CG_xList, CG_zList)
 
 
 plt.subplot(4,1,1)
@@ -128,13 +136,13 @@ plt.plot(ylst_0,T_ad)
 plt.title("Torsion due to ad forces spanwise")
 
 plt.subplot(4,1,4)
-plt.plot(ylst_0, (-1) * dxlist)
+plt.plot(ylst_0, dxlist)
 plt.title("Spanwise momentarm") 
 
 
 plt.show() 
 
-print(dxlist[0])
+
 
     
 

@@ -72,6 +72,7 @@ def cg_calculation(dy):
 CG_xList, CG_zList, Cr = cg_calculation(999)
 
 print(CG_xList, CG_zList, Cr)
+print(CG_xList[0])
 
 
 

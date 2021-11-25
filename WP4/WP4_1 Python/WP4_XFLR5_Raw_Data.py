@@ -255,6 +255,8 @@ aero_plots(ylst_0, Llst_negcrit,Dlst_negcrit,Mlst_negcrit, Fzreslst_negcrit,Ltot
 
 '''
 
+print(Llst_0[0])
+
 
 
 
