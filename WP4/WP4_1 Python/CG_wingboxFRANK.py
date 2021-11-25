@@ -66,6 +66,8 @@ def cg_calculation(dy):
         CG_xList.append(CG_x)
         CG_zList.append(CG_z)
         i = i + 1
+        FracX = CG_xList/Cr
+        print(FracX)
 
     return CG_xList, CG_zList, Cr
 
