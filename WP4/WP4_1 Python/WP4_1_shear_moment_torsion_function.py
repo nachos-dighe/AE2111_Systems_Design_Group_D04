@@ -6,25 +6,36 @@ import scipy.integrate as sp
 #import sympy as sym
 from WP4_XFLR5_Raw_Data import * 
 #from WP4_XFLR5_Raw_Data import Vres_des
-from WP4_XFLR5_Raw_Data import ylst_0, Llst_des, Fzreslst_des, Ltot_des, q_cruise, Cllst_0, Cdlst_0
+from WP4_XFLR5_Raw_Data import ylst_0, Llst_des, Fzreslst_des, Ltot_des, q_cruise, Cllst_0, Cdlst_0, is_fuel
 from CG_wingboxFRANK import CG_xList, CG_zList
+
+#some constants
+g = 9.80665
+b = 24.63
+#fuel weight
+W_fuel_tot =  12964*g
+#based on ref data, approx. 30% of fuel weight is stored in wing (from root to 0.55/2 spar: consider inner tank only)
+y_fuel = b /2*0.55
+if is_fuel:
+    W_fuel_half_wing = 0.3*W_fuel_tot
+else:
+    W_fuel_half_wing = 0
+
 
 
 def shear(ylst,Llst, Fzreslst, Ltot):
     #wing
-    b = 24.63
     W_wing =  40209.08
     W_half_wing = W_wing/2
     
     #engine weight
     m_eng = 1724 + 393.0809081 #one engine and one nacelle
-    g = 9.80665
     W_eng = m_eng*g
     y_eng = 0.35*b/2
     
     #reaction force at wing root
     delta_y = (max(ylst)-min(ylst))/len(ylst)
-    F_y_react = Ltot-W_half_wing-W_eng
+    F_y_react = Ltot-W_half_wing-W_eng-W_fuel_half_wing
     Vlst = -F_y_react*np.heaviside(ylst,1)-W_eng*np.heaviside(ylst-y_eng,1)+np.cumsum(Fzreslst)*delta_y
 
     #testing #works

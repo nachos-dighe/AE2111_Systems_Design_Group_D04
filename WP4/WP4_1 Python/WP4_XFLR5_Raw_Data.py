@@ -10,7 +10,8 @@ v_cruise = 243 #this may change depending on critical loading case
 rho_cruise = 0.3678 #this may change depending on critical loading case
 q_cruise = 0.5*rho_cruise*v_cruise**2
 
-
+#fuel in wing boolean:
+is_fuel = True
 
 
 #print(Wingspan) #testing works, but find a better implementation method. Ignore use of parametric python file for now.
@@ -75,13 +76,16 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     W_fuel_half_wing = 0.3*W_fuel_tot
     W_fuel_root = 2*W_fuel_half_wing/((1+taper*0.55)*b*0.275)
     Wlst_fuel = W_fuel_root*(1+2/b*(taper-1)*ylst)
-    Wlst_fuel =0
+    #Wlst_fuel =0 if not fuel in wing 
     #Wlst_fuel = W_fuel_root*(1+2/y_fuel*(taper-1)*ylst) 
     
     #half-wing weight
     W_wing =  40209.08
     W_half_wing = W_wing/2
-    W_root = 2*W_wing/((1+taper)*b)
+    if is_fuel:
+        W_root = 2*W_wing/((1+taper)*b)
+    else:
+        W_root = 0
     Wlst = W_root*(1+2/b*(taper-1)*ylst) 
 
     #Prandtl-Glauert compressibility correction

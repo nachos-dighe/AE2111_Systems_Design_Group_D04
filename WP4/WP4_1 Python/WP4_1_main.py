@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from WP4_XFLR5_Raw_Data import xlst_0, ylst_0, Llst_des, Llst_negcrit, Llst_poscrit, Dlst_des, Dlst_negcrit, Dlst_poscrit, Fzreslst_des, Fzreslst_poscrit, Fzreslst_negcrit,Ltot_des, Ltot_poscrit, Ltot_negcrit, alpha_des, alpha_des_negative, alpha_des_positive
 from CG_wingboxFRANK import CG_xList, CG_zList
 
+
 #shear
 Vres_des=shear(ylst_0,Llst_des, Fzreslst_des, Ltot_des)
 Vres_poscrit=shear(ylst_0,Llst_poscrit, Fzreslst_poscrit, Ltot_poscrit)
@@ -46,4 +47,4 @@ internal_plots(ylst_0, Vres_negcrit,BMres_negcrit,TMres_negcrit)
 
 
 
-
+print('shear at tip: pos_crit ', Vres_poscrit[-1], '\n shear at tip: neg_crit',Vres_negcrit[-1])
