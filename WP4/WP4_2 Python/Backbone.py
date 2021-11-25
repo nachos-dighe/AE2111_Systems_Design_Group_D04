@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import scipy as sp
 from scipy import interpolate
 
-from math import tan
-import math
+from math import *
+
 
 # Geometric
 RCr = 4.4 # [m] Root chord
@@ -28,7 +28,7 @@ Iytab = []
 import Chord_Length as Lengths
 import CG_wingboxFRANK as CG
 import Moment_of_Inertia as MOI
-import Stringer_MOI as Stringer_MOI
+import Stringers_MOI as Stringer_MOI
 
 
 alpha, beta, b, DeltaX, Cr, y = Lengths.WingboxDimensions(RCr, TCr, Span, dT)
@@ -37,11 +37,12 @@ while (dT * i)<= Span/2 :
     CG_x, CG_z = CG.cg_calculation(alpha, beta, b[i], DeltaX[i])
     CG_XList.append(CG_x)
     CG_ZList.append(CG_z)
-    i = i +1
+    i = i + 1
 
 while (dT * j)<= Span/2 :
-    Ix_total = MOI.Ixcalculator(DeltaX[j],b[j],alpha,beta,t,CG_XList[j],CG_ZList[j])
-    Iz_total = MOI.Izcalculator(DeltaX[j],b[j],alpha,beta,t,CG_XList[j],CG_ZList[j])
+    Ix_total = MOI.Ixx(DeltaX[j],beta, alpha,CG_XList[j], CG_ZList, b[j])
+    Iz_total = MOI.Izz(DeltaX[j],beta, alpha,CG_XList[j], CG_ZList, b[j])
+    
     Ix_totalList.append(Ix_total)
     Iz_totalList.append(Iz_total)
     SpanTab.append(dT * j)
