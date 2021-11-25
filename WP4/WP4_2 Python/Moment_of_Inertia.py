@@ -38,20 +38,7 @@ def Ixx(DeltaX,beta,alpha,x,z,b):
 
     return Ixx
 
-<<<<<<< HEAD
-def Izz(deltax,beta,alpha,x,z,b):
 
-
-    Izz1 = ((((deltax)**3)*((cos(beta))**2))/(12*((cos(beta))**3)))+((deltax)/cos(beta))*(x-(deltax/2))**2    #lower left angled profile
-
-    Izz2 = ((((deltax)**3)*((cos((pi/2)-alpha))**2))/(12*((cos(alpha))**3)))+(deltax/(cos(alpha)))*(x-(deltax/2))**2   #upper right angled profile
-    
-    Izz3 = (deltax * tan(beta) + b + deltax * tan(alpha))*x**2  #vertical profile on the left
-
-    Izz4 = b*(deltax-x)**2   #vertical profile on the right
-
-    Izz = Izz1+Izz2+Izz3+Izz4
-=======
 def Izz(DeltaX,beta,alpha,x,z,b):
 
 
@@ -64,7 +51,7 @@ def Izz(DeltaX,beta,alpha,x,z,b):
     Izz4 = b*(DeltaX-x)**2   #vertical profile on the right
 
     Izz = Izz1 + Izz2 + Izz3 + Izz4
->>>>>>> 4f5ee11e85f771a61d52fb3f5ef75c57e7c24c84
+
 
     return Izz
 
@@ -72,17 +59,12 @@ def Izz(DeltaX,beta,alpha,x,z,b):
 def thickness_selection(Ixx,Izz,Ixx_required,Izz_required):
     
 
-<<<<<<< HEAD
+
 #tx is thickness determined by using Ixx. We will obtain tz from Izz. Whichever is greater is the design thickness as we have to satisfy both cases
 
     tx = Ixx_required/Ixx
     tz = Izz_required/Izz
-=======
-#tx is thickness determined by using Ixx. We will obtain ty from Izz. Whichever is greater is the design thickness as we have to satisfy both cases
 
-    tx = Ixx_required/Ixx
-    ty = Izz_required/Izz
->>>>>>> 4f5ee11e85f771a61d52fb3f5ef75c57e7c24c84
 
     t_minimum = max(tx, tz)
 
