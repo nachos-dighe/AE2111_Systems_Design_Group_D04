@@ -121,6 +121,9 @@ def torsion(xlst, alpha, Llst, Dlst, ylst, CG_xList, CG_zList):
     #resultant moment due to aerodynamic normal force
     Tlst_ad = N_lst * dx_lst
 
+    plt.plot(ylst,Tlst_ad)
+    plt.show()
+
     # engine weight and thrust
     m_eng = 3448 + 393.0809081 #one engine and one nacelle
     g = 9.80665
@@ -144,7 +147,7 @@ def torsion(xlst, alpha, Llst, Dlst, ylst, CG_xList, CG_zList):
     #everything together
     delta_y = (max(ylst)-min(ylst))/len(ylst)
 
-    T_lst = Tlst_ad + T_eng * np.heaviside(ylst-y_eng,1) #experiment without integration .
+    T_lst = sp.integrate.cumtrapz( Tlst_ad , ylst, initial=0) + T_eng * np.heaviside(ylst-y_eng,1) #experiment without integration .
     T_0 = sum(delta_y * Tlst_ad) + T_eng 
     T_lst = T_lst - T_0
     print(T_eng)
@@ -156,23 +159,8 @@ def torsion(xlst, alpha, Llst, Dlst, ylst, CG_xList, CG_zList):
 
 T_distr = torsion(xlst_0, 0, Llst_0, Dlst_0, ylst_0, CG_xList, CG_zList)
 
-
-plt.subplot(4,1,1)
 plt.plot(ylst_0,T_distr)
 plt.title(" total Torsion distribution")
-
-plt.subplot(4,1,2)
-plt.plot(ylst_0,Nlst)
-plt.title("Spanwise normal force")
-
-plt.subplot(4,1,3)
-plt.plot(ylst_0,T_ad)
-plt.title("Torsion due to ad forces spanwise")
-
-plt.subplot(4,1,4)
-plt.plot(ylst_0, dxlist)
-plt.title("Spanwise momentarm") 
-
 
 plt.show() 
 
