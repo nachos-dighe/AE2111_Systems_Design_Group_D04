@@ -6,8 +6,9 @@ import scipy.integrate as sp
 #import sympy as sym
 from WP4_XFLR5_Raw_Data import * 
 #from WP4_XFLR5_Raw_Data import Vres_des
-from WP4_XFLR5_Raw_Data import ylst_0, Llst_des, Fzreslst_des, Ltot_des
+from WP4_XFLR5_Raw_Data import ylst_0, Llst_des, Fzreslst_des, Ltot_des, q_cruise, Cllst_0, Cdlst_0
 from CG_wingboxFRANK import CG_xList, CG_zList
+
 
 def shear(ylst,Llst, Fzreslst, Ltot):
     #wing
@@ -16,7 +17,7 @@ def shear(ylst,Llst, Fzreslst, Ltot):
     W_half_wing = W_wing/2
     
     #engine weight
-    m_eng = 3448 + 393.0809081 #one engine and one nacelle
+    m_eng = 1724 + 393.0809081 #one engine and one nacelle
     g = 9.80665
     W_eng = m_eng*g
     y_eng = 0.35*b/2
@@ -58,14 +59,11 @@ print("reaction moment:", Mres_des[0])
 print("moment at tip:",Mres_des[-1])
 
 #torsion function 
-def torsion(xlst, alpha, L_lst, D_lst, ylst, CG_xList, CG_zList):
+def torsion(xlst, alpha, Llst, Dlst, ylst, CG_xList, CG_zList):
     # AOA
     alpha = alpha
-    v_cruise = 243.13
-    rho_cruise = 0.37956
-    q_lst = ( 1 / 2 ) * rho_cruise * v_cruise ** 2
-    b = 24.63
-    span_rev = ylst * (-1) 
+    q = q_cruise
+    b = 24.63 
 
     # location ac
     ac_lstx = ( 1 / 4 ) * xlst  #okay like this 
@@ -74,23 +72,57 @@ def torsion(xlst, alpha, L_lst, D_lst, ylst, CG_xList, CG_zList):
 ##    plt.show()
 
     # location centroid
-    xlst_centroid = CG_xList  # !!! CAREFUL with CS !!!! 
+    xlst_centroid = CG_xList + 0.2 * xlst # !!! CAREFUL with CS !!!! 
     zlst_centroid = CG_zList
 
-    # offset
+    # offset   FINE
     
     dx_lst = xlst_centroid - ac_lstx # - ac_lstx
-    dx_lst = np.flip(dx_lst)
-    plt.plot(ylst_0,dx_lst)
-    plt.show()
+    #dx_lst = np.flip(dx_lst)
+
+##    plt.subplot(3,1,1)
+##    plt.plot(ylst,xlst)
+##    plt.title("chordlength")
+##
+##    plt.subplot(3,1,2)
+##    plt.plot(ylst,xlst_centroid)
+##    plt.title("cg location from LE")
+##
+##    plt.subplot(3,1,3)
+##    plt.plot(ylst,dx_lst)
+##    plt.title("Offset")
+##    
+##    plt.show()
 
     # normal force
+    L_lst = Llst #Cllst * q * xlst
+    D_lst = Llst #Cdlst * q * xlst
     N_lst = L_lst * np.cos(alpha) + D_lst * np.sin(alpha)
     #N_lst = Cn_lst * xlst * q_lst
+
+##    plt.subplot(4,1,1)
+##    plt.plot(ylst,Cllst)
+##    plt.title("cl")
+##
+##    plt.subplot(4,1,2)
+##    plt.plot(ylst,L_lst)
+##    plt.title("lift")
+##
+##    plt.subplot(4,1,3)
+##    plt.plot(ylst,Cdlst)
+##    plt.title("Cd")
+##
+##    plt.subplot(4,1,4)
+##    plt.plot(ylst,D_lst)
+##    plt.title("Drag")
+##    plt.show()
 
 
     #resultant moment due to aerodynamic normal force
     Tlst_ad = N_lst * dx_lst
+
+    plt.plot(ylst,Tlst_ad)
+    plt.show()
 
     # engine weight and thrust
     m_eng = 3448 + 393.0809081 #one engine and one nacelle
@@ -114,30 +146,21 @@ def torsion(xlst, alpha, L_lst, D_lst, ylst, CG_xList, CG_zList):
 
     #everything together
     delta_y = (max(ylst)-min(ylst))/len(ylst)
-    #T_lst = np.cumsum(Tlst_ad) * delta_y + T_eng * np.heaviside(ylst-y_eng,1) # add internal moment ?
-    T_lst = Tlst_ad + T_eng * np.heaviside(ylst-y_eng,1) #experiment without integration . 
+
+    T_lst = sp.integrate.cumtrapz( Tlst_ad , ylst, initial=0) + T_eng * np.heaviside(ylst-y_eng,1) #experiment without integration .
+    T_0 = sum(delta_y * Tlst_ad) + T_eng 
+    T_lst = T_lst - T_0
+    print(T_eng)
+
+    print(T_0)
 
     return T_lst
 
-T_distr, Nlst, T_ad, dxlist = torsion(xlst_0, 0, Llst_0, Dlst_0, ylst_0, CG_xList, CG_zList)
 
+T_distr = torsion(xlst_0, 0, Llst_0, Dlst_0, ylst_0, CG_xList, CG_zList)
 
-plt.subplot(4,1,1)
 plt.plot(ylst_0,T_distr)
 plt.title(" total Torsion distribution")
-
-plt.subplot(4,1,2)
-plt.plot(ylst_0,Nlst)
-plt.title("Spanwise normal force")
-
-plt.subplot(4,1,3)
-plt.plot(ylst_0,T_ad)
-plt.title("Torsion due to ad forces spanwise")
-
-plt.subplot(4,1,4)
-plt.plot(ylst_0, dxlist)
-plt.title("Spanwise momentarm") 
-
 
 plt.show() 
 
