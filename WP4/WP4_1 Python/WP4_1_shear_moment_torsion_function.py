@@ -145,24 +145,21 @@ def torsion(xlst, alpha, Llst, Dlst, ylst, CG_xList, CG_zList):
     delta_y = (max(ylst)-min(ylst))/len(ylst)
 
     T_lst = Tlst_ad + T_eng * np.heaviside(ylst-y_eng,1) #experiment without integration .
-    T_0 = sp.integrate.trapz(Tlst_ad,ylst) + T_eng 
+    T_0 = sum(delta_y * Tlst_ad) + T_eng 
     T_lst_shift = T_lst
     print(T_eng)
 
     print(T_0)
 
-    return T_lst_shift, N_lst, Tlst_ad, dx_lst
+    return T_lst
 
 
 T_distr = torsion(xlst_0, 0, Llst_0, Dlst_0, ylst_0, CG_xList, CG_zList)
 
 
-#testing #works
-'''
 plt.subplot(4,1,1)
 plt.plot(ylst_0,T_distr)
 plt.title(" total Torsion distribution")
-
 
 plt.subplot(4,1,2)
 plt.plot(ylst_0,Nlst)
@@ -178,4 +175,18 @@ plt.title("Spanwise momentarm")
 
 
 plt.show() 
-'''
+
+
+
+    
+
+
+    
+
+
+ 
+
+
+
+
+
