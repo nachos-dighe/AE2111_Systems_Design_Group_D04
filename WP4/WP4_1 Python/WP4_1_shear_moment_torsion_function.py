@@ -146,7 +146,7 @@ def torsion(xlst, alpha, Llst, Dlst, ylst, CG_xList, CG_zList):
 
     T_lst = Tlst_ad + T_eng * np.heaviside(ylst-y_eng,1) #experiment without integration .
     T_0 = sum(delta_y * Tlst_ad) + T_eng 
-    T_lst_shift = T_lst
+    T_lst = T_lst - T_0
     print(T_eng)
 
     print(T_0)
