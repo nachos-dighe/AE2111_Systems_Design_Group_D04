@@ -5,6 +5,13 @@ from scipy import interpolate
 from scipy.integrate import simps, cumtrapz
 #exec(open("Aircraft.py").read())
 
+#dynamic pressure and FLIGHT CONDITIONS
+v_cruise = 243 #this may change depending on critical loading case
+rho_cruise = 0.3678 #this may change depending on critical loading case
+q_cruise = 0.5*rho_cruise*v_cruise**2
+
+
+
 
 #print(Wingspan) #testing works, but find a better implementation method. Ignore use of parametric python file for now.
 
@@ -52,19 +59,10 @@ def interpolation(xlst_init,ylst_init,Cllst_init, Cdlst_init, Cmlst_init):
     xlst = x_interp(ylst)   
     return(xlst,ylst,Cllst, Cdlst, Cmlst)
 
-#dynamic pressure 
-v_cruise = 243.13 #this may change depending on critical loading case
-rho_cruise = 0.37956 #this may change depending on critical loading case
-q_cruise = 0.5*rho_cruise*v_cruise**2
 
 #aerodynamics loads (dimensional)
 def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     g = 9.80665
-    
-    #dynamic pressure 
-    v_cruise = 243.13 #this may change depending on critical loading case
-    rho_cruise = 0.37956 #this may change depending on critical loading case
-    q_cruise = 0.5*rho_cruise*v_cruise**2
     
     #wing
     taper = 0.4
@@ -77,6 +75,7 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     W_fuel_half_wing = 0.3*W_fuel_tot
     W_fuel_root = 2*W_fuel_half_wing/((1+taper*0.55)*b*0.275)
     Wlst_fuel = W_fuel_root*(1+2/b*(taper-1)*ylst)
+    Wlst_fuel =0
     #Wlst_fuel = W_fuel_root*(1+2/y_fuel*(taper-1)*ylst) 
     
     #half-wing weight
@@ -151,7 +150,7 @@ def bending_moment(ylst,Vlst,Fzreslst):
     #testing #works
     #print(M_x_react, Fzres_tot, y_res, Mlst[-1], Mlst[0])
     return(BMlst)
-'''
+
 
 def torsion(ylst, xlst):
     #torsion is taken about c/4 (span axis of lift)
@@ -192,7 +191,7 @@ def torsion(ylst, xlst):
     #testing #works
     #print(TM_y_react, TM_eng, TMres_tot,TMlst[-1], TMlst[0])
     return(TMlst)
-
+'''
 
 #lists for aerodynamic coefficients (AOA=0, 10)
 xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = aero_coefficient(aero_data_AOA_0)
@@ -366,4 +365,5 @@ plt.show()
 #fig.tight_layout()
 #plt.show()
 
+#CONSTANT THAT ARE DEFINED GLOBALLY DO NOT NEED TO BE SEPARATELY IMPORTED IN TO FUNCTIONS!!!!!!!
 
