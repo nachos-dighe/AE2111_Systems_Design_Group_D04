@@ -67,7 +67,7 @@ def cg_calculation(dy):
         i = i + 1
         FracX = CG_x/CrList[j] # This are the relavtive positions of the CG comapred to the chord length
         FracZ = CG_z/CrList[j] # This are the relavtive positions of the CG comapred to the chord length
-        
+        print("X Location: ", FracX, "Z Location ", FracZ)
     return CG_xList, CG_zList, Cr
 
 CG_xList, CG_zList, Cr = cg_calculation(999)
