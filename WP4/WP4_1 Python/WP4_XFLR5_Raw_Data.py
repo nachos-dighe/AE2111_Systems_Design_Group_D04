@@ -29,7 +29,7 @@ def aero_coefficient(aero_data_AOA):
     
     #airfoil characteristics 
     Cm_airfoil = 8.42E-02
-    Cd_airfoil = 0.01 #form drag
+    Cd_airfoil = 0.01 #form drag for low AOA
     
     Cdlst_init = Cdlst_init + Cd_airfoil
     #print(Cdlst_init) #testing
@@ -52,12 +52,19 @@ def interpolation(xlst_init,ylst_init,Cllst_init, Cdlst_init, Cmlst_init):
     xlst = x_interp(ylst)   
     return(xlst,ylst,Cllst, Cdlst, Cmlst)
 
+#dynamic pressure 
+v_cruise = 243.13 #this may change depending on critical loading case
+rho_cruise = 0.37956 #this may change depending on critical loading case
+q_cruise = 0.5*rho_cruise*v_cruise**2
+
 #aerodynamics loads (dimensional)
 def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
+    g = 9.80665
+    
+    #dynamic pressure 
     v_cruise = 243.13 #this may change depending on critical loading case
     rho_cruise = 0.37956 #this may change depending on critical loading case
     q_cruise = 0.5*rho_cruise*v_cruise**2
-    g = 9.80665
     
     #wing
     taper = 0.4
@@ -89,7 +96,7 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
 
     #total aerodynamic loads
     Ltot = np.sum(Llst*delta_y)
-    Dtot = np.sum(Dlst)
+    Dtot = np.sum(Dlst*delta_y)
     Mtot = np.sum(Mlst*delta_y)
     
     #distributed load along span (coordinate system: downward) [N/m], point forces not included yet!
@@ -145,7 +152,7 @@ def bending_moment(ylst,Vlst,Fzreslst):
     #print(M_x_react, Fzres_tot, y_res, Mlst[-1], Mlst[0])
     return(BMlst)
 '''
-'''
+
 def torsion(ylst, xlst):
     #torsion is taken about c/4 (span axis of lift)
     #torsion along span-axis, at c/4, independent of design condition (depend only on thrust setting)
@@ -181,16 +188,22 @@ def torsion(ylst, xlst):
     
     #torsional moment array-cumtrapz(TMreslst,initial=0, dx=delta_y)+
     TMlst = TM_y_react*np.heaviside(ylst,1)-TMreslst- TM_eng*np.heaviside(ylst-y_eng,1)
+    plt.plot(ylst,  TMlst)
     #testing #works
     #print(TM_y_react, TM_eng, TMres_tot,TMlst[-1], TMlst[0])
     return(TMlst)
-'''
+
 
 #lists for aerodynamic coefficients (AOA=0, 10)
 xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = aero_coefficient(aero_data_AOA_0)
 xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = aero_coefficient(aero_data_AOA_10)
 
-print(Cdlst_0, Cdlst_10)
+#add form drag
+Cd_0_form = 0.01
+Cd_10_form = 0.02
+Cdlst_0 += Cd_0_form
+Cdlst_0 += Cd_10_form
+
 #lists for aerodynamic loads (AOA=0, 10)
 Llst_0,Dlst_0,Mlst_0, Fzreslst_0,Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
 Llst_10,Dlst_10,Mlst_10, Fzreslst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
@@ -212,7 +225,7 @@ Cltot_10 = 1.324255925
 #obtain design angle of attack
 Cllst_des =  Cllst_0 + (Cltot_des-Cltot_0)/(Cltot_10-Cltot_0)*(Cllst_10-Cllst_0)
 alpha_des = np.arcsin((np.sum(Cllst_des)-np.sum(Cllst_0))/(np.sum(Cllst_10)-np.sum(Cllst_0))*np.sin(np.deg2rad(10)))
-Cdlst_des = alpha_des/(10-0)*(Cdlst_10-Cdlst_0)
+Cdlst_des = alpha_des/(10-0)*(Cdlst_10-Cdlst_0) +Cd_0_form #added form drag here
 Cmlst_des = alpha_des/(10-0)*(Cmlst_10-Cmlst_0)
 #print("Design angle of attack is", np.rad2deg(alpha_des)) #testing works
 
@@ -222,6 +235,7 @@ Cmlst_des = alpha_des/(10-0)*(Cmlst_10-Cmlst_0)
 #critical load factors
 N_z_positive = 2.5  #change later #done
 N_z_negative = -1  #change later #done
+N_z_ult = 1.5 #ultimate factor
 
 #lift coefficient during critical load cases
 Cltot_des_positive = N_z_positive*Cltot_des
@@ -248,15 +262,13 @@ wzresdes_interp = sp.interpolate.interp1d(ylst_0,Fzreslst_des, kind = "cubic", f
 
 
 #aerodynamic plots: design and critical conditions (uncomment)
-'''
+
 aero_plots(ylst_0, Llst_des, Dlst_des, Mlst_des, Fzreslst_des, Ltot_des, Dtot_des, Mtot_des)
 aero_plots(ylst_0, Llst_poscrit,Dlst_poscrit,Mlst_poscrit, Fzreslst_poscrit,Ltot_poscrit, Dtot_poscrit, Mtot_poscrit)
 aero_plots(ylst_0, Llst_negcrit,Dlst_negcrit,Mlst_negcrit, Fzreslst_negcrit,Ltot_negcrit, Dtot_negcrit, Mtot_negcrit)
 
-'''
 
-print(Llst_0[0])
-
+#TMdes = torsion(ylst_0, xlst_0)
 
 
 

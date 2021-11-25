@@ -1,4 +1,6 @@
 #Defining the functions for returning the deflection
+import imp
+WP4_XFLR5_Raw_Data = imp.load_source('WP4_XFLR5_Raw_Data','C:\Users\LEMVo\OneDrive\Documenten\LR\AE2111_Systems_Design_Group_D04\WP4\WP4_1 Python\WP4_XFLR5_Raw_Data.py')
 from WP4_XFLR5_Raw_Data import ylst_0
 import scipy.integrate as sp
 import numpy as np
