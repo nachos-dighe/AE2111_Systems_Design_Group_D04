@@ -26,7 +26,7 @@ import math
 
 def Ixx(DeltaX,beta,alpha,x,z,b):
     
-    Ixx1  =((((DeltaX)**3)*((sin(beta))**2))/(12*((cos(beta))**3)))+((DeltaX)/cos(beta))*(-z+((DeltaX * tan(beta))/2))**2 #lower left angled profile
+    Ixx1  =((((DeltaX)**3)*((sin(beta))**2))/(12*((cos(beta))**3)))+((DeltaX)/cos(beta))*((-z)+((DeltaX * tan(beta))/2))**2 #lower left angled profile
     
     Ixx2 = ((((DeltaX)**3)*((sin((pi/2)-alpha))**2))/(12*((cos(alpha))**3)))+(DeltaX/(cos(alpha)))*((-DeltaX*tan(beta))-b-((DeltaX*tan(alpha))/2)+z)**2 #upper right angled profile
 
@@ -34,7 +34,7 @@ def Ixx(DeltaX,beta,alpha,x,z,b):
 
     Ixx4 = 1/12 * b**3 + b*(DeltaX*tan(beta)+(b/2)-z)**2 #vertical profile on the right
 
-    Ixx = Ixx1+Ixx2+Ixx3+Ixx4
+    Ixx = Ixx1 + Ixx2 + Ixx3 + Ixx4
 
     return Ixx
 

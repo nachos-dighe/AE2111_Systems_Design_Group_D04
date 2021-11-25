@@ -40,8 +40,8 @@ while (dT * i)<= Span/2 :
     i = i + 1
 
 while (dT * j)<= Span/2 :
-    Ix_total = MOI.Ixx(DeltaX[j],beta, alpha,CG_XList[j], CG_ZList, b[j])
-    Iz_total = MOI.Izz(DeltaX[j],beta, alpha,CG_XList[j], CG_ZList, b[j])
+    Ix_total = MOI.Ixx(DeltaX[j],beta, alpha,CG_XList[j], CG_ZList[j], b[j])
+    Iz_total = MOI.Izz(DeltaX[j],beta, alpha,CG_XList[j], CG_ZList[j], b[j])
     
     Ix_totalList.append(Ix_total)
     Iz_totalList.append(Iz_total)
