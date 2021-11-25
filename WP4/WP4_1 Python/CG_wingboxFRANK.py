@@ -38,8 +38,7 @@ def cg_calculation(dy):
     Span = 24.64 # [m] Span
     i = 0
     dT = ( Span / 2 ) / dy
-    alpha, beta, b2, DeltaX, Cr, y = Lengths.WingboxDimensions(RCr, TCr, Span, dT)
-    print(len(DeltaX))
+    alpha, beta, b2, DeltaX, Cr, y, CrList = Lengths.WingboxDimensions(RCr, TCr, Span, dT)
     while (dT * i ) <= Span/2 :
         j = i - 1
         c = DeltaX[j] * tan(alpha)
@@ -66,13 +65,12 @@ def cg_calculation(dy):
         CG_xList.append(CG_x)
         CG_zList.append(CG_z)
         i = i + 1
-
+        FracX = CG_x/CrList[j] # This are the relavtive positions of the CG comapred to the chord length
+        FracZ = CG_z/CrList[j] # This are the relavtive positions of the CG comapred to the chord length
     return CG_xList, CG_zList, Cr
 
 CG_xList, CG_zList, Cr = cg_calculation(999)
 
-print(CG_xList, CG_zList, Cr)
-print(CG_xList[0])
 
 
 

@@ -117,8 +117,7 @@ def torsion(xlst, alpha, L_lst, D_lst, ylst, CG_xList, CG_zList):
     #T_lst = np.cumsum(Tlst_ad) * delta_y + T_eng * np.heaviside(ylst-y_eng,1) # add internal moment ?
     T_lst = Tlst_ad + T_eng * np.heaviside(ylst-y_eng,1) #experiment without integration . 
 
-    return T_lst, N_lst, Tlst_ad, dx_lst
-
+    return T_lst
 
 T_distr, Nlst, T_ad, dxlist = torsion(xlst_0, 0, Llst_0, Dlst_0, ylst_0, CG_xList, CG_zList)
 

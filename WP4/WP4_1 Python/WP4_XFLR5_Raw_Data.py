@@ -204,18 +204,14 @@ Cd_10_form = 0.02
 Cdlst_0 += Cd_0_form
 Cdlst_0 += Cd_10_form
 
+#interpolation of above aero coefficients (AOA=0, 10)
+xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = interpolation(xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
+xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = interpolation(xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
+
+
 #lists for aerodynamic loads (AOA=0, 10)
 Llst_0,Dlst_0,Mlst_0, Fzreslst_0,Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
 Llst_10,Dlst_10,Mlst_10, Fzreslst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
-
-#interpolation of above aero coefficients (AOA=0, 10)
-xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = interpolation(xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
-xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = interpolation(xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
-
-#interpolation of above aero coefficients (AOA=0, 10)
-xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = interpolation(xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
-xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = interpolation(xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
-
 
 #design lift coefficient distribution
 Cltot_des = 0.372976647
@@ -256,17 +252,22 @@ Llst_des,Dlst_des,Mlst_des, Fzreslst_des,Ltot_des, Dtot_des, Mtot_des = aero_loa
 Llst_poscrit,Dlst_poscrit,Mlst_poscrit, Fzreslst_poscrit,Ltot_poscrit, Dtot_poscrit, Mtot_poscrit = aero_loads(xlst_0, ylst_0,Cllst_des*N_z_positive, Cdlst_des, Cmlst_des) #positive critical load factor
 Llst_negcrit,Dlst_negcrit,Mlst_negcrit, Fzreslst_negcrit,Ltot_negcrit, Dtot_negcrit, Mtot_negcrit = aero_loads(xlst_0, ylst_0,Cllst_des*N_z_negative, Cdlst_des, Cmlst_des)  #negatve critical load factor
 
+
+#adjust the drag (currently only multiplied by laod factor) FIND A BETTER IMPLEMENTATION USING CD/CL CURVE FITTING
+Dlst_poscrit  *= N_z_positive    
+Dlst_negcrit  *= N_z_negative    
+
 #interpolation of load distribution function
 wzresdes_interp = sp.interpolate.interp1d(ylst_0,Fzreslst_des, kind = "cubic", fill_value="extrapolate")
 
 
 
 #aerodynamic plots: design and critical conditions (uncomment)
-
+'''
 aero_plots(ylst_0, Llst_des, Dlst_des, Mlst_des, Fzreslst_des, Ltot_des, Dtot_des, Mtot_des)
 aero_plots(ylst_0, Llst_poscrit,Dlst_poscrit,Mlst_poscrit, Fzreslst_poscrit,Ltot_poscrit, Dtot_poscrit, Mtot_poscrit)
 aero_plots(ylst_0, Llst_negcrit,Dlst_negcrit,Mlst_negcrit, Fzreslst_negcrit,Ltot_negcrit, Dtot_negcrit, Mtot_negcrit)
-
+'''
 
 #TMdes = torsion(ylst_0, xlst_0)
 

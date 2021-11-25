@@ -30,6 +30,8 @@ import CG_wingboxFRANK as CG
 import Moment_of_Inertia as MOI
 import Stringers_MOI as Stringer_MOI
 
+N_Stringers = input(print("How many stringers are we using? " ))
+
 
 alpha, beta, b, DeltaX, Cr, y = Lengths.WingboxDimensions(RCr, TCr, Span, dT)
 
@@ -55,10 +57,15 @@ while (dT * j)<= Span/2 :
 plt.subplot(211)
 plt.plot(SpanTab, Ix_totalList)
 plt.title("The moment of inertia of the X against the span")
+plt.xlabel("The y coordinate of half a wing [m]")
+plt.ylabel("The second moment of area for in the x direction [m^4] ")
+
 
 plt.subplot(212)
 plt.plot(SpanTab, Iz_totalList)
 plt.title("The moment of inertia of the Z against the span")
+plt.xlabel("The y coordinate of half a wing [m]")
+plt.ylabel("The second moment of area for in the z direction [m^4] ")
 
 plt.show()
 
