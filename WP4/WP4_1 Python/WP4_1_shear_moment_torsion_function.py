@@ -12,6 +12,10 @@ from CG_wingboxFRANK import CG_xList, CG_zList
 #some constants
 g = 9.80665
 b = 24.63
+Sw_ca = np.arctan( np.tan (25 / 180 * np.pi ) -  ( 0.468 * ( 2 * 4.41 ) / b ) * ( 1 - 0.4 ) )
+Sw_ca_deg = Sw_ca * 180 / np.pi
+print(Sw_ca_deg) 
+                      
 #fuel weight
 W_fuel_tot =  12964*g
 #based on ref data, approx. 30% of fuel weight is stored in wing (from root to 0.55/2 spar: consider inner tank only)
