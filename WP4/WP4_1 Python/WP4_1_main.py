@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from WP4_XFLR5_Raw_Data import xlst_0, ylst_0, Llst_des, Llst_negcrit, Llst_poscrit, Dlst_des, Dlst_negcrit, Dlst_poscrit, Fzreslst_des, Fzreslst_poscrit, Fzreslst_negcrit,Ltot_des, Ltot_poscrit, Ltot_negcrit, alpha_des, alpha_des_negative, alpha_des_positive
 from CG_wingboxFRANK import CG_xList, CG_zList
 
-
 #shear
 Vres_des=shear(ylst_0,Llst_des, Fzreslst_des, Ltot_des)
 Vres_poscrit=shear(ylst_0,Llst_poscrit, Fzreslst_poscrit, Ltot_poscrit)
@@ -21,7 +20,7 @@ TMres_poscrit=torsion(xlst_0, alpha_des_positive, Llst_poscrit, Dlst_poscrit, yl
 TMres_negcrit=torsion(xlst_0, alpha_des_negative, Llst_negcrit, Dlst_negcrit, ylst_0, CG_xList, CG_zList)
 
 
-def internal_plots(ylst,Vlst, BMlst, TMlst):
+def internal_plots(ylst,Vlst, BMlst, TMlst, title):
     
     #print('Total lift is', Ltot, ' ' ,'Total drag is', Dtot, ' ' , 'Total moment is', Mtot, ' ' ,sep ='\n')
 
@@ -32,7 +31,7 @@ def internal_plots(ylst,Vlst, BMlst, TMlst):
     axs[1].set_title('Bending Moment')
     axs[2].plot(ylst,TMlst)
     axs[2].set_title('Torsional Moment')
-    fig.suptitle('Internal Force Digrams', fontsize=16)
+    fig.suptitle('Internal Force Digrams: '+title, fontsize=16)
     fig.tight_layout()
     plt.show()
     return()
@@ -41,8 +40,8 @@ def internal_plots(ylst,Vlst, BMlst, TMlst):
 #internal load plots: design and critical conditions (uncomment)
 
 #internal_plots(ylst_0,Vres_des, BMres_des, TMres_des)
-internal_plots(ylst_0, Vres_poscrit,BMres_poscrit,TMres_poscrit)
-internal_plots(ylst_0, Vres_negcrit,BMres_negcrit,TMres_negcrit)
+internal_plots(ylst_0, Vres_poscrit,BMres_poscrit,TMres_poscrit,'Positive Critical load Factor')
+internal_plots(ylst_0, Vres_negcrit,BMres_negcrit,TMres_negcrit, 'Negative Critical load Factor')
 
 
 

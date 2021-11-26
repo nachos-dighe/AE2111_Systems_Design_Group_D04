@@ -4,22 +4,37 @@ import matplotlib.pyplot as plt
 from scipy import interpolate
 from scipy.integrate import simps, cumtrapz
 #exec(open("Aircraft.py").read())
+#print(Wingspan) #testing works, but find a better implementation method. Ignore use of parametric python file for now.
+
+#constants
+g = 9.80665
+#wing
+b = 24.63
+taper = 0.4
+S_wing = 76.29
 
 #sweep angle calculation
-b = 24.63
 Sw_ca = np.arctan( np.tan (25 / 180 * np.pi ) -  ( 0.468 * ( 2 * 4.41 ) / b ) * ( 1 - 0.4 ) )
 
-#dynamic pressure and FLIGHT CONDITIONS
-v_cruise = 243 #this may change depending on critical loading case
-rho_cruise = 0.3678 #this may change depending on critical loading case
+#aircraft weight
+W_pl = 9800*g
+W_oe = 20175*g
+W_mto = 33139*g
+W_f = W_mto - W_oe-W_pl
+W_ac_lst = [W_oe, W_mto, W_oe+W_pl]
+
+
+###----HARD-CODE------ ### (START)
+W_ac = W_ac_lst[1] #(0,1,2) #aircraft weight #FIXED
+is_fuel = True #(True, False) #fuel in wing boolean #FIXED
+v_cruise = 200 #velocity #this may change depending on critical loading case #FIXED: LOWEST speed that gives 2.5
+rho_cruise =1.225  #density #this may change depending on critical loading case
+###----HARD-CODE------ ### (END)
+
+
+#dynamic pressure
 q_cruise = 0.5 * rho_cruise * v_cruise ** 2 
 #q_cruise = 0.5 * rho_cruise * v_cruise ** 2 * np.cos( Sw_ca )  #sweep does not affect dynamic pressure
-
-#fuel in wing boolean:
-is_fuel = True
-
-
-#print(Wingspan) #testing works, but find a better implementation method. Ignore use of parametric python file for now.
 
 #import XFLR5 data for AOA 0 and 10 deg
 aero_data_AOA_0 = np.genfromtxt('MainWing_a=0.00_v=10.00ms.txt', dtype = float, skip_header=2)
@@ -67,20 +82,14 @@ def interpolation(xlst_init,ylst_init,Cllst_init, Cdlst_init, Cmlst_init):
 
 
 #aerodynamics loads (dimensional)
-def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
-    g = 9.80665
+def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):    
     
-    #wing
-    taper = 0.4
-    b = 24.63
-    
-    #fuel weight
-    W_fuel_tot =  12964*g
     #based on ref data, approx. 30% of fuel weight is stored in wing (from root to 0.55/2 spar: consider inner tank only)
     y_fuel = b /2*0.55
     
+    #fuel weight
     if is_fuel:
-        W_fuel_half_wing = 0.3*W_fuel_tot
+        W_fuel_half_wing = 0.3*W_f
     else:
         W_fuel_half_wing = 0
         
@@ -208,23 +217,18 @@ def torsion(ylst, xlst):
 xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = aero_coefficient(aero_data_AOA_0)
 xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = aero_coefficient(aero_data_AOA_10)
 
+#interpolation of above aero coefficients (AOA=0, 10)
+xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = interpolation(xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
+xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = interpolation(xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
+
 #add form drag
 Cd_0_form = 0.01
 Cd_10_form = 0.02
 Cdlst_0 += Cd_0_form
 Cdlst_0 += Cd_10_form
 
-#interpolation of above aero coefficients (AOA=0, 10)
-xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0 = interpolation(xlst_0,ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
-xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10 = interpolation(xlst_10,ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
-
-
-#lists for aerodynamic loads (AOA=0, 10)
-Llst_0,Dlst_0,Mlst_0, Fzreslst_0,Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
-Llst_10,Dlst_10,Mlst_10, Fzreslst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
-
 #design lift coefficient distribution
-Cltot_des = 0.372976647
+Cltot_des = 1.1*W_ac/(q_cruise*S_wing)#0.372976647 #not a constant!
 Cltot_0 = 0.264851185
 Cltot_10 = 1.324255925
 
@@ -256,6 +260,10 @@ alpha_des_negative = np.arcsin((np.sum(Cllst_des*N_z_negative)-np.sum(Cllst_0))/
 
 
 #print(np.rad2deg(alpha_des_positive), np.rad2deg(alpha_des_negative)) #testing
+
+#lists for aerodynamic loads (AOA=0, 10)
+Llst_0,Dlst_0,Mlst_0, Fzreslst_0,Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
+Llst_10,Dlst_10,Mlst_10, Fzreslst_10, Ltot_10, Dtot_10, Mtot_10 = aero_loads(xlst_10, ylst_10,Cllst_10, Cdlst_10, Cmlst_10)
 
 #lists for aerodynamic loads (desgin point)
 Llst_des,Dlst_des,Mlst_des, Fzreslst_des,Ltot_des, Dtot_des, Mtot_des = aero_loads(xlst_0, ylst_0,Cllst_des, Cdlst_des, Cmlst_des)
