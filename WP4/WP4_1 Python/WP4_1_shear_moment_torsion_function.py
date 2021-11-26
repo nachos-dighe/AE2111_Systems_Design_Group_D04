@@ -14,7 +14,6 @@ g = 9.80665
 b = 24.63
 Sw_ca = np.arctan( np.tan (25 / 180 * np.pi ) -  ( 0.468 * ( 2 * 4.41 ) / b ) * ( 1 - 0.4 ) )
 b_sw = b / np.cos(Sw_ca) #span value in rotated CS
-#chords = xlist * np.cos(Sw_ca) #chordlengths in new CS 
  
                       
 #fuel weight
@@ -78,9 +77,9 @@ Mres_des = moment( Vres_des , ylst_0 )
 
 #torsion function 
 def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
-    xlst = xlst * np.cos( Sw_ac )
-    CG_xList = CG_xList * np.cos( Sw_ac )
-    ylst = ylst / np.cos ( Sw_ac )
+    xlst = xlst * np.cos( Sw_ca )
+    CG_xList = CG_xList * np.cos( Sw_ca )
+    ylst = ylst / np.cos ( Sw_ca )
     
     # AOA
     alpha = alpha
@@ -153,11 +152,11 @@ def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
     # engine offsets from cg 
     x_eng = 2.5 * np.cos( Sw_ca ) # [m] #measured from half chord 
     z_eng = 1.125 # [m]    # measured from chord downwards 
-    y_eng = 0.35*b/2
-    x_half = xlst[350] / 2 
+    y_eng = 0.35*b/2 - 2.5 * np.sin( Sw_ca ) 
+    x_half = xlst[285] / 2 
 
-    dx_eng = x_eng - x_half + 0.2 * xlst[350] + xlst_centroid[350] # distance between engine and centroid in x direction 
-    dz_eng = z_eng - 0.0285 * xlst[350] + zlst_centroid[350] # distance between engine and centroid in z direction
+    dx_eng = x_eng - x_half + 0.2 * xlst[285] + xlst_centroid[285] # distance between engine and centroid in x direction 
+    dz_eng = z_eng - 0.0285 * xlst[285] + zlst_centroid[285] # distance between engine and centroid in z direction
 
     #moments due to engine
     T_w = ( -1 ) * W_eng * dx_eng
@@ -167,7 +166,7 @@ def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
     #everything together
     delta_y = (max(ylst)-min(ylst))/len(ylst)
 
-    T_lst = sp.integrate.cumtrapz( Tlst_ad , ylst, initial=0) + T_eng * np.heaviside(ylst-y_eng,1) #experiment without integration .
+    T_lst = sp.integrate.cumtrapz( Tlst_ad , ylst, initial=0) + T_eng * np.heaviside(ylst-y_eng,1)
     T_0 = sum(delta_y * Tlst_ad) + T_eng 
     T_lst = T_lst - T_0
     print(T_eng)
