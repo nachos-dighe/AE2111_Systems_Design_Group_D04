@@ -17,7 +17,11 @@ b_sw = b / np.cos(Sw_ca) #span value in rotated CS
  
                       
 #fuel weight
-W_fuel_tot =  12964*g
+m_pl = 9800
+m_oe = 20175
+m_mto = 33139
+m_f = m_mto - m_oe-m_pl
+W_fuel_tot =  m_f*g
 #based on ref data, approx. 30% of fuel weight is stored in wing (from root to 0.55/2 spar: consider inner tank only)
 y_fuel = b_sw /2*0.55
 if is_fuel:
@@ -177,12 +181,12 @@ def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
 
 
 T_distr = torsion(xlst_0, 0, Llst_0, Dlst_0, ylst_0, CG_xList, CG_zList)
-
+'''
 plt.plot(ylst_0,T_distr)
 plt.title(" total Torsion distribution")
 
 plt.show() 
-
+'''
 
 
     
