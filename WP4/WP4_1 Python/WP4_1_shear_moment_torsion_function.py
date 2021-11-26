@@ -151,7 +151,7 @@ def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
     Thrust = 154520 #[N]
 
     # engine offsets from cg 
-    x_eng = 2.5 # [m] #measured from half chord 
+    x_eng = 2.5 * np.cos( Sw_ca ) # [m] #measured from half chord 
     z_eng = 1.125 # [m]    # measured from chord downwards 
     y_eng = 0.35*b/2
     x_half = xlst[350] / 2 
