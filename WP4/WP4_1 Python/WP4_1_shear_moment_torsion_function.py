@@ -13,13 +13,14 @@ from CG_wingboxFRANK import CG_xList, CG_zList
 g = 9.80665
 b = 24.63
 Sw_ca = np.arctan( np.tan (25 / 180 * np.pi ) -  ( 0.468 * ( 2 * 4.41 ) / b ) * ( 1 - 0.4 ) )
-Sw_ca_deg = Sw_ca * 180 / np.pi
-print(Sw_ca_deg) 
+b_sw = b / np.cos(Sw_ca) #span value in rotated CS
+#chords = xlist * np.cos(Sw_ca) #chordlengths in new CS 
+ 
                       
 #fuel weight
 W_fuel_tot =  12964*g
 #based on ref data, approx. 30% of fuel weight is stored in wing (from root to 0.55/2 spar: consider inner tank only)
-y_fuel = b /2*0.55
+y_fuel = b_sw /2*0.55
 if is_fuel:
     W_fuel_half_wing = 0.3*W_fuel_tot
 else:
@@ -27,31 +28,33 @@ else:
 
 
 
-def shear(ylst,Llst, Fzreslst, Ltot):
+def shear( ylst , Llst , Fzreslst , Ltot ):
+    ylst = ylst / np.cos(Sw_ca) #correct span for sweep angle
     #wing
     W_wing =  40209.08
     W_half_wing = W_wing/2
     
     #engine weight
     m_eng = 1724 + 393.0809081 #one engine and one nacelle
-    W_eng = m_eng*g
-    y_eng = 0.35*b/2
+    W_eng = m_eng * g
+    y_eng = 0.35 * b_sw / 2 
     
     #reaction force at wing root
-    delta_y = (max(ylst)-min(ylst))/len(ylst)
-    F_y_react = Ltot-W_half_wing-W_eng-W_fuel_half_wing
-    Vlst = -F_y_react*np.heaviside(ylst,1)-W_eng*np.heaviside(ylst-y_eng,1)+np.cumsum(Fzreslst)*delta_y
-
+    delta_y = ( max( ylst ) - min( ylst ) ) / len( ylst )
+    F_y_react = Ltot - W_half_wing - W_eng - W_fuel_half_wing
+    Vlst = - F_y_react * np.heaviside( ylst , 1 ) - W_eng * np.heaviside( ylst - y_eng , 1 ) + np.cumsum( Fzreslst ) * delta_y
+ 
     #testing #works
     #print('Reaction force is', F_y_react, ' ' ,'Total distributed load is', np.sum(Fzreslst)*delta_y, ' ' , 'Engine weight is', W_eng, ' ' ,sep ='\n')
     #print(Vlst[-1]) #should be close to 0
     return(Vlst)    
 
 # call function 
-Vres_des=shear(ylst_0, Llst_des, Fzreslst_des, Ltot_des)
+Vres_des = shear( ylst_0 , Llst_des , Fzreslst_des , Ltot_des )
 
 # bending moment distribution 
-def moment(Vlst,ylst):
+def moment( Vlst , ylst ):
+    ylst = ylst / np.cos( Sw_ca ) 
 
     M_0 = sp.integrate.trapz(Vlst,ylst) #reaction moment
     Mlst = sp.integrate.cumtrapz( Vlst , ylst, initial=0) - M_0 #points of integrated function
@@ -67,18 +70,21 @@ def moment(Vlst,ylst):
     return Mlst
 
 # call function 
-Mres_des=moment(Vres_des,ylst_0)
+Mres_des = moment( Vres_des , ylst_0 )
 
-# checking of tip and root values 
-print("reaction moment:", Mres_des[0])
-print("moment at tip:",Mres_des[-1])
+### checking of tip and root values 
+##print("reaction moment:", Mres_des[0])
+##print("moment at tip:",Mres_des[-1])
 
 #torsion function 
-def torsion(xlst, alpha, Llst, Dlst, ylst, CG_xList, CG_zList):
+def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
+    xlst = xlst * np.cos( Sw_ac )
+    CG_xList = CG_xList * np.cos( Sw_ac )
+    ylst = ylst / np.cos ( Sw_ac )
+    
     # AOA
     alpha = alpha
     q = q_cruise
-    b = 24.63 
 
     # location ac
     ac_lstx = ( 1 / 4 ) * xlst  #okay like this 
@@ -92,7 +98,7 @@ def torsion(xlst, alpha, Llst, Dlst, ylst, CG_xList, CG_zList):
 
     # offset   FINE
     
-    dx_lst = xlst_centroid - ac_lstx # - ac_lstx
+    dx_lst = xlst_centroid - ac_lstx  
     #dx_lst = np.flip(dx_lst)
 
 ##    plt.subplot(3,1,1)
@@ -113,7 +119,6 @@ def torsion(xlst, alpha, Llst, Dlst, ylst, CG_xList, CG_zList):
     L_lst = Llst #Cllst * q * xlst
     D_lst = Llst #Cdlst * q * xlst
     N_lst = L_lst * np.cos(alpha) + D_lst * np.sin(alpha)
-    #N_lst = Cn_lst * xlst * q_lst
 
 ##    plt.subplot(4,1,1)
 ##    plt.plot(ylst,Cllst)
@@ -136,13 +141,13 @@ def torsion(xlst, alpha, Llst, Dlst, ylst, CG_xList, CG_zList):
     #resultant moment due to aerodynamic normal force
     Tlst_ad = N_lst * dx_lst
 
-    plt.plot(ylst,Tlst_ad)
-    plt.show()
+##    plt.plot( ylst , Tlst_ad )
+##    plt.show()
 
     # engine weight and thrust
     m_eng = 3448 + 393.0809081 #one engine and one nacelle
     g = 9.80665
-    W_eng = m_eng*g
+    W_eng = m_eng * g
     Thrust = 154520 #[N]
 
     # engine offsets from cg 
