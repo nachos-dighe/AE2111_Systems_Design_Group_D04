@@ -12,7 +12,8 @@ Sw_ca = np.arctan( np.tan (25 / 180 * np.pi ) -  ( 0.468 * ( 2 * 4.41 ) / b ) * 
 #dynamic pressure and FLIGHT CONDITIONS
 v_cruise = 243 #this may change depending on critical loading case
 rho_cruise = 0.3678 #this may change depending on critical loading case
-q_cruise = 0.5 * rho_cruise * v_cruise ** 2 * np.cos( Sw_ca ) 
+q_cruise = 0.5 * rho_cruise * v_cruise ** 2 
+#q_cruise = 0.5 * rho_cruise * v_cruise ** 2 * np.cos( Sw_ca )  #sweep does not affect dynamic pressure
 
 #fuel in wing boolean:
 is_fuel = True
