@@ -73,7 +73,12 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     W_fuel_tot =  12964*g
     #based on ref data, approx. 30% of fuel weight is stored in wing (from root to 0.55/2 spar: consider inner tank only)
     y_fuel = b /2*0.55
-    W_fuel_half_wing = 0.3*W_fuel_tot
+    
+    if is_fuel:
+        W_fuel_half_wing = 0.3*W_fuel_tot
+    else:
+        W_fuel_half_wing = 0
+        
     W_fuel_root = 2*W_fuel_half_wing/((1+taper*0.55)*b*0.275)
     Wlst_fuel = W_fuel_root*(1+2/b*(taper-1)*ylst)
     #Wlst_fuel =0 if not fuel in wing 
@@ -82,10 +87,7 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     #half-wing weight
     W_wing =  40209.08
     W_half_wing = W_wing/2
-    if is_fuel:
-        W_root = 2*W_wing/((1+taper)*b)
-    else:
-        W_root = 0
+    W_root = 2*W_wing/((1+taper)*b)
     Wlst = W_root*(1+2/b*(taper-1)*ylst) 
 
     #Prandtl-Glauert compressibility correction
