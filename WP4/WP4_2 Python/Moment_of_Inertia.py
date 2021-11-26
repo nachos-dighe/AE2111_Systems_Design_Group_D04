@@ -24,11 +24,11 @@ import math
 
 
 #Note: all of the section Ixx formulas are written without thickness as t will move to the opposite side of the equation when total Ixx is divided from Ixx_required
-def Ixx(DeltaX,beta,alpha,z,b,Ixx_required):
+def thickness_calculator(DeltaX,beta,alpha,z,b,Ixx_required):
     
     Ixx1  =((((DeltaX)**3)*((sin(beta))**2))/(12*((cos(beta))**3)))+((DeltaX)/cos(beta))*(-z+((DeltaX * tan(beta))/2))**2 #lower left angled profile
     
-    Ixx2 = ((((DeltaX)**3)*((sin((pi/2)-alpha))**2))/(12*((cos(alpha))**3)))+(DeltaX/(cos(alpha)))*((-DeltaX*tan(beta))-b-((DeltaX*tan(alpha))/2)+z)**2 #upper right angled profile
+    Ixx2 = ((((DeltaX)**3)*((sin((alpha))**2))/(12*((cos(alpha))**3)))+(DeltaX/(cos(alpha)))*((-DeltaX*tan(beta))-b-((DeltaX*tan(alpha))/2)+z)**2 #upper right angled profile
 
     Ixx3 = 1/12 * ((DeltaX*tan(beta)+b+DeltaX*tan(alpha))**3) +(DeltaX*tan(beta)+b+DeltaX*tan(alpha))*(z-((DeltaX*tan(beta)+b+DeltaX*tan(alpha))/2))**2 #vertical profile on the left
 
