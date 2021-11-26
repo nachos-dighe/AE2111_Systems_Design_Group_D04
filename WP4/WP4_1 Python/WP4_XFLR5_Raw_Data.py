@@ -5,10 +5,14 @@ from scipy import interpolate
 from scipy.integrate import simps, cumtrapz
 #exec(open("Aircraft.py").read())
 
+#sweep angle calculation
+b = 24.63
+Sw_ca = np.arctan( np.tan (25 / 180 * np.pi ) -  ( 0.468 * ( 2 * 4.41 ) / b ) * ( 1 - 0.4 ) )
+
 #dynamic pressure and FLIGHT CONDITIONS
 v_cruise = 243 #this may change depending on critical loading case
 rho_cruise = 0.3678 #this may change depending on critical loading case
-q_cruise = 0.5*rho_cruise*v_cruise**2
+q_cruise = 0.5 * rho_cruise * v_cruise ** 2 * np.cos( Sw_ca ) 
 
 #fuel in wing boolean:
 is_fuel = True
