@@ -19,7 +19,7 @@ def rotation(T_lst, J_lst, G, ylst):
 
 rot_lst = rotation(T_lst, J_lst, G, ylst0)
 ##print(rot_lst)
-
+##
 ##plt.plot(rot_lst, ylst0, 'rs-', label='Deflection')
 ##plt.axhline(0, color="black")
 ##plt.axvline(0, color="black")
