@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import scipy as sp
 from scipy import interpolate
 
+
 from math import *
 
 
@@ -25,6 +26,8 @@ SpanTab = []
 Ixtab = [] 
 Iytab = []
 
+import Deflection as Deflection
+import Rotationangle as RotAngle
 import Chord_Length as Lengths
 import CG_wingboxFRANK as CG
 import Moment_of_Inertia as MOI
