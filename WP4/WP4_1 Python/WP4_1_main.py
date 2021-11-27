@@ -1,5 +1,6 @@
 from WP4_1_shear_moment_torsion_function import shear,moment, torsion
 import matplotlib.pyplot as plt
+import numpy as np
 from WP4_XFLR5_Raw_Data import xlst_0, ylst_0, Llst_des, Llst_negcrit, Llst_poscrit, Dlst_des, Dlst_negcrit, Dlst_poscrit, Fzreslst_des, Fzreslst_poscrit, Fzreslst_negcrit,Ltot_des, Ltot_poscrit, Ltot_negcrit, alpha_des, alpha_des_negative, alpha_des_positive
 from CG_wingboxFRANK import CG_xList, CG_zList
 
@@ -41,9 +42,14 @@ def internal_plots(ylst,Vlst, BMlst, TMlst, title):
 
 #internal_plots(ylst_0,Vres_des, BMres_des, TMres_des)
 #internal_plots(ylst_0, Vres_poscrit,BMres_poscrit,TMres_poscrit,'Positive Critical load Factor')
-internal_plots(ylst_0, Vres_negcrit,BMres_negcrit,TMres_negcrit, 'Negative Critical load Factor')
+#internal_plots(ylst_0, Vres_negcrit,BMres_negcrit,TMres_negcrit, 'Negative Critical load Factor')
 
-
-
+#save crit loading list 3DO NOT RUN THIS!!!
+'''
+np.savetxt('Critical_Load_Torsion_Neg_Crit.txt', TMres_negcrit, delimiter='\\')
+np.savetxt('Critical_Load_Bending_Neg_Crit.txt', BMres_negcrit, delimiter='\\')
+np.savetxt('Critical_Load_Torsion_Pos_Crit.txt', TMres_poscrit, delimiter='\\')
+np.savetxt('Critical_Load_Bending_Pos_Crit.txt', BMres_poscrit, delimiter='\\')
+'''
 
 print('shear at tip: pos_crit ', Vres_poscrit[-1], '\n shear at tip: neg_crit',Vres_negcrit[-1])
