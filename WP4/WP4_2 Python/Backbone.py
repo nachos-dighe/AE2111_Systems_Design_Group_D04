@@ -21,6 +21,7 @@ CG_XList = []
 CG_ZList = []
 Ix_totalList = []
 Iz_totalList = []
+ylst = []
 
 SpanTab = []
 Ixtab = [] 
@@ -33,42 +34,46 @@ import CG_wingboxFRANK as CG
 import Moment_of_Inertia as MOI
 import Stringers_MOI as Stringer_MOI
 
-N_Stringers = input(print("How many stringers are we using? " ))
+nr_top = int(input("How many stringers are we using at the top? "))
+nr_bot = int(input("How many stringers are we using at the bottem? "))
 
+if nr_top and nr_bot !=0 :
+    L_s = int(input("What is the tichness ofthe stringers? "))
 
-alpha, beta, b, DeltaX, Cr, y = Lengths.WingboxDimensions(RCr, TCr, Span, dT)
+with open("ylstFRANK.dat", "r") as file :
+    ylstRAW = file.readlines()
+    
+for line in ylstRAW :
+    y = line.replace("\n", "")
+    ylst.append(y)
 
-while (dT * i)<= Span/2 :
+alpha, beta, b, DeltaX, Cr = Lengths.WingboxDimensions(RCr, TCr, Span, ylst) # All geometry is now defined togheter with ylst
+
+while (dT * i)<= Span/2 :  # Calculates the CG position in CG_XList and CG_XList
     CG_x, CG_z = CG.cg_calculation(alpha, beta, b[i], DeltaX[i])
     CG_XList.append(CG_x)
     CG_ZList.append(CG_z)
     i = i + 1
 
 while (dT * j)<= Span/2 :
-    Ix_total = MOI.Ixx(DeltaX[j],beta, alpha,CG_XList[j], CG_ZList[j], b[j])
-    Iz_total = MOI.Izz(DeltaX[j],beta, alpha,CG_XList[j], CG_ZList[j], b[j])
+    tMin, IXX = MOI.thickness_calculator(DeltaX[j],beta, alpha,CG_XList[j], CG_ZList[j], b[j])
     
-    Ix_totalList.append(Ix_total)
-    Iz_totalList.append(Iz_total)
-    SpanTab.append(dT * j)
+##    Ix_totalList.append(Ix_total)
+##    SpanTab.append(dT * j)
     j = j + 1
 
 
 
 
 
-plt.subplot(211)
-plt.plot(SpanTab, Ix_totalList)
-plt.title("The moment of inertia of the X against the span")
-plt.xlabel("The y coordinate of half a wing [m]")
-plt.ylabel("The second moment of area for in the x direction [m^4] ")
+##plt.subplot(111)
+##plt.plot(SpanTab, Ix_totalList)
+##plt.title("The moment of inertia of the X against the span")
+##plt.xlabel("The y coordinate of half a wing [m]")
+##plt.ylabel("The second moment of area for in the x direction [m^4] ")
 
 
-plt.subplot(212)
-plt.plot(SpanTab, Iz_totalList)
-plt.title("The moment of inertia of the Z against the span")
-plt.xlabel("The y coordinate of half a wing [m]")
-plt.ylabel("The second moment of area for in the z direction [m^4] ")
+
 
 plt.show()
 

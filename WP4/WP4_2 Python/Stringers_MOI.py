@@ -63,7 +63,7 @@ def feasibility_stringers(s_top, s_bot, nr_top, nr_bot, L_s):
         print("design is feasible stringer overlap wise")
 #Need to have a list of the positions of the stringers, x and z
 
-print(moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax))
+##print(moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax))
 
 
 
