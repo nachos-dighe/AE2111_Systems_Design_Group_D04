@@ -82,7 +82,7 @@ Mres_des = moment( Vres_des , ylst_0 )
 #torsion function 
 def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
     xlst = xlst * np.cos( Sw_ca )
-    CG_xList = CG_xList * np.cos( Sw_ca )
+    CG_xList = np.array(CG_xList) * np.cos( Sw_ca )
     ylst = ylst / np.cos ( Sw_ca )
     
     # AOA
