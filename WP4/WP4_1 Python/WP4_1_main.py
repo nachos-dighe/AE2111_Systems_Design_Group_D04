@@ -41,8 +41,8 @@ def internal_plots(ylst,Vlst, BMlst, TMlst, title):
 #internal load plots: design and critical conditions (uncomment)
 
 #internal_plots(ylst_0,Vres_des, BMres_des, TMres_des)
-#internal_plots(ylst_0, Vres_poscrit,BMres_poscrit,TMres_poscrit,'Positive Critical load Factor')
-#internal_plots(ylst_0, Vres_negcrit,BMres_negcrit,TMres_negcrit, 'Negative Critical load Factor')
+internal_plots(ylst_0, Vres_poscrit,BMres_poscrit,TMres_poscrit,'Positive Critical load Factor')
+internal_plots(ylst_0, Vres_negcrit,BMres_negcrit,TMres_negcrit, 'Negative Critical load Factor')
 
 #save crit loading list 3DO NOT RUN THIS!!!
 '''
