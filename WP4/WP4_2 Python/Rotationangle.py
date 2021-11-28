@@ -14,7 +14,7 @@ from matplotlib import pyplot as plt
 
 def rotation(T_lst, J_lst, ylst):
 
-    num = G * J_lst
+    num = J_lst
     frac = [i / j for i, j in zip(T_lst, num)]
     rot_lst = sp.cumtrapz(frac,ylst,initial=0)
 
