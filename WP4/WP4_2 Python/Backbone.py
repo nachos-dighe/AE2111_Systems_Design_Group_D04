@@ -23,7 +23,7 @@ k = 0
 
 # The begin tichness which we than slowly increase until it matches requirement
 tRot= 0.001
-tDef = 0.0001
+tDef = 0.01
 
 MaxRotReq = (10*0.0174532952) / 1.5 # This is the max required rotation angle times the safety factor
 MaxDefReq = (Span *0.15) / 1.5 # This is the max required deflection times the safety factor
@@ -156,7 +156,7 @@ while True :
 
 
 while True :
-    tDef = tDef + 0.00001
+    tDef = tDef + 0.001
     i = 0
     
     while i<= 999:
@@ -165,10 +165,7 @@ while True :
         
         if StringersBoolean == True :
             Is_xx, A, s_top, s_bot = Stringer_MOI.moi_stringers(nr_top, nr_bot, L_s, tDef, t_s, alpha, beta, b[i], DeltaX[i])
-            print(Ix_totalList[i], Is_xx)
             Ix_totalList[i] = Ix_totalList[i] + Is_xx
-            print(Ix_totalList[i])
-            
             
         i = i + 1    
     Def_lst = Deflection.deflection(M_lst, Ix_totalList, ylst) *(1/(68.9*10**9))
@@ -180,8 +177,8 @@ while True :
 
     Ix_totallistPlot = Ix_totalList
     Ix_totalList = []
-
-    if MaxDef <= MaxDefReq :
+    print(MaxDef, MaxDefReq, tDef)
+    if MaxDef >= MaxDefReq :
         break
     k = k + 1
 
