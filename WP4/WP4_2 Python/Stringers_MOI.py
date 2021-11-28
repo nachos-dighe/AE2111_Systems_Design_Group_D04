@@ -27,7 +27,7 @@ def moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax):
     x4 = deltax - (t+(cg))
 
 #spacing of the stringers and introducing this into the dimensions
-    L_top = (deltax/cos(alpha)) - (2*t) - cg         #Length of top/bottem of wingbox where a stringer can be placed (from cg of left corner stringer to cg of left corner stringer)
+    L_top = (deltax/cos(alpha)) - (2*t) - cg         #Length from cg of left to right corner stringer
     L_bot = (deltax/cos(beta)) - (2*t) - cg       
     s_top = L_top/(nr_top-1)                         #Length from cg to cg of the stringers
     s_bot = L_bot/(nr_bot-1)
