@@ -160,11 +160,13 @@ while True :
         print(i, tDef)
         Ix_total = MOI.Ixcalculator(DeltaX[i],b[i],alpha,beta,tDef,CG_XList[i],CG_ZList[i])
         Ix_totalList.append(Ix_total) 
-        i = i + 1
+
 
         if StringersBoolean == True :
             Is_xx, A, s_top, s_bot = Stringer_MOI.moi_stringers(nr_top, nr_bot, L_s, tDef, t_s, alpha, beta, b[i], DeltaX[i])
-            Ix_totalList[i] = Ix_totalList[i] + Is_xx[I]
+            Ix_totalList[i] = Ix_totalList[i] + Is_xx
+
+        i = i + 1
 
 
 
