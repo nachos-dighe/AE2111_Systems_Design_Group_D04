@@ -174,12 +174,10 @@ while True :
     else :
         MaxDef = min(Def_lst) * -1
 
-    print(MaxDef, MaxDefReq)
-
     Ix_totallistPlot = Ix_totalList
     Ix_totalList = []
 
-    if MaxDef >= MaxDefReq :
+    if MaxDef <= MaxDefReq :
         break
     k = k + 1
 
