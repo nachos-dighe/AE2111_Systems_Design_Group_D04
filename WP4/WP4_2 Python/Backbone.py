@@ -24,8 +24,8 @@ k = 0
 tRot= 0.01
 tDef = 0.01
 
-MaxRotReq = 0.05 / 1.5 # This is the max required rotation angle times the safety factor
-MaxDefReq = 0.15 / 1.5 # This is the max required deflection times the safety factor
+MaxRotReq = 5 / 1.5 # This is the max required rotation angle times the safety factor
+MaxDefReq = 15 / 1.5 # This is the max required deflection times the safety factor
 
 G = 26*(10**9)     # http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=ma6061t6
 E = 207*(10**9)    # http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=ma6061t6
@@ -68,7 +68,6 @@ if "yes" or "Yes" in Stringers:
 else:
     StringersBoolean = False
     
-print(StringersBoolean)
 
 if StringersBoolean == True:
     nr_top = int(input("How many stringers are we using at the top? "))
@@ -86,10 +85,16 @@ if StringersBoolean == True:
 
 with open("ylstFRANK.dat", "r") as file : # Reads the y position file 
     ylstRAW = file.readlines()
-    
+
+
+
 for line in ylstRAW :
     y = line.replace("\n", "")
+    y = float(y)
+    #y = round(y, 1)
     ylst.append(y)
+
+
 
 if "1" in LoadChoice:
     with open("Critical_Load_Torsion_Pos_Crit.dat", "r") as file : 
@@ -106,51 +111,68 @@ if "2" in LoadChoice:
 for line in T_lstRAW :
     T = line.replace("\n", "")
     T = float(T)
+    #T = round(T, 1)
     T_lst.append(T)
     
 for line in M_lstRAW :
     M = line.replace("\n", "")
     M = float(M)
+    #M = round(M, 1)
     M_lst.append(M)  
 
-
+del ylstRAW 
+del T_lstRAW 
+del M_lstRAW 
+del T 
+del M
+del y
+del line 
+del file
 
 
 alpha, beta, b, DeltaX, Cr = Lengths.WingboxDimensions(RCr, TCr, Span, ylst) # All geometry is now defined togheter with ylst
+
+
+
+del Cr
 
 while (dT * i)<= Span/2 :  # Calculates the CG position in CG_XList 
     CG_x, CG_z = CG.cg_calculation(alpha, beta, b[i], DeltaX[i])
     CG_XList.append(CG_x)
     CG_ZList.append(CG_z)
     i = i + 1
+    
+del CG_x 
+del CG_z 
+del CG_ZList
 
-
+print("Voor ot")
 # tRot, is the minimum thickness required to achieve the rotational requierment
 while True :
-    tRot = tRot + 0.001 
+    tRot = tRot + 0.1 
     i = 0
     while i <= 999 :
         J = PMOI.J_calculation(alpha, beta, b[i], DeltaX[i], tRot)
+        #J = round(J, 3)
         Jlist.append(J)
         i = i + 1
 
-    E1 = type(T_lst[j] )
-    E2 = type(Jlist[j])
-    E3 = type(ylst[j])
- 
-    print(E1, E2, E3, j, T_lst[j])
-    rot_lst = RotAngle.rotation(T_lst, Jlist, G, ylst)
-    MaxRot = max(rot_lst)
+    del J
+
+    rot_lst = RotAngle.rotation(T_lst, Jlist, 260000, ylst)
+    print("4", tRot, MaxRotReq)
+    MaxRot = min(rot_lst)
     if MaxRot >= MaxRotReq:
+        print("5")
         print(tRot)
         break 
     j = j + 1
 
-
+print("Rot klaar, nu def")
 
 while True :
-    tDef = TDef + 0.001
-    i = o
+    tDef = tDef + 0.001
+    i = 0
     while i<= 999:
         Ix_total = MOI.Ixcalculator(DeltaX[i],b[i],alpha,beta,tDef,CG_XList,CG_ZList)
         Ix_totalList.append(Ix_total) 
