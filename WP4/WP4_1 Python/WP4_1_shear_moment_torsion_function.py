@@ -1,7 +1,5 @@
 # importing tools
-
-import numpy as np
-import matplotlib.pyplot as plt
+tanimport matplotlib.pyplot as plt
 import scipy.integrate as sp
 #import sympy as sym
 from WP4_XFLR5_Raw_Data import * 
@@ -23,7 +21,7 @@ m_mto = 33139
 m_f = m_mto - m_oe-m_pl
 W_fuel_tot =  m_f*g
 #based on ref data, approx. 30% of fuel weight is stored in wing (from root to 0.55/2 spar: consider inner tank only)
-y_fuel = b_sw /2*0.55
+y_fuel = b_sw / 2 * 0.55
 if is_fuel:
     W_fuel_half_wing = 0.3*W_fuel_tot
 else:
@@ -82,7 +80,7 @@ Mres_des = moment( Vres_des , ylst_0 )
 #torsion function 
 def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
     xlst = xlst * np.cos( Sw_ca )
-    CG_xList = CG_xList * np.cos( Sw_ca )
+    CG_xList = np.array(CG_xList) * np.cos( Sw_ca )
     ylst = ylst / np.cos ( Sw_ca )
     
     # AOA
@@ -92,9 +90,6 @@ def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
     # location ac
     ac_lstx = ( 1 / 4 ) * xlst  #okay like this 
 
-##    plt.plot(ylst_0,ac_lstx)
-##    plt.show()
-
     # location centroid
     xlst_centroid = CG_xList + 0.2 * xlst # !!! CAREFUL with CS !!!! 
     zlst_centroid = CG_zList
@@ -102,7 +97,6 @@ def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
     # offset   FINE
     
     dx_lst = xlst_centroid - ac_lstx  
-    #dx_lst = np.flip(dx_lst)
 
 ##    plt.subplot(3,1,1)
 ##    plt.plot(ylst,xlst)
@@ -120,7 +114,7 @@ def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
 
     # normal force
     L_lst = Llst #Cllst * q * xlst
-    D_lst = Llst #Cdlst * q * xlst
+    D_lst = Dlst * np.cos( Sw_ca ) #Cdlst * q * xlst
     N_lst = L_lst * np.cos(alpha) + D_lst * np.sin(alpha)
 
 ##    plt.subplot(4,1,1)
