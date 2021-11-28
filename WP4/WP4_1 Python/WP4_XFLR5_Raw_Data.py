@@ -30,6 +30,7 @@ W_ac = W_ac_lst[1] #(0,1,2) #aircraft weight #FIXED
 is_fuel = True #(True, False) #fuel in wing boolean #FIXED
 rho_cruise =0.37956  #density #this may change depending on critical loading case (1.225,0.37956)
 v_cruise = 190*np.sqrt(rho_0/rho_cruise) #INPUT THE EAS (NOT TAS!) from V-n diagram #velocity #this may change depending on critical loading case #FIXED: LOWEST speed that gives 2.5 (EAS = 190m/s);LOWEST speed that gives -1 (EAS = 120m/s)
+v_cruise = 120 #uncomment after overwriting file
 ###----HARD-CODE------ ### (END)
 
 
@@ -116,6 +117,7 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
         M_cr = 0.7
 
     beta = (1 - M_cr ** 2) ** -0.5
+    beta = (1 - 0.8 ** 2) ** -0.5 #uncomment after re-writing file
 
     Llst = Cllst*xlst*q_cruise*beta
     Dlst = Cdlst*xlst*q_cruise*beta
