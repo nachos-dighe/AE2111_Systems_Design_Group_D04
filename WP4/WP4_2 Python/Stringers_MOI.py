@@ -22,14 +22,12 @@ def moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax):
 #Positions cg of stringers in terms of x
 #x1 until x4 being the corner stringers measured from the bottem left outer corner of the wingbox
     x1 = t+(cg)
-    x2 = t+(cg)
-    x3 = deltax - (t+(cg))
-    x4 = deltax - (t+(cg))
+    x2 = deltax - (t+(cg))
 
 #spacing of the stringers and introducing this into the dimensions
-    L_top = (deltax/cos(alpha)) - (2*t) - cg         #Length from cg of left to right corner stringer
-    L_bot = (deltax/cos(beta)) - (2*t) - cg       
-    s_top = L_top/(nr_top-1)                         #Length from cg to cg of the stringers
+    L_top = (x2-x1)/cos(alpha)                      #Length from cg of left to right corner stringer along surface
+    L_bot = (x2-x1)/cos(beta)      
+    s_top = L_top/(nr_top-1)                        #Length from cg to cg of the stringers
     s_bot = L_bot/(nr_bot-1)
 
     xlst = []
@@ -39,7 +37,7 @@ def moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax):
     for j in range(0,nr_bot):
         xsquare = (x1 + j * (s_bot * cos(beta)))**2
         xlst.append(xsquare)
-                    
+    print(xlst)
 
 #calculation of additional moment of inertia due to stringers
     Is_xx = 0
@@ -47,6 +45,8 @@ def moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax):
         Is_xx = Is_xx + (A*xlst[m]*xlst[m])
 
     return Is_xx, A, s_top, s_bot
+
+a = moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax)
 
 #function feasibility of the stringers space wize
 def feasibility_stringers(s_top, s_bot, nr_top, nr_bot, L_s):
