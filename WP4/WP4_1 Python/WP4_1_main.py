@@ -46,10 +46,10 @@ internal_plots(ylst_0, Vres_negcrit,BMres_negcrit,TMres_negcrit, 'Negative Criti
 
 #save crit loading list 3DO NOT RUN THIS!!!
 
-np.savetxt('Critical_Load_Torsion_Neg_Crit.txt', TMres_negcrit, delimiter='\\')
-np.savetxt('Critical_Load_Bending_Neg_Crit.txt', BMres_negcrit, delimiter='\\')
-#np.savetxt('Critical_Load_Torsion_Pos_Crit.txt', TMres_poscrit, delimiter='\\')
-#np.savetxt('Critical_Load_Bending_Pos_Crit.txt', BMres_poscrit, delimiter='\\')
+#np.savetxt('Critical_Load_Torsion_Neg_Crit.txt', TMres_negcrit, delimiter='\\')
+#np.savetxt('Critical_Load_Bending_Neg_Crit.txt', BMres_negcrit, delimiter='\\')
+np.savetxt('Critical_Load_Torsion_Pos_Crit.txt', TMres_poscrit, delimiter='\\')
+np.savetxt('Critical_Load_Bending_Pos_Crit.txt', BMres_poscrit, delimiter='\\')
 
 
 print('shear at tip: pos_crit ', Vres_poscrit[-1], '\n shear at tip: neg_crit',Vres_negcrit[-1])
