@@ -9,8 +9,8 @@ M_lst = [1,2,3,4,5]  # The moment loads along the span
 I_lst = [2,4,6,8,10] # The moment fo inertia along the span
 E = 70.42 * 10**9    # The E-modulus [Pa]
 
-def deflection(M_lst, I_lst, E, ylst):
-    num = E * I_lst 
+def deflection(M_lst, I_lst, ylst):
+    num = I_lst 
     frac = [i / j for i, j in zip(M_lst, num)]
     Defl_lst1 = sp.cumtrapz(frac,ylst,initial=0)
     Defl_lst = sp.cumtrapz(Defl_lst1,ylst,initial=0)

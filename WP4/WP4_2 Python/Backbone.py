@@ -167,7 +167,7 @@ while True :
 
 
     Ix_total = []
-    Def_lst = Deflection.deflection(M_lst, Ix_totalList, 10, ylst)
+    Def_lst = Deflection.deflection(M_lst, Ix_totalList, ylst) *(1/(68.9*10**9))
     MaxDef = max(Def_lst)
     if MaxDef >= MaxDefReq :
         print("Max deflection ", tDef)
