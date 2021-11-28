@@ -22,8 +22,8 @@ j = 0
 k = 0
 
 # The begin tichness which we than slowly increase until it matches requirement
-tRot= 0.001
-tDef = 0.01
+tRot= 0.0001
+tDef = 0.00001
 
 MaxRotReq = (10*0.0174532952) / 1.5 # This is the max required rotation angle times the safety factor
 MaxDefReq = (Span *0.15) / 1.5 # This is the max required deflection times the safety factor
@@ -73,8 +73,8 @@ StringersBoolean = True # Temp false, should be True
 ##    
 
 if StringersBoolean == True:
-    nr_top = int(input("How many stringers are we using at the top (PLEASE INCLUDING CORNNER STRINGER (SO ADD 2!!))? "))
-    nr_bot = int(input("How many stringers are we using at the bottem (PLEASE INCLUDING CORNNER STRINGER (SO ADD 2!!))? "))
+    nr_top = int(input("How many stringers are we using at the top? "))
+    nr_bot = int(input("How many stringers are we using at the bottem? "))
 
     if nr_top and nr_bot !=0 :
         L_s = float(input("What is the length of the symetric stringers? "))
@@ -134,7 +134,7 @@ while i<= 999 :  # Calculates the CG position in CG_XList
 
 # tRot, is the minimum thickness required to achieve the rotational requirement
 while True :
-    tRot = tRot + 0.0001 
+    tRot = tRot + 0.00001 
     i = 0
     while i <= 999 :
         J = PMOI.J_calculation(alpha, beta, b[i], DeltaX[i], tRot)
@@ -154,9 +154,8 @@ while True :
         break 
     j = j + 1
 
-
 while True :
-    tDef = tDef + 0.001
+    tDef = tDef + 0.000001
     i = 0
     
     while i<= 999:
@@ -166,7 +165,7 @@ while True :
         if StringersBoolean == True :
             Is_xx, A, s_top, s_bot = Stringer_MOI.moi_stringers(nr_top, nr_bot, L_s, tDef, t_s, alpha, beta, b[i], DeltaX[i])
             Ix_totalList[i] = Ix_totalList[i] + Is_xx
-            
+
         i = i + 1    
     Def_lst = Deflection.deflection(M_lst, Ix_totalList, ylst) *(1/(68.9*10**9))
 
@@ -175,19 +174,18 @@ while True :
     else :
         MaxDef = min(Def_lst) * -1
 
+    print(MaxDef, MaxDefReq)
+
     Ix_totallistPlot = Ix_totalList
     Ix_totalList = []
-    print(MaxDef, MaxDefReq, tDef)
+
     if MaxDef >= MaxDefReq :
         break
     k = k + 1
 
 
-
 print("Our thickness for torsion is: ", round(tRot, 6), "m")
 print("Our thickness for bending is: ", round(tDef, 5), "m")
-
-
 
 
 plt.subplot(211)
@@ -195,7 +193,6 @@ plt.plot(ylst, Ix_totallistPlot)
 plt.title("The moment of inertia of the X against the span")
 plt.xlabel("The y coordinate of half a wing [m]")
 plt.ylabel("The second moment of area for in the x direction [m^4] ")
-
 
 
 plt.subplot(212)
@@ -206,20 +203,6 @@ plt.ylabel("The second moment of area for in the x direction [m^4] ")
 
 
 plt.show()
-
-
-# Note to myself (Frank)
-# [V] Fix the bug that casues Berkes code (MoI calc) to not work with this backbone
-# [V] I changed the degrees from my code to radians, check it!
-# [ ] Think how you want your resutls to end up, do you want a list and if so, which values do you want to know
-# [V] Think how to inplement the data from WP4.1 load diagrams
-# [V] Putting the stringer MoI in backbone
-# [V] Making all the values in the other code use the same name
-# [ ] Making the graphs more nice
-# [ ] Putting formulas in the code (Lynn)
-# [V] Making a way to put the input for the strinegrs nicely
-
-
 
 
 
