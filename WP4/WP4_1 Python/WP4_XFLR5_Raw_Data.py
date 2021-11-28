@@ -326,16 +326,11 @@ fig.tight_layout()
 plt.show()
 '''
 #aero plot: 0, 10 AOA: MOMENT
-'''
-fig, axs = plt.subplots(2, figsize=(8,8), sharex=True)
-axs[0].plot(ylst_0,Mlst_0)
-axs[0].set_title('Moment about AC:' + r'$\alpha$' +'=0')
-axs[1].plot(ylst_0,Mlst_10)
-axs[1].set_title('Moment about AC:' + r'$\alpha$' +'=10')
-fig.suptitle('Moment about AC along span')
-fig.tight_layout()
+
+plt.plot(ylst_0,Mlst_0)
+plt.title('Moment about AC: All ' + r'$\alpha$')
 plt.show()
-'''
+
 
 #TMdes = torsion(ylst_0, xlst_0)
 
