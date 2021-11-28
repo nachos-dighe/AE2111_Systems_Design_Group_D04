@@ -145,7 +145,7 @@ def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
     m_eng = 3448 + 393.0809081 #one engine and one nacelle
     g = 9.80665
     W_eng = m_eng * g
-    Thrust = 154520 #[N]
+    Thrust = 82300 #[N]
 
     # engine offsets from cg 
     x_eng = 2.5 * np.cos( Sw_ca ) # [m] #measured from half chord 

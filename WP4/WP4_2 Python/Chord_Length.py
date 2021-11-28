@@ -30,15 +30,15 @@ dT = 5
 
 
 # Calculations
-def WingboxDimensions(RCr, TCr, Span, dT):
-    y = 0
+def WingboxDimensions(RCr, TCr, Span, ylst):
     FSparL = []
     b =  []
     DeltaX =  []
     Cr = []
-    while y <= Span/2 :
-
-        Cr = RCr - (RCr-TCr)/Span * y
+    i = 0
+    while i <= 999 :
+        ylst[i] = float(ylst[i])
+        Cr = RCr - (RCr-TCr)/Span * ylst[i]
 
         FSparL.append(round(0.08562876 * Cr,3)) # a The value given was generated in Catia
         b.append(round(0.05423628 * Cr,3)) # b The value given was generated in Catia
@@ -47,9 +47,9 @@ def WingboxDimensions(RCr, TCr, Span, dT):
         alpha = (2.54121433)*(3.14159265359/180) # rad
         beta = (0.72736298)*(3.14159265359/180)  # rad
 
-        y = y + dT
+        i = i + 1
 
-    return  alpha, beta, b, DeltaX, Cr, y 
+    return  alpha, beta, b, DeltaX, Cr 
 
 ## Test code
 ##alpha, beta, b2, DeltaX, Cr, y = WingboxDimensions(RCr, TCr, Span, 1)

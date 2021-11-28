@@ -27,8 +27,8 @@ W_ac_lst = [W_oe, W_mto, W_oe+W_pl]
 ###----HARD-CODE------ ### (START)
 W_ac = W_ac_lst[1] #(0,1,2) #aircraft weight #FIXED
 is_fuel = True #(True, False) #fuel in wing boolean #FIXED
-v_cruise = 200 #velocity #this may change depending on critical loading case #FIXED: LOWEST speed that gives 2.5
-rho_cruise =1.225  #density #this may change depending on critical loading case
+v_cruise = 120 #velocity #this may change depending on critical loading case #FIXED: LOWEST speed that gives 2.5 (190m/s);LOWEST speed that gives -1 (120m/s)
+rho_cruise =0.37956  #density #this may change depending on critical loading case (1.225,0.37956)
 ###----HARD-CODE------ ### (END)
 
 
