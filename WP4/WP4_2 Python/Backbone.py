@@ -68,10 +68,8 @@ Stringers = input("Are you considering stringers? ('yes' or 'no') ")
 
 if "yes" or "Yes" in Stringers:
     StringersBoolean = False # Temp false, should be True
-    print("True")
 else:
     StringersBoolean = False
-    print("False")
     
 
 if StringersBoolean == True:
@@ -79,8 +77,8 @@ if StringersBoolean == True:
     nr_bot = int(input("How many stringers are we using at the bottem (PLEASE INCLUDING CORNNER STRINGER (SO ADD 2!!))? "))
 
     if nr_top and nr_bot !=0 :
-        L_s = int(input("What is the length of the symetric stringers? "))
-        t_s = int(input("What is the thickness of the stringers? "))
+        L_s = float(input("What is the length of the symetric stringers? "))
+        t_s = float(input("What is the thickness of the stringers? "))
         
 
 
@@ -144,14 +142,15 @@ while True :
         i = i + 1
 
     rot_lst = RotAngle.rotation(T_lst, Jlist, ylst) * 1/(26*10**9)
-    MaxRot = min(rot_lst) * -1
+
+    if rot_lst[5] > 0 :
+        MaxRot = max(rot_lst)
+    else :
+        MaxRot = min(rot_lst) * -1
     
-    print(MaxRot, MaxRotReq, tRot )
     JlistPlot = Jlist 
     Jlist = []
-    if MaxRot <= MaxRotReq: #CHANGE!! For debuging the sign has reversed
-        print(rot_lst)
-        print("Thickness rot : ", tRot)
+    if MaxRot <= MaxRotReq: 
         break 
     j = j + 1
 
@@ -163,25 +162,29 @@ while True :
         Ix_total = MOI.Ixcalculator(DeltaX[i],b[i],alpha,beta,tDef,CG_XList[i],CG_ZList[i])
         Ix_totalList.append(Ix_total) 
         i = i + 1
-
+        
         if StringersBoolean == True :
             Is_xx, A, s_top, s_bot = Stringer_MOI.moi_stringers(nr_top, nr_bot, L_s, tDef, t_s, alpha, beta, b[i], DeltaX[i])
             Ix_totalList[i] = Ix_totalList[i] + Is_xx
     
     Def_lst = Deflection.deflection(M_lst, Ix_totalList, ylst) *(1/(68.9*10**9))
-    MaxDef = max(Def_lst)
-    print(MaxDef, MaxDefReq, tDef, len(Ix_totalList))
+
+    if Def_lst[5] > 0 :
+        MaxDef = max(Def_lst)
+    else :
+        MaxDef = min(Def_lst) * -1
+
     Ix_totallistPlot = Ix_totalList
     Ix_totalList = []
+
     if MaxDef <= MaxDefReq :
-        print("Max deflection ", tDef)
-        print(Def_lst)
         break
     k = k + 1
 
 
 
-print(MaxDef, tDef)
+print("Our thickness for torsion is: ", round(tRot, 6), "m")
+print("Our thickness for bending is: ", round(tDef, 5), "m")
 
 
 
