@@ -37,7 +37,7 @@ def moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax):
     for j in range(0,nr_bot):
         xsquare = (x1 + j * (s_bot * cos(beta)))**2
         xlst.append(xsquare)
-    print(xlst)
+    ##print(xlst)
 
 #calculation of additional moment of inertia due to stringers
     Is_xx = 0

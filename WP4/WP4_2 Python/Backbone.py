@@ -64,13 +64,13 @@ import Torsional_stiffness as PMOI
 
 LoadChoice = input(" Which load case do you want to evaluate?\nPos_Crit?(1)\nNeg_crit?(2)")
     
-Stringers = input("Are you considering stringers? ('yes' or 'no') ")
-
-if "yes" or "Yes" in Stringers:
-    StringersBoolean = False # Temp false, should be True
-else:
-    StringersBoolean = False
-    
+##Stringers = input("Are you considering stringers? ('yes' or 'no') ")
+##
+##if "yes" or "Yes" in Stringers:
+StringersBoolean = True # Temp false, should be True
+##else:
+##    StringersBoolean = True
+##    
 
 if StringersBoolean == True:
     nr_top = int(input("How many stringers are we using at the top (PLEASE INCLUDING CORNNER STRINGER (SO ADD 2!!))? "))
@@ -158,15 +158,19 @@ while True :
 while True :
     tDef = tDef + 0.00001
     i = 0
+    
     while i<= 999:
         Ix_total = MOI.Ixcalculator(DeltaX[i],b[i],alpha,beta,tDef,CG_XList[i],CG_ZList[i])
         Ix_totalList.append(Ix_total) 
-        i = i + 1
         
         if StringersBoolean == True :
             Is_xx, A, s_top, s_bot = Stringer_MOI.moi_stringers(nr_top, nr_bot, L_s, tDef, t_s, alpha, beta, b[i], DeltaX[i])
+            print(Ix_totalList[i], Is_xx)
             Ix_totalList[i] = Ix_totalList[i] + Is_xx
-    
+            print(Ix_totalList[i])
+            
+            
+        i = i + 1    
     Def_lst = Deflection.deflection(M_lst, Ix_totalList, ylst) *(1/(68.9*10**9))
 
     if Def_lst[5] > 0 :
