@@ -45,12 +45,9 @@ def shear( ylst , Llst , Fzreslst , Ltot ):
     F_y_react = Ltot - W_half_wing - W_eng - W_fuel_half_wing
     Vlst = - F_y_react * np.heaviside( ylst , 1 ) - W_eng * np.heaviside( ylst - y_eng , 1 ) + np.cumsum( Fzreslst ) * delta_y
  
-    #testing #works
-    #print('Reaction force is', F_y_react, ' ' ,'Total distributed load is', np.sum(Fzreslst)*delta_y, ' ' , 'Engine weight is', W_eng, ' ' ,sep ='\n')
-    #print(Vlst[-1]) #should be close to 0
     return(Vlst)    
 
-# call function 
+# call shear function 
 Vres_des = shear( ylst_0 , Llst_des , Fzreslst_des , Ltot_des )
 
 # bending moment distribution 
@@ -60,22 +57,10 @@ def moment( Vlst , ylst ):
     M_0 = sp.integrate.trapz(Vlst,ylst) #reaction moment
     Mlst = sp.integrate.cumtrapz( Vlst , ylst, initial=0) - M_0 #points of integrated function
 
-    #generate plots 
-    '''
-    plt.plot(ylst,Mlst)
-    plt.title('Moment diagram')
-    plt.xlabel('Spanwise position')
-    plt.ylabel('Bending moment')
-    plt.show()
-    '''
     return Mlst
 
-# call function 
+# call bending moment function 
 Mres_des = moment( Vres_des , ylst_0 )
-
-### checking of tip and root values 
-##print("reaction moment:", Mres_des[0])
-##print("moment at tip:",Mres_des[-1])
 
 #torsion function 
 def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
@@ -94,52 +79,15 @@ def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
     xlst_centroid = CG_xList + 0.2 * xlst # !!! CAREFUL with CS !!!! 
     zlst_centroid = CG_zList
 
-    # offset   FINE
-    
     dx_lst = xlst_centroid - ac_lstx  
-
-##    plt.subplot(3,1,1)
-##    plt.plot(ylst,xlst)
-##    plt.title("chordlength")
-##
-##    plt.subplot(3,1,2)
-##    plt.plot(ylst,xlst_centroid)
-##    plt.title("cg location from LE")
-##
-##    plt.subplot(3,1,3)
-##    plt.plot(ylst,dx_lst)
-##    plt.title("Offset")
-##    
-##    plt.show()
 
     # normal force
     L_lst = Llst #Cllst * q * xlst
     D_lst = Dlst * np.cos( Sw_ca ) #Cdlst * q * xlst
     N_lst = L_lst * np.cos(alpha) + D_lst * np.sin(alpha)
 
-##    plt.subplot(4,1,1)
-##    plt.plot(ylst,Cllst)
-##    plt.title("cl")
-##
-##    plt.subplot(4,1,2)
-##    plt.plot(ylst,L_lst)
-##    plt.title("lift")
-##
-##    plt.subplot(4,1,3)
-##    plt.plot(ylst,Cdlst)
-##    plt.title("Cd")
-##
-##    plt.subplot(4,1,4)
-##    plt.plot(ylst,D_lst)
-##    plt.title("Drag")
-##    plt.show()
-
-
     #resultant moment due to aerodynamic normal force
     Tlst_ad = N_lst * dx_lst
-
-##    plt.plot( ylst , Tlst_ad )
-##    plt.show()
 
     # engine weight and thrust
     m_eng = 3448 + 393.0809081 #one engine and one nacelle
@@ -173,14 +121,8 @@ def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
 
     return T_lst
 
-
+#call torsion function
 T_distr = torsion(xlst_0, 0, Llst_0, Dlst_0, ylst_0, CG_xList, CG_zList)
-'''
-plt.plot(ylst_0,T_distr)
-plt.title(" total Torsion distribution")
-
-plt.show() 
-'''
 
 
     
