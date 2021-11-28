@@ -8,6 +8,7 @@ from scipy.integrate import simps, cumtrapz
 
 #constants
 g = 9.80665
+rho_0 = 1.225
 #wing
 b = 24.63
 taper = 0.4
@@ -27,8 +28,8 @@ W_ac_lst = [W_oe, W_mto, W_oe+W_pl]
 ###----HARD-CODE------ ### (START)
 W_ac = W_ac_lst[1] #(0,1,2) #aircraft weight #FIXED
 is_fuel = True #(True, False) #fuel in wing boolean #FIXED
-v_cruise = 120 #velocity #this may change depending on critical loading case #FIXED: LOWEST speed that gives 2.5 (190m/s);LOWEST speed that gives -1 (120m/s)
 rho_cruise =0.37956  #density #this may change depending on critical loading case (1.225,0.37956)
+v_cruise = 190*np.sqrt(rho_0/rho_cruise) #INPUT THE EAS (NOT TAS!) from V-n diagram #velocity #this may change depending on critical loading case #FIXED: LOWEST speed that gives 2.5 (EAS = 190m/s);LOWEST speed that gives -1 (EAS = 120m/s)
 ###----HARD-CODE------ ### (END)
 
 
@@ -102,11 +103,20 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
     W_wing =  40209.08
     W_half_wing = W_wing/2
     W_root = 2*W_wing/((1+taper)*b)
-    Wlst = W_root*(1+2/b*(taper-1)*ylst) 
+    Wlst = W_root*(1+2/b*(taper-1)*ylst)
 
-    #Prandtl-Glauert compressibility correction
-    M_cr = 0.82
-    beta = (1-M_cr**2)**-0.5
+    #Prandtl-Glauert compressibility correction #THIS IS A PROBLEM! (NOT SENSITIVE TO CHANGE)
+    if rho_cruise != 1.225: #has to be cruise level then (only SL/CL treated)
+        a_cr = 295.4
+    else:
+        a_cr = 340.3
+    M_cr = v_cruise / a_cr
+
+    if M_cr >=0.7: #Prandtl-Glauert only correct until 0.7, and lift is unlikely to asymtotically increase at higher supersonic speeds
+        M_cr = 0.7
+
+    beta = (1 - M_cr ** 2) ** -0.5
+
     Llst = Cllst*xlst*q_cruise*beta
     Dlst = Cdlst*xlst*q_cruise*beta
     Mlst = Cmlst*xlst**2*q_cruise*beta #pitching moment about c/4 point
