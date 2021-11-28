@@ -1,16 +1,18 @@
 # importing tools
-tanimport matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import scipy.integrate as sp
 #import sympy as sym
 from WP4_XFLR5_Raw_Data import * 
 #from WP4_XFLR5_Raw_Data import Vres_des
-from WP4_XFLR5_Raw_Data import ylst_0, Llst_des, Fzreslst_des, Ltot_des, q_cruise, Cllst_0, Cdlst_0, is_fuel
+from WP4_XFLR5_Raw_Data import (ylst_0, Llst_des, Fzreslst_des, Ltot_des,
+                                q_cruise, Cllst_0, Cdlst_0, is_fuel)
 from CG_wingboxFRANK import CG_xList, CG_zList
 
 #some constants
 g = 9.80665
 b = 24.63
-Sw_ca = np.arctan( np.tan (25 / 180 * np.pi ) -  ( 0.468 * ( 2 * 4.41 ) / b ) * ( 1 - 0.4 ) )
+Sw_ca = np.arctan( np.tan (25 / 180 * np.pi ) -  ( ( 0.468 * ( 2 * 4.41 ) / b )
+                                                  * ( 1 - 0.4 ) ) )
 b_sw = b / np.cos(Sw_ca) #span value in rotated CS
  
                       
@@ -20,7 +22,8 @@ m_oe = 20175
 m_mto = 33139
 m_f = m_mto - m_oe-m_pl
 W_fuel_tot =  m_f*g
-#based on ref data, approx. 30% of fuel weight is stored in wing (from root to 0.55/2 spar: consider inner tank only)
+#based on ref data, approx. 30% of fuel weight is stored in wing
+#(from root to 0.55/2 spar: consider inner tank only)
 y_fuel = b_sw / 2 * 0.55
 if is_fuel:
     W_fuel_half_wing = 0.3*W_fuel_tot
@@ -43,7 +46,8 @@ def shear( ylst , Llst , Fzreslst , Ltot ):
     #reaction force at wing root
     delta_y = ( max( ylst ) - min( ylst ) ) / len( ylst )
     F_y_react = Ltot - W_half_wing - W_eng - W_fuel_half_wing
-    Vlst = - F_y_react * np.heaviside( ylst , 1 ) - W_eng * np.heaviside( ylst - y_eng , 1 ) + np.cumsum( Fzreslst ) * delta_y
+    Vlst = (- F_y_react * np.heaviside( ylst , 1 ) - W_eng *
+            np.heaviside( ylst - y_eng , 1 ) + np.cumsum( Fzreslst ) * delta_y)
  
     return(Vlst)    
 
@@ -55,7 +59,7 @@ def moment( Vlst , ylst ):
     ylst = ylst / np.cos( Sw_ca ) 
 
     M_0 = sp.integrate.trapz(Vlst,ylst) #reaction moment
-    Mlst = sp.integrate.cumtrapz( Vlst , ylst, initial=0) - M_0 #points of integrated function
+    Mlst = sp.integrate.cumtrapz( Vlst , ylst, initial=0) - M_0
 
     return Mlst
 
@@ -98,11 +102,13 @@ def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
     # engine offsets from cg 
     x_eng = 2.5 * np.cos( Sw_ca ) # [m] #measured from half chord 
     z_eng = 1.125 # [m]    # measured from chord downwards 
-    y_eng = 0.35*b/2 - 2.5 * np.sin( Sw_ca ) 
-    x_half = xlst[285] / 2 
+    y_eng = 0.35*b/2 - 2.5 * np.sin( Sw_ca )
+    x_half = xlst[285] / 2
 
-    dx_eng = x_eng - x_half + 0.2 * xlst[285] + xlst_centroid[285] # distance between engine and centroid in x direction 
-    dz_eng = z_eng - 0.0285 * xlst[285] + zlst_centroid[285] # distance between engine and centroid in z direction
+    # distance between engine and centroid in x direction 
+    dx_eng = x_eng - x_half + 0.2 * xlst[285] + xlst_centroid[285]
+    # distance between engine and centroid in z direction
+    dz_eng = z_eng - 0.0285 * xlst[285] + zlst_centroid[285] 
 
     #moments due to engine
     T_w = ( -1 ) * W_eng * dx_eng
@@ -112,7 +118,8 @@ def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
     #everything together
     delta_y = (max(ylst)-min(ylst))/len(ylst)
 
-    T_lst = sp.integrate.cumtrapz( Tlst_ad , ylst, initial=0) + T_eng * np.heaviside(ylst-y_eng,1)
+    T_lst = ( sp.integrate.cumtrapz( Tlst_ad , ylst, initial=0)
+             + T_eng * np.heaviside(ylst-y_eng,1) )
     T_0 = sum(delta_y * Tlst_ad) + T_eng 
     T_lst = T_lst - T_0
     print(T_eng)
