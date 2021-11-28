@@ -119,7 +119,8 @@ def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
     delta_y = (max(ylst)-min(ylst))/len(ylst)
 
     T_lst = ( sp.integrate.cumtrapz( Tlst_ad , ylst, initial=0)
-             + T_eng * np.heaviside(ylst-y_eng,1) )
+             + T_eng * np.heaviside(ylst-y_eng,1)
+             + sp.integrate.cumtrapz(Cmlst_0, ylst, initial=0) )
     T_0 = sum(delta_y * Tlst_ad) + T_eng 
     T_lst = T_lst - T_0
     print(T_eng)
