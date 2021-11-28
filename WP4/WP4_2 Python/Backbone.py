@@ -23,10 +23,10 @@ k = 0
 
 # The begin tichness which we than slowly increase until it matches requirement
 tRot= 0.001
-tDef = 0.001
+tDef = 0.0001
 
 MaxRotReq = (10*0.0174532952) / 1.5 # This is the max required rotation angle times the safety factor
-MaxDefReq = 15 / 1.5 # This is the max required deflection times the safety factor
+MaxDefReq = (Span *0.15) / 1.5 # This is the max required deflection times the safety factor
 
 G = 26*(10**9)     # http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=ma6061t6
 E = 207*(10**9)    # http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=ma6061t6
@@ -147,14 +147,17 @@ while True :
     MaxRot = min(rot_lst) * -1
     
     print(MaxRot, MaxRotReq, tRot )
+    JlistPlot = Jlist 
     Jlist = []
     if MaxRot <= MaxRotReq: #CHANGE!! For debuging the sign has reversed
+        print(rot_lst)
+        print("Thickness rot : ", tRot)
         break 
     j = j + 1
 
 
 while True :
-    tDef = tDef + 0.0001
+    tDef = tDef + 0.00001
     i = 0
     while i<= 999:
         Ix_total = MOI.Ixcalculator(DeltaX[i],b[i],alpha,beta,tDef,CG_XList[i],CG_ZList[i])
@@ -164,13 +167,15 @@ while True :
         if StringersBoolean == True :
             Is_xx, A, s_top, s_bot = Stringer_MOI.moi_stringers(nr_top, nr_bot, L_s, tDef, t_s, alpha, beta, b[i], DeltaX[i])
             Ix_totalList[i] = Ix_totalList[i] + Is_xx
-
-
-    Ix_total = []
+    
     Def_lst = Deflection.deflection(M_lst, Ix_totalList, ylst) *(1/(68.9*10**9))
     MaxDef = max(Def_lst)
-    if MaxDef >= MaxDefReq :
+    print(MaxDef, MaxDefReq, tDef, len(Ix_totalList))
+    Ix_totallistPlot = Ix_totalList
+    Ix_totalList = []
+    if MaxDef <= MaxDefReq :
         print("Max deflection ", tDef)
+        print(Def_lst)
         break
     k = k + 1
 
@@ -181,19 +186,19 @@ print(MaxDef, tDef)
 
 
 
-##plt.subplot(211)
-##plt.plot(ylst, Ix_totalList)
-##plt.title("The moment of inertia of the X against the span")
-##plt.xlabel("The y coordinate of half a wing [m]")
-##plt.ylabel("The second moment of area for in the x direction [m^4] ")
-##
-##
-##
-##plt.subplot(212)
-##plt.plot(ylst, Jlist)
-##plt.title("The moment of inertia of the X against the span")
-##plt.xlabel("The y coordinate of half a wing [m]")
-##plt.ylabel("The second moment of area for in the x direction [m^4] ")
+plt.subplot(211)
+plt.plot(ylst, Ix_totallistPlot)
+plt.title("The moment of inertia of the X against the span")
+plt.xlabel("The y coordinate of half a wing [m]")
+plt.ylabel("The second moment of area for in the x direction [m^4] ")
+
+
+
+plt.subplot(212)
+plt.plot(ylst, JlistPlot)
+plt.title("The moment of inertia of the X against the span")
+plt.xlabel("The y coordinate of half a wing [m]")
+plt.ylabel("The second moment of area for in the x direction [m^4] ")
 
 
 plt.show()
