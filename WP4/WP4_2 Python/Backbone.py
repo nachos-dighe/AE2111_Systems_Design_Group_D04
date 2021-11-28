@@ -21,6 +21,7 @@ i = 0
 j = 0 
 k = 0
 
+# The begin tichness which we than slowly increase until it matches requirement
 tRot= 0.01
 tDef = 0.01
 
@@ -30,7 +31,7 @@ MaxDefReq = 15 / 1.5 # This is the max required deflection times the safety fact
 G = 26*(10**9)     # http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=ma6061t6
 E = 207*(10**9)    # http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=ma6061t6
 
-
+# Defining lists
 CG_XList = []
 CG_ZList = []
 Ix_totalList = []
@@ -39,12 +40,14 @@ ylst = []
 T_lst = []
 M_lst = []
 
+# Defining lists for graphs
 SpanTab = []
 Ixtab = [] 
 Iytab = []
 Jlist = []
 
 #---------------------------------------------------------------------------------------------
+
 
 import Deflection as Deflection
 import Rotationangle as RotAngle
@@ -55,18 +58,20 @@ import Stringers_MOI as Stringer_MOI
 import Torsional_stiffness as PMOI
 
 
-
 #---------------------------------------------------------------------------------------------
+# Input for which laod case and for stringers
+
 
 LoadChoice = input(" Which load case do you want to evaluate?\nPos_Crit?(1)\nNeg_crit?(2)")
     
-
 Stringers = input("Are you considering stringers? ('yes' or 'no') ")
 
 if "yes" or "Yes" in Stringers:
-    StringersBoolean = False
+    StringersBoolean = True # Temp false, should be True
+    print("True")
 else:
     StringersBoolean = False
+    print("False")
     
 
 if StringersBoolean == True:
@@ -80,7 +85,7 @@ if StringersBoolean == True:
 
 
 #---------------------------------------------------------------------------------------------
-
+# Reading files to get the spanwise coordniates, bending loads and torisonal loads and determinign the geometry of the wingbox
 
 
 with open("ylstFRANK.dat", "r") as file : # Reads the y position file 
@@ -91,9 +96,7 @@ with open("ylstFRANK.dat", "r") as file : # Reads the y position file
 for line in ylstRAW :
     y = line.replace("\n", "")
     y = float(y)
-    #y = round(y, 1)
     ylst.append(y)
-
 
 
 if "1" in LoadChoice:
@@ -111,70 +114,51 @@ if "2" in LoadChoice:
 for line in T_lstRAW :
     T = line.replace("\n", "")
     T = float(T)
-    #T = round(T, 1)
     T_lst.append(T)
     
 for line in M_lstRAW :
     M = line.replace("\n", "")
     M = float(M)
-    #M = round(M, 1)
     M_lst.append(M)  
-
-del ylstRAW 
-del T_lstRAW 
-del M_lstRAW 
-del T 
-del M
-del y
-del line 
-del file
 
 
 alpha, beta, b, DeltaX, Cr = Lengths.WingboxDimensions(RCr, TCr, Span, ylst) # All geometry is now defined togheter with ylst
 
+#---------------------------------------------------------------------------------------------
 
 
-del Cr
-
-while (dT * i)<= Span/2 :  # Calculates the CG position in CG_XList 
+while i<= 999 :  # Calculates the CG position in CG_XList 
     CG_x, CG_z = CG.cg_calculation(alpha, beta, b[i], DeltaX[i])
     CG_XList.append(CG_x)
     CG_ZList.append(CG_z)
     i = i + 1
     
-del CG_x 
-del CG_z 
-del CG_ZList
 
-print("Voor ot")
-# tRot, is the minimum thickness required to achieve the rotational requierment
+# tRot, is the minimum thickness required to achieve the rotational requirement
 while True :
     tRot = tRot + 0.1 
     i = 0
     while i <= 999 :
         J = PMOI.J_calculation(alpha, beta, b[i], DeltaX[i], tRot)
-        #J = round(J, 3)
         Jlist.append(J)
         i = i + 1
 
-    del J
-
-    rot_lst = RotAngle.rotation(T_lst, Jlist, 260000, ylst)
-    print("4", tRot, MaxRotReq)
+    rot_lst = RotAngle.rotation(T_lst, Jlist, 26, ylst)
+    print("Rot", j)
     MaxRot = min(rot_lst)
-    if MaxRot >= MaxRotReq:
-        print("5")
-        print(tRot)
+    
+    if MaxRot <= MaxRotReq: #CHANGE!! For debuging the sign has reversed
         break 
     j = j + 1
 
-print("Rot klaar, nu def")
 
 while True :
     tDef = tDef + 0.001
     i = 0
     while i<= 999:
-        Ix_total = MOI.Ixcalculator(DeltaX[i],b[i],alpha,beta,tDef,CG_XList,CG_ZList)
+        
+        print(i, tDef)
+        Ix_total = MOI.Ixcalculator(DeltaX[i],b[i],alpha,beta,tDef,CG_XList[i],CG_ZList[i])
         Ix_totalList.append(Ix_total) 
         i = i + 1
 
@@ -184,41 +168,49 @@ while True :
 
 
 
-    Def_lst = deflection.deflection(M_lst, Ix_totalList, E, ylst)
-    MaxDef = max(MaxDef)
+    Def_lst = Deflection.deflection(M_lst, Ix_totalList, 10, ylst)
+    MaxDef = max(Def_lst)
     if MaxDef >= MaxDefReq :
-        print(tDef)
         break
     k = k + 1
 
 
+print(MaxDef, tDef)
 
 
 
 
+plt.subplot(211)
+plt.plot(ylst, Ix_totalList)
+plt.title("The moment of inertia of the X against the span")
+plt.xlabel("The y coordinate of half a wing [m]")
+plt.ylabel("The second moment of area for in the x direction [m^4] ")
 
-##plt.subplot(111)
-##plt.plot(SpanTab, Ix_totalList)
-##plt.title("The moment of inertia of the X against the span")
-##plt.xlabel("The y coordinate of half a wing [m]")
-##plt.ylabel("The second moment of area for in the x direction [m^4] ")
+E1 = len(Jlist)
+E2 = len(ylst)
+
+print(E1, E2)
+
+plt.subplot(212)
+plt.plot(ylst, Jlist)
+plt.title("The moment of inertia of the X against the span")
+plt.xlabel("The y coordinate of half a wing [m]")
+plt.ylabel("The second moment of area for in the x direction [m^4] ")
 
 
-
-
-##plt.show()
+plt.show()
 
 
 # Note to myself (Frank)
 # [V] Fix the bug that casues Berkes code (MoI calc) to not work with this backbone
 # [V] I changed the degrees from my code to radians, check it!
 # [ ] Think how you want your resutls to end up, do you want a list and if so, which values do you want to know
-# [ ] Think how to inplement the data from WP4.1 load diagrams
-# [ ] Putting the stringer MoI in backbone
+# [V] Think how to inplement the data from WP4.1 load diagrams
+# [V] Putting the stringer MoI in backbone
 # [V] Making all the values in the other code use the same name
 # [ ] Making the graphs more nice
 # [ ] Putting formulas in the code (Lynn)
-# [ ] Making a way to put the input for the strinegrs nicely
+# [V] Making a way to put the input for the strinegrs nicely
 
 
 
