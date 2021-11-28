@@ -25,7 +25,7 @@ k = 0
 tRot= 0.01
 tDef = 0.01
 
-MaxRotReq = 5 / 1.5 # This is the max required rotation angle times the safety factor
+MaxRotReq = (10*0.0174532952) / 1.5 # This is the max required rotation angle times the safety factor
 MaxDefReq = 15 / 1.5 # This is the max required deflection times the safety factor
 
 G = 26*(10**9)     # http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=ma6061t6
@@ -67,7 +67,7 @@ LoadChoice = input(" Which load case do you want to evaluate?\nPos_Crit?(1)\nNeg
 Stringers = input("Are you considering stringers? ('yes' or 'no') ")
 
 if "yes" or "Yes" in Stringers:
-    StringersBoolean = True # Temp false, should be True
+    StringersBoolean = False # Temp false, should be True
     print("True")
 else:
     StringersBoolean = False
@@ -144,10 +144,10 @@ while True :
         i = i + 1
 
     rot_lst = RotAngle.rotation(T_lst, Jlist, ylst) * 1/(26*10**9)
-    print("Rot", j)
     MaxRot = min(rot_lst)
-    
-    if MaxRot <= MaxRotReq: #CHANGE!! For debuging the sign has reversed
+    print(MaxRot, MaxRotReq, tRot, )
+    Jlist = []
+    if MaxRot >= MaxRotReq: #CHANGE!! For debuging the sign has reversed
         break 
     j = j + 1
 
@@ -156,18 +156,16 @@ while True :
     tDef = tDef + 0.001
     i = 0
     while i<= 999:
-        
-        print(i, tDef)
         Ix_total = MOI.Ixcalculator(DeltaX[i],b[i],alpha,beta,tDef,CG_XList[i],CG_ZList[i])
         Ix_totalList.append(Ix_total) 
         i = i + 1
 
         if StringersBoolean == True :
             Is_xx, A, s_top, s_bot = Stringer_MOI.moi_stringers(nr_top, nr_bot, L_s, tDef, t_s, alpha, beta, b[i], DeltaX[i])
-            Ix_totalList[i] = Ix_totalList[i] + Is_xx[I]
+            Ix_totalList[i] = Ix_totalList[i] + Is_xx
 
 
-
+    Ix_total = []
     Def_lst = Deflection.deflection(M_lst, Ix_totalList, 10, ylst)
     MaxDef = max(Def_lst)
     if MaxDef >= MaxDefReq :
@@ -186,10 +184,7 @@ plt.title("The moment of inertia of the X against the span")
 plt.xlabel("The y coordinate of half a wing [m]")
 plt.ylabel("The second moment of area for in the x direction [m^4] ")
 
-E1 = len(Jlist)
-E2 = len(ylst)
 
-print(E1, E2)
 
 plt.subplot(212)
 plt.plot(ylst, Jlist)
