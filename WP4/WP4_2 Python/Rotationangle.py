@@ -12,7 +12,7 @@ from matplotlib import pyplot as plt
 ##G = 26
 
 
-def rotation(T_lst, J_lst, G, ylst):
+def rotation(T_lst, J_lst, ylst):
 
     num = G * J_lst
     frac = [i / j for i, j in zip(T_lst, num)]
