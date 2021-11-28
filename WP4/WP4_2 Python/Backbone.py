@@ -22,8 +22,8 @@ j = 0
 k = 0
 
 # The begin tichness which we than slowly increase until it matches requirement
-tRot= 0.01
-tDef = 0.01
+tRot= 0.001
+tDef = 0.001
 
 MaxRotReq = (10*0.0174532952) / 1.5 # This is the max required rotation angle times the safety factor
 MaxDefReq = 15 / 1.5 # This is the max required deflection times the safety factor
@@ -75,8 +75,8 @@ else:
     
 
 if StringersBoolean == True:
-    nr_top = int(input("How many stringers are we using at the top? "))
-    nr_bot = int(input("How many stringers are we using at the bottem? "))
+    nr_top = int(input("How many stringers are we using at the top (PLEASE INCLUDING CORNNER STRINGER (SO ADD 2!!))? "))
+    nr_bot = int(input("How many stringers are we using at the bottem (PLEASE INCLUDING CORNNER STRINGER (SO ADD 2!!))? "))
 
     if nr_top and nr_bot !=0 :
         L_s = int(input("What is the length of the symetric stringers? "))
@@ -136,7 +136,7 @@ while i<= 999 :  # Calculates the CG position in CG_XList
 
 # tRot, is the minimum thickness required to achieve the rotational requirement
 while True :
-    tRot = tRot + 0.1 
+    tRot = tRot + 0.0001 
     i = 0
     while i <= 999 :
         J = PMOI.J_calculation(alpha, beta, b[i], DeltaX[i], tRot)
@@ -144,16 +144,17 @@ while True :
         i = i + 1
 
     rot_lst = RotAngle.rotation(T_lst, Jlist, ylst) * 1/(26*10**9)
-    MaxRot = min(rot_lst)
-    print(MaxRot, MaxRotReq, tRot, )
+    MaxRot = min(rot_lst) * -1
+    
+    print(MaxRot, MaxRotReq, tRot )
     Jlist = []
-    if MaxRot >= MaxRotReq: #CHANGE!! For debuging the sign has reversed
+    if MaxRot <= MaxRotReq: #CHANGE!! For debuging the sign has reversed
         break 
     j = j + 1
 
 
 while True :
-    tDef = tDef + 0.001
+    tDef = tDef + 0.0001
     i = 0
     while i<= 999:
         Ix_total = MOI.Ixcalculator(DeltaX[i],b[i],alpha,beta,tDef,CG_XList[i],CG_ZList[i])
@@ -169,8 +170,10 @@ while True :
     Def_lst = Deflection.deflection(M_lst, Ix_totalList, 10, ylst)
     MaxDef = max(Def_lst)
     if MaxDef >= MaxDefReq :
+        print("Max deflection ", tDef)
         break
     k = k + 1
+
 
 
 print(MaxDef, tDef)
@@ -178,19 +181,19 @@ print(MaxDef, tDef)
 
 
 
-plt.subplot(211)
-plt.plot(ylst, Ix_totalList)
-plt.title("The moment of inertia of the X against the span")
-plt.xlabel("The y coordinate of half a wing [m]")
-plt.ylabel("The second moment of area for in the x direction [m^4] ")
-
-
-
-plt.subplot(212)
-plt.plot(ylst, Jlist)
-plt.title("The moment of inertia of the X against the span")
-plt.xlabel("The y coordinate of half a wing [m]")
-plt.ylabel("The second moment of area for in the x direction [m^4] ")
+##plt.subplot(211)
+##plt.plot(ylst, Ix_totalList)
+##plt.title("The moment of inertia of the X against the span")
+##plt.xlabel("The y coordinate of half a wing [m]")
+##plt.ylabel("The second moment of area for in the x direction [m^4] ")
+##
+##
+##
+##plt.subplot(212)
+##plt.plot(ylst, Jlist)
+##plt.title("The moment of inertia of the X against the span")
+##plt.xlabel("The y coordinate of half a wing [m]")
+##plt.ylabel("The second moment of area for in the x direction [m^4] ")
 
 
 plt.show()
