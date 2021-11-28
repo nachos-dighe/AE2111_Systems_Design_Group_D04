@@ -17,7 +17,7 @@ def deflection(M_lst, I_lst, E, ylst):
 
     return Defl_lst
 
-Defl_lst = deflection(M_lst, I_lst, E, ylst0)
+##Defl_lst = deflection(M_lst, I_lst, E, ylst0)
 ##print(Defl_lst)
 ##
 ##plt.plot(Defl_lst, ylst0, 'rs-', label='Deflection')
