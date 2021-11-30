@@ -8,7 +8,7 @@ from math import *
 
 #---------------------------------------------------------------------------------------------
 # Import files
-
+import WP5_2_stressconcentration as StressCon
 
 
 #---------------------------------------------------------------------------------------------
@@ -18,6 +18,9 @@ RCr = 4.4 # [m] Root chord
 TCr = 1.76 # [m] Tip chord
 Span = 24.64 # [m] Span
 dT = 0.1
+
+# Material properties
+
 
 # Counters
 i = 0 
@@ -75,6 +78,9 @@ for line in M_lstRAW :
 # Output, y_lst, M_lst, T_lst
 #---------------------------------------------------------------------------------------------
 # Main code
+
+
+
 
 
 

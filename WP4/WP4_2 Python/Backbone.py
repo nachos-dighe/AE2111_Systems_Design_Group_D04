@@ -168,6 +168,7 @@ while True :
     Ix_totallistPlot = Ix_totalList
     Ix_totalList = []
 
+    if MaxDef <= MaxDefReq :
         break
     k = k + 1
 
