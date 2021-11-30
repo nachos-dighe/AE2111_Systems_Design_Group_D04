@@ -8,7 +8,5 @@
 def stress_concentration_factor (c, rho, k1c, stress_nom): 
     stress_max = (1 + 2*((c/rho)**0.5))*stress_nom
     prop_stress = k1c/((pi * c)**0.5)
-    safety = prop_stress/stress_max
-    return safety
-
-    
+    safety_margin = prop_stress/stress_max
+    return safety_margin
