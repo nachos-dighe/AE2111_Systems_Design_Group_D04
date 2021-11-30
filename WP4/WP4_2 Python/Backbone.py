@@ -63,14 +63,7 @@ import Torsional_stiffness as PMOI
 
 
 LoadChoice = input(" Which load case do you want to evaluate?\nPos_Crit?(1)\nNeg_crit?(2)")
-    
-##Stringers = input("Are you considering stringers? ('yes' or 'no') ")
-##
-##if "yes" or "Yes" in Stringers:
-StringersBoolean = True # Temp false, should be True
-##else:
-##    StringersBoolean = True
-##    
+StringersBoolean = True 
 
 if StringersBoolean == True:
     nr_top = int(input("How many stringers are we using at the top (PLEASE INCLUDING CORNNER STRINGER (SO ADD 2!!))? "))
@@ -88,8 +81,6 @@ if StringersBoolean == True:
 
 with open("ylstFRANK.dat", "r") as file : # Reads the y position file 
     ylstRAW = file.readlines()
-
-
 
 for line in ylstRAW :
     y = line.replace("\n", "")
@@ -118,7 +109,6 @@ for line in M_lstRAW :
     M = line.replace("\n", "")
     M = float(M)
     M_lst.append(M)  
-
 
 alpha, beta, b, DeltaX, Cr = Lengths.WingboxDimensions(RCr, TCr, Span, ylst) # All geometry is now defined togheter with ylst
 
@@ -177,8 +167,13 @@ while True :
 
     Ix_totallistPlot = Ix_totalList
     Ix_totalList = []
+<<<<<<< HEAD
     print(MaxDef, MaxDefReq, tDef)
     if MaxDef >= MaxDefReq :
+=======
+
+    if MaxDef <= MaxDefReq :
+>>>>>>> 8c015be82440c9105c3d603e27ae0dee0be92e7d
         break
     k = k + 1
 
@@ -191,22 +186,23 @@ print("Our thickness for bending is: ", round(tDef, 5), "m")
 
 
 plt.subplot(211)
-plt.plot(ylst, Ix_totallistPlot)
-plt.title("The moment of inertia of the X against the span")
+plt.plot(ylst ,rot_lst)
+plt.title("The rotational angle against the span")
 plt.xlabel("The y coordinate of half a wing [m]")
-plt.ylabel("The second moment of area for in the x direction [m^4] ")
+plt.ylabel("The rotational angle [radians] ")
 
 
 
 plt.subplot(212)
-plt.plot(ylst, JlistPlot)
-plt.title("The moment of inertia of the X against the span")
+plt.plot(ylst ,Def_lst)
+plt.title("The deflection against the span")
 plt.xlabel("The y coordinate of half a wing [m]")
-plt.ylabel("The second moment of area for in the x direction [m^4] ")
+plt.ylabel("The polar moment of inertia [m] ")
 
 
 plt.show()
 
+<<<<<<< HEAD
 
 # Note to myself (Frank)
 # [V] Fix the bug that casues Berkes code (MoI calc) to not work with this backbone
@@ -229,3 +225,5 @@ plt.show()
 
 
 
+=======
+>>>>>>> 8c015be82440c9105c3d603e27ae0dee0be92e7d

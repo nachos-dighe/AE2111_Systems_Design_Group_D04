@@ -22,6 +22,7 @@ m_oe = 20175
 m_mto = 33139
 m_f = m_mto - m_oe-m_pl
 W_fuel_tot =  m_f*g
+
 #based on ref data, approx. 30% of fuel weight is stored in wing
 #(from root to 0.55/2 spar: consider inner tank only)
 y_fuel = b_sw / 2 * 0.55
@@ -30,7 +31,7 @@ if is_fuel:
 else:
     W_fuel_half_wing = 0
 
-
+print('fuel', W_fuel_half_wing)
 
 def shear( ylst , Llst , Fzreslst , Ltot ):
     ylst = ylst / np.cos(Sw_ca) #correct span for sweep angle
@@ -119,7 +120,8 @@ def torsion( xlst , alpha , Llst , Dlst , ylst , CG_xList , CG_zList ):
     delta_y = (max(ylst)-min(ylst))/len(ylst)
 
     T_lst = ( sp.integrate.cumtrapz( Tlst_ad , ylst, initial=0)
-             + T_eng * np.heaviside(ylst-y_eng,1) )
+             + T_eng * np.heaviside(ylst-y_eng,1)
+             + sp.integrate.cumtrapz(Cmlst_0, ylst, initial=0) )
     T_0 = sum(delta_y * Tlst_ad) + T_eng 
     T_lst = T_lst - T_0
     print(T_eng)
