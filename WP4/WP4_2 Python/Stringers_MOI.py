@@ -1,5 +1,3 @@
-from math import sin, cos, tan
-
 #inputs
 nr_top = 3      #This is the number of stringers on the top side of the wingbox)
 nr_bot = 3      #Nr of stringers on the bottem side)
@@ -12,39 +10,41 @@ beta = 1
 b = 1
 deltax = 1
 
+from math import sin, cos, tan
 
 def moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax):
     
 #Intermediate outputs for the moment of inertia
-    A = (2*L_s*t_s)-(t_s**2)                        #Area of one stringer
-    cg = (1.5*L_s*L_s - L_s*t_s)/(2*L_s - t_s)
+    A = (2*L_s*t_s)-(t_s**2)                    #Area of one stringer
+    cg = (1.5*L_s*L_s - L_s*t_s)/(2*L_s - t_s)  #cg location stringer (w.r.t local datum)
 
-#Positions cg of stringers in terms of x
-#x1 until x4 being the corner stringers measured from the bottem left outer corner of the wingbox
+#Positions cg of corner stringers in terms of x and z from wingbox datum
+    z1 = t+(cg) 
+    z2 = b + deltax*(tan(alpha)+tan(beta)) - (t + cg)
     x1 = t+(cg)
     x2 = deltax - (t+(cg))
 
 #spacing of the stringers and introducing this into the dimensions
-    L_top = (x2-x1)/cos(alpha)                      #Length from cg of left to right corner stringer along surface
+    L_top = (x2-x1)/cos(alpha)                  #Distance right->left corner stringer
     L_bot = (x2-x1)/cos(beta)      
-    s_top = L_top/(nr_top-1)                        #Length from cg to cg of the stringers
+    s_top = L_top/(nr_top-1)                    #Length from cg to cg of the stringers
     s_bot = L_bot/(nr_bot-1)
 
-    xlst = []
+    zlst = []
     for i in range(0,nr_top):
-        xsquare = (x1 + i * (s_top * cos(alpha)))**2
-        xlst.append(xsquare)
+        zsquare = (z1 + i * (s_top * sin(alpha)))**2
+        zlst.append(zsquare)
     for j in range(0,nr_bot):
-        xsquare = (x1 + j * (s_bot * cos(beta)))**2
-        xlst.append(xsquare)
-    ##print(xlst)
+        zsquare = (z1 + j * (s_bot * sin(beta)))**2
+        zlst.append(zsquare)
+
 
 #calculation of additional moment of inertia due to stringers
     Is_xx = 0
-    for m in range(0,len(xlst)):
-        Is_xx = Is_xx + (A*xlst[m]*xlst[m])
+    for m in range(0,len(zlst)):
+        Is_xx = Is_xx + (A*zlst[m]*zlst[m])
 
-    return Is_xx, A, s_top, s_bot
+    return Is_xx
 
 a = moi_stringers(nr_top, nr_bot, L_s, t, t_s, alpha, beta, b, deltax)
 
