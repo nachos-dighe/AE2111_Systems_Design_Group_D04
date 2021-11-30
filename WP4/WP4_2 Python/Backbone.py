@@ -167,13 +167,7 @@ while True :
 
     Ix_totallistPlot = Ix_totalList
     Ix_totalList = []
-<<<<<<< HEAD
-    print(MaxDef, MaxDefReq, tDef)
-    if MaxDef >= MaxDefReq :
-=======
 
-    if MaxDef <= MaxDefReq :
->>>>>>> 8c015be82440c9105c3d603e27ae0dee0be92e7d
         break
     k = k + 1
 
@@ -202,28 +196,4 @@ plt.ylabel("The polar moment of inertia [m] ")
 
 plt.show()
 
-<<<<<<< HEAD
 
-# Note to myself (Frank)
-# [V] Fix the bug that casues Berkes code (MoI calc) to not work with this backbone
-# [V] I changed the degrees from my code to radians, check it!
-# [ ] Think how you want your resutls to end up, do you want a list and if so, which values do you want to know
-# [V] Think how to inplement the data from WP4.1 load diagrams
-# [V] Putting the stringer MoI in backbone
-# [V] Making all the values in the other code use the same name
-# [ ] Making the graphs more nice
-# [ ] Putting formulas in the code (Lynn)
-# [V] Making a way to put the input for the strinegrs nicely
-
-
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> 8c015be82440c9105c3d603e27ae0dee0be92e7d
