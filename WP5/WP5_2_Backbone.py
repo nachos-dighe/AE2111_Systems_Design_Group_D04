@@ -87,18 +87,18 @@ for line in M_lstRAW :
 #---------------------------------------------------------------------------------------------
 # Graphs
 
-plt.subplot(211)
-plt.plot(ylst ,SafeMar_lst)
-plt.title("Saftey margin")
-plt.xlabel("The y coordinate of half a wing [m]")
-plt.ylabel("")
-
-
-plt.subplot(212)
-plt.plot(ylst ,SafeMar_lst)
-plt.title("The deflection against the span")
-plt.xlabel("The y coordinate of half a wing [m]")
-plt.ylabel("")
+##plt.subplot(211)
+##plt.plot(ylst ,SafeMar_lst)
+##plt.title("Saftey margin")
+##plt.xlabel("The y coordinate of half a wing [m]")
+##plt.ylabel("")
+##
+##
+##plt.subplot(212)
+##plt.plot(ylst ,SafeMar_lst)
+##plt.title("The deflection against the span")
+##plt.xlabel("The y coordinate of half a wing [m]")
+##plt.ylabel("")
 
 
 
