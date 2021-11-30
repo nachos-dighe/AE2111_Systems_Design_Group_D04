@@ -27,10 +27,11 @@ W_ac_lst = [W_oe, W_mto, W_oe+W_pl]
 
 ###----HARD-CODE------ ### (START)
 W_ac = W_ac_lst[1] #(0,1,2) #aircraft weight #FIXED
-is_fuel = True #(True, False) #fuel in wing boolean #FIXED
-rho_cruise =0.37956  #density #this may change depending on critical loading case (1.225,0.37956)
+is_fuel = True #(True, False) #fuel in wing boolean #FIXED 
+rho_cruise =  0.37956  #density #this may change depending on critical loading case (1.225,0.37956)
 v_cruise = 190*np.sqrt(rho_0/rho_cruise) #INPUT THE EAS (NOT TAS!) from V-n diagram #velocity #this may change depending on critical loading case #FIXED: LOWEST speed that gives 2.5 (EAS = 190m/s);LOWEST speed that gives -1 (EAS = 120m/s)
-v_cruise = 243 #uncomment after overwriting file
+#lowest v (v_stall) = 51.94031692 EAS 
+#v_cruise = 243 #uncomment after overwriting file 
 ###----HARD-CODE------ ### (END)
 
 
@@ -63,6 +64,28 @@ def aero_coefficient(aero_data_AOA):
     
     #Cdlst_init += Cd_airfoil
     #print(Cdlst_init) #testing
+    
+    #boundary condition: tip
+    Cllst_init[-1] = 0 
+    Cdlst_init[-1] = 0
+    Cmlst_init[-1] = 0
+    
+    #boundary condition: root' (expect program slow-down) #BULLSHIT
+    #C_L
+    '''
+    i_l = 1
+    while np.abs(Cllst_init[0]) < np.abs(np.max(Cllst_init)) and i_l <10:
+        Cllst_init[0] = Cllst_init[i_l]
+        i_l += 1
+    '''
+    #C_D
+    '''
+    i_d = 1
+    while np.abs(Cdlst_init[0]) < np.abs(np.max(Cdlst_init)) and i_d <10:
+        Cdlst_init[0] = Cdlst_init[i_l]
+        i_d += 1
+        '''
+    #C_M already ok 
 
     return(xlst_init,ylst_init,Cllst_init, Cdlst_init, Cmlst_init)
 
@@ -138,7 +161,6 @@ def aero_loads(xlst, ylst,Cllst, Cdlst, Cmlst):
 
 def aero_plots(ylst,Llst,Dlst,Mlst, Fzreslst, Ltot, Dtot, Mtot, title):
     
-    Dlst[-1], Llst[-1],Dlst[0], Llst[0] =0,0,0,0
     print('Total lift is', Ltot, ' ' ,'Total drag is', Dtot, ' ' , 'Total moment is', Mtot, ' ' ,sep ='\n')
     
     fig, axs = plt.subplots(3, figsize=(8,8), sharex=True)
@@ -239,9 +261,6 @@ Cd_0_form = 0.01
 Cd_10_form = 0.02
 Cdlst_0 += Cd_0_form
 Cdlst_10 += Cd_10_form
-#boundary conditions (lift, drag should be zero at tip)
-Cdlst_0[-1], Cdlst_10[-1], Cdlst_0[0], Cdlst_10[0]= 0,0, 0, 0
-Cllst_0[-1], Cllst_10[-1], Cllst_0[0], Cllst_10[0]= 0,0, 0, 0
 
 #design lift coefficient distribution
 Cltot_des = 1.1*W_ac/(q_cruise*S_wing)#0.372976647 #not a constant!
@@ -251,7 +270,7 @@ Cltot_10 = 1.324255925
 #obtain design angle of attack
 Cllst_des =  Cllst_0 + (Cltot_des-Cltot_0)/(Cltot_10-Cltot_0)*(Cllst_10-Cllst_0)
 alpha_des = np.arcsin((np.sum(Cllst_des)-np.sum(Cllst_0))/(np.sum(Cllst_10)-np.sum(Cllst_0))*np.sin(np.deg2rad(10)))
-Cdlst_des = alpha_des/(10-0)*(Cdlst_10-Cdlst_0) #added form drag here
+Cdlst_des = Cdlst_0+(np.rad2deg(alpha_des)/(10-0))**2*(Cdlst_10-Cdlst_0) #added form drag here
 Cdlst_des += Cd_0_form
 Cmlst_des = Cmlst_0+alpha_des/(10-0)*(Cmlst_10-Cmlst_0)
 #print("Design angle of attack is", np.rad2deg(alpha_des)) #testing works
@@ -276,7 +295,9 @@ alpha_des_positive = np.arcsin((np.sum(Cllst_des*N_z_positive)-np.sum(Cllst_0))/
 alpha_des_negative = np.arcsin((np.sum(Cllst_des*N_z_negative)-np.sum(Cllst_0))/(np.sum(Cllst_10)-np.sum(Cllst_0))*np.sin(np.deg2rad(10))) #-3.4053
 
 
-#print(np.rad2deg(alpha_des_positive), np.rad2deg(alpha_des_negative)) #testing
+print('Positive load factor (AOA, deg):',np.rad2deg(alpha_des_positive))  #testing
+#print('Negative load factor (AOA, deg):',np.rad2deg(alpha_des_negative)) #testing
+
 
 #lists for aerodynamic loads (AOA=0, 10)
 Llst_0,Dlst_0,Mlst_0, Fzreslst_0,Ltot_0, Dtot_0, Mtot_0 = aero_loads(xlst_0, ylst_0,Cllst_0, Cdlst_0, Cmlst_0)
@@ -325,11 +346,35 @@ fig.suptitle('Drag along span')
 fig.tight_layout()
 plt.show()
 '''
-#aero plot: 0, 10 AOA: MOMENT
-
-plt.plot(ylst_0,Mlst_0)
-plt.title('Moment about AC: All ' + r'$\alpha$')
+#aero plot: 0 AOA: MOMENT
+'''
+plt.plot(ylst_0,Cmlst_0)
+plt.title('Moment Coefficient about AC: All ' + r'$\alpha$')
 plt.show()
+'''
+
+#aero plot: 0, 10 AOA: LIFT
+'''
+plt.plot(ylst_0,Cllst_0, label= r'$\alpha$'+'= 0'+ r'$\degree$')
+plt.plot(ylst_0,Cllst_10, label= r'$\alpha$'+'= 10'+ r'$\degree$', linestyle= 'dashed')
+plt.xlabel('Span[m]')
+plt.ylabel('Lift Coefficient')
+plt.title('Spanwise Lift Coefficient')
+plt.legend()
+plt.show()
+'''
+
+#aero plot: 0, 10 AOA: DRAG
+'''
+Cdlst_0[-1], Cdlst_10[-1] = 0,0
+plt.plot(ylst_0,Cdlst_0, label= r'$\alpha$'+'= 0'+ r'$\degree$')
+plt.plot(ylst_0,Cdlst_10, label= r'$\alpha$'+'= 10'+ r'$\degree$', linestyle= 'dashed')
+plt.xlabel('Span[m]')
+plt.ylabel('Drag Coefficient')
+plt.title('Spanwise Drag Coefficient')
+plt.legend()
+plt.show()
+'''
 
 
 #TMdes = torsion(ylst_0, xlst_0)
