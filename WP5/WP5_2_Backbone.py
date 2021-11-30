@@ -29,7 +29,7 @@ y_lst = []
 T_lst = []
 M_lst = []
 
-
+SafeMar_lst = []
 
 
 #---------------------------------------------------------------------------------------------
@@ -74,6 +74,7 @@ for line in M_lstRAW :
 
 # Output, y_lst, M_lst, T_lst
 #---------------------------------------------------------------------------------------------
+# Main code
 
 
 
@@ -82,9 +83,22 @@ for line in M_lstRAW :
 
 
 
+# Output (for graphs to work) SafeMar_lst
+#---------------------------------------------------------------------------------------------
+# Graphs
+
+plt.subplot(211)
+plt.plot(ylst ,SafeMar_lst)
+plt.title("Saftey margin")
+plt.xlabel("The y coordinate of half a wing [m]")
+plt.ylabel("")
 
 
-
+plt.subplot(212)
+plt.plot(ylst ,SafeMar_lst)
+plt.title("The deflection against the span")
+plt.xlabel("The y coordinate of half a wing [m]")
+plt.ylabel("")
 
 
 
