@@ -15,8 +15,17 @@ class Wingbox:
     DeltaX = (0.75 - 0.2) * xlst_0
     b = 0.05423628 * xlst_0 #CATIA generated
     FSparL = 0.08562876 * xlst_0 #CATIA generated
-    def __init__(self, thickness, n_stringer_top, n_stringer_bottom):
+    def __init__(self, thickness): #thickness [mm]
         pass
-    def rib(self, thickness, n_ribs, spacing):
+    def rib(self, thickness, n_ribs, spacing): #thickness [mm] #spacing is an array
         pass
-    def stringer(self, ):
+    def stringer(self, shape, n_stringer_top, n_stringer_bottom): #shape 
+        pass
+    
+#Design 1 (no stringers)
+wingbox_1 =Wingbox(1)
+
+#Design 2 (x1 top stringer)
+
+#Design 3 (x1 top and x1 bottom stringer)
+    
