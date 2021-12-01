@@ -168,10 +168,12 @@ while True :
 ##    E1 = Ix_total - Ix_totalList[999]
 ##    print(Is_xx, Ix_total, Ix_totalList[999], E1)
     Ix_totallistPlot = Ix_totalList
-    Ix_totalList = []
+    
 
-    if MaxDef <= MaxDefReq :    
+    if MaxDef <= MaxDefReq :
+        print(Ix_totalList)
         break
+    Ix_totalList = []
     k = k + 1
 
 
@@ -197,6 +199,6 @@ plt.xlabel("The y coordinate of half a wing [m]")
 plt.ylabel("The polar moment of inertia [m] ")
 
 
-plt.show()
+#plt.show()
 
 
