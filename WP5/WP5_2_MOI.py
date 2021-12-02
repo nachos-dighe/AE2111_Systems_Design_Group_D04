@@ -9,10 +9,21 @@ from math import cos
 from math import pi
 import math
 
+#1. Ixx Ixz Izz formula for wingbox (Done)
+#2. Ixx Ixz Izz local of stringers chosen 
+#3. Design type specific total Ixx Ixz Izz (step 1 + design specific stringer configuration)
+#4. Stress calculator at extreme points for tension for each design
+
+
+
+
+
 
 max_tensile_stress = []
 
 t = 1.98 * 10**(-3)
+
+#inputs: all dimensions of the wingbox including angle and CG location, dimensions of the stringers and their position wrt datum point, moment along the span
 
 #coordinate system: positive z down, positive x right
 
@@ -68,7 +79,8 @@ def Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t):
     return Ixz_wingbox
     
 
-#design 1: 4 L stringers, all on the corners
+############################################################################################################################################################################################
+
 
 def Ixx_L_stringer(blah, blah, blah):
 
@@ -97,7 +109,11 @@ def Izz_something_stringer(...):
 def Ixz_something_stringer(...):
 
 
+############################################################################################################################################################################################
 
+
+#design 1: 4 L stringers, all on the corners
+    
 def design_1_max_stress(Ixx_wingbox, Ixz_wingbox, Izz_wingbox, Ixx_L_stringer, Izz_L_stringer, Ixz_L_stringer):
     
     Ixx_design_1 = Ixx_wingbox + 2 * (Ixx_L_stringer + area * distance_above**2) + 2 * (Ixx_L_striger + area * distance_below**2)
@@ -113,6 +129,8 @@ def design_1_max_stress(Ixx_wingbox, Ixz_wingbox, Izz_wingbox, Ixx_L_stringer, I
     max_tensile_Stress_design_1 = max(max_tensile_Stress_1,max_tensile_Stress_2)
 
     return max_tensile_design_1
+
+#design 2: 4 L stringers all on the corners  + 1 stringer placed exactly at the middle of the top face (Shape TBD)
 
 
 def design_2_max_stress(Ixx_wingbox, Ixz_wingbox, Izz_wingbox, Ixx_L_stringer, Izz_L_stringer, Ixz_L_stringer): #change when stringers chosen
@@ -131,25 +149,27 @@ def design_2_max_stress(Ixx_wingbox, Ixz_wingbox, Izz_wingbox, Ixx_L_stringer, I
 
     return max_tensile_design_2
 
+#design 3: 4 L stringers all on the corners + 1 stringer placed exactly at the middle of the top face (Shape TBD) + 1 stringer placed exactly at the middle of the lower face (Shape TBD)
+
 
 def design_3_max_stress(Ixx_wingbox, Ixz_wingbox, Izz_wingbox, Ixx_L_stringer, Izz_L_stringer, Ixz_L_stringer): #change when stringers chosen
     
-    Ixx_design_1 = Ixx_wingbox + 2 * (Ixx_L_stringer + area * distance_above**2) + 2 * (Ixx_L_striger + area * distance_below**2)
+    Ixx_design_3 = Ixx_wingbox + 2 * (Ixx_L_stringer + area * distance_above**2) + 2 * (Ixx_L_striger + area * distance_below**2)
                                                                                     
-    Izz_design_1 = 
+    Izz_design_3 = 
 
-    Ixz_design_1 =
+    Ixz_design_3 =
 
     max_tensile_Stress_1 = (M_x * Izz_design_1 * (-CG_Z) + M_x * Ixz_design_1 * (-CG_X))/(Ixx_design_1*Izz_design_1 -((Ixz_design_1)**2))
 
     max_tensile_Stress_2 = (M_x * Izz_design_1 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_1 * (DetlaX-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
 
-    max_tensile_Stress_design_2 = max(max_tensile_Stress_1,max_tensile_Stress_2)
+    max_tensile_Stress_design_3 = max(max_tensile_Stress_1,max_tensile_Stress_2)
 
-    return max_tensile_design_2
+    return max_tensile_design_3
 
 
-max_tensile_stress.append(max_tensile_design_1)
+max_tensile_stress.append(max_tensile_design_1,max_tensile_design_2, max_tensile_design_3)
 
 
     
@@ -159,12 +179,9 @@ max_tensile_stress.append(max_tensile_design_1)
     
 
 
-#design 2: 4 L stringers all on the corners  + 1 stringer placed exactly at the middle of the top face (Shape TBD)
 
 
 
-
-#design 3: 4 L stringers all on the corners + 1 stringer placed exactly at the middle of the top face (Shape TBD) + 1 stringer placed exactly at the middle of the lower face (Shape TBD)
 
 
 def normal_stress(Ixx,Ixz,Izz,CG_Z,CG_X,M_x):

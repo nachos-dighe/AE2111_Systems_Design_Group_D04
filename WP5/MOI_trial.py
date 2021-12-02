@@ -54,6 +54,8 @@ def Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t):
 
     Ixz_wingbox = Ixz1 + Ixz2 + Ixz3 + Ixz4
 
+    return Ixz_wingbox
+
  def normal_stress(Ixx,Ixz,Izz,CG_Z,CG_X,M_x):
 
 
@@ -75,4 +77,4 @@ def Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t):
 
 
 
-    return Ixz_wingbox
+ 
