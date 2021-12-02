@@ -10,6 +10,8 @@ from math import pi
 import math
 
 
+max_tensile_stress = []
+
 t = 1.98 * 10**(-3)
 
 #coordinate system: positive z down, positive x right
@@ -37,7 +39,7 @@ def Izz_wingbox(DeltaX,beta,alpha,CG_X,t):
 
     Izz1 = ((t*((DeltaX)**3)*((cos(beta))**2))/(12*((cos(beta))**3)))+(t*(DeltaX)/cos(beta))*(CG_X-(DeltaX/2))**2    #lower left angled profile
 
-    Izz2 = (((t*(DeltaX)**3)*((cos((alpha))**2))/(12*((cos(alpha))**3)))+(t*DeltaX/(cos(alpha)))*(CG_X-(DeltaX/2))**2   #upper right angled profile
+    Izz2 = ((t*(DeltaX)**3)*((cos((alpha))**2))/(12*((cos(alpha))**3)))+(t*DeltaX/(cos(alpha)))*(CG_X-(DeltaX/2))**2   #upper right angled profile
 
     Izz3 = t*(DeltaX * tan(beta) + b + DeltaX * tan(alpha))*((CG_X)**2)  #vertical profile on the left
 
@@ -49,17 +51,17 @@ def Izz_wingbox(DeltaX,beta,alpha,CG_X,t):
 
 
 
-def Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t): #CHECK AGAIN FOR POSITIONS
+def Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t): 
 
     #check all x and y position for all Ixz
 
-    Ixz1 = (1/12) * t * (DeltaX/cos(beta))**3 * sin(beta) * cos(beta) + (DeltaX/cos(beta)) * t * ((DeltaX/2)-CG_X) * (-CG_Z-((DeltaX * tan(beta))/2))) #lower left angled profile (+x)*(+z)
+    Ixz1 = (1/12) * t * (DeltaX/cos(beta))**3 * sin(beta) * cos(beta) + (DeltaX/cos(beta)) * t * ((DeltaX/2)-CG_X) * (-CG_Z-((DeltaX * tan(beta))/2)) #lower left angled profile (+x)*(+z)
 
     Ixz2 = (1/12) * t * (DeltaX/cos(alpha))**3 * sin(alpha) * cos(alpha) + (DeltaX/cos(alpha))*t*((DeltaX/2)-CG_X)*(-b-DeltaX *tan(beta)-((DeltaX*tan(alpha))/2)-CG_z) #upper right angled profile (+x)*(-z)
 
     Ixz3 = (DeltaX*tan(beta)+b+DeltaX*tan(alpha))*t*(-CG_X) * (-CG_Z - (DeltaX * tan(alpha) + b + DeltaX * tan (beta))/2)  #vertical profile on the left (-x)*(+z)
 
-    Ixz4 = b * t * (DeltaX - CG_X) * (-CG_Z -((b+DeltaX * tan(beta))/2)))  #vertical profile on the right (+x)*(+z)
+    Ixz4 = b * t * (DeltaX - CG_X) * (-CG_Z -((b+DeltaX * tan(beta))/2))  #vertical profile on the right (+x)*(+z)
 
     Ixz_wingbox = Ixz1 + Ixz2 + Ixz3 + Ixz4
 
@@ -96,13 +98,61 @@ def Ixz_something_stringer(...):
 
 
 
-def design_1_MOI(Ixx_wingbox, Ixz_wingbox, Izz_wingbox, Ixx_L_stringer, Izz_L_stringer, Ixz_L_stringer):
+def design_1_max_stress(Ixx_wingbox, Ixz_wingbox, Izz_wingbox, Ixx_L_stringer, Izz_L_stringer, Ixz_L_stringer):
     
     Ixx_design_1 = Ixx_wingbox + 2 * (Ixx_L_stringer + area * distance_above**2) + 2 * (Ixx_L_striger + area * distance_below**2)
                                                                                     
     Izz_design_1 =
 
     Ixz_design_1 =
+
+    max_tensile_Stress_1 = (M_x * Izz_design_1 * (-CG_Z) + M_x * Ixz_design_1 * (-CG_X))/(Ixx_design_1*Izz_design_1 -((Ixz_design_1)**2))
+
+    max_tensile_Stress_2 = (M_x * Izz_design_1 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_1 * (DetlaX-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
+
+    max_tensile_Stress_design_1 = max(max_tensile_Stress_1,max_tensile_Stress_2)
+
+    return max_tensile_design_1
+
+
+def design_2_max_stress(Ixx_wingbox, Ixz_wingbox, Izz_wingbox, Ixx_L_stringer, Izz_L_stringer, Ixz_L_stringer): #change when stringers chosen
+    
+    Ixx_design_2 = Ixx_wingbox + 2 * (Ixx_L_stringer + area * distance_above**2) + 2 * (Ixx_L_striger + area * distance_below**2)
+                                                                                    
+    Izz_design_2 =
+
+    Ixz_design_2 = 
+
+    max_tensile_Stress_1 = (M_x * Izz_design_2 * (-CG_Z) + M_x * Ixz_design_2 * (-CG_X))/(Ixx_design_2*Izz_design_2 -((Ixz_design_2)**2))
+
+    max_tensile_Stress_2 = (M_x * Izz_design_2 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_2 * (DetlaX-CG_X))/(Ixx_design_2*Izz_design_2-((Ixz_design_2)**2))
+
+    max_tensile_Stress_design_2 = max(max_tensile_Stress_1,max_tensile_Stress_2)
+
+    return max_tensile_design_2
+
+
+def design_3_max_stress(Ixx_wingbox, Ixz_wingbox, Izz_wingbox, Ixx_L_stringer, Izz_L_stringer, Ixz_L_stringer): #change when stringers chosen
+    
+    Ixx_design_1 = Ixx_wingbox + 2 * (Ixx_L_stringer + area * distance_above**2) + 2 * (Ixx_L_striger + area * distance_below**2)
+                                                                                    
+    Izz_design_1 = 
+
+    Ixz_design_1 =
+
+    max_tensile_Stress_1 = (M_x * Izz_design_1 * (-CG_Z) + M_x * Ixz_design_1 * (-CG_X))/(Ixx_design_1*Izz_design_1 -((Ixz_design_1)**2))
+
+    max_tensile_Stress_2 = (M_x * Izz_design_1 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_1 * (DetlaX-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
+
+    max_tensile_Stress_design_2 = max(max_tensile_Stress_1,max_tensile_Stress_2)
+
+    return max_tensile_design_2
+
+
+max_tensile_stress.append(max_tensile_design_1)
+
+
+    
 
     return Ixx_design_1, Izz_design_1, Ixz_design_1
 
