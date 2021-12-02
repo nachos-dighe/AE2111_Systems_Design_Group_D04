@@ -14,7 +14,7 @@ t = 1.98 * 10**(-3)
 
 #coordinate system: positive z down, positive x right
 
-#VERY IMPORTANT: CG_X VALUE IS +, CG_Z VALUE IS NEGATIVE (from the output of cg calculator) (????)
+#VERY IMPORTANT: CG_X VALUE IS +, CG_Z VALUE IS NEGATIVE (from the output of cg calculator)
 
 
 def Ixx_wingbox(DeltaX,beta,alpha,CG_Z,t):
@@ -66,35 +66,55 @@ def Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t): #CHECK AGAIN FOR POSITIONS
     return Ixz_wingbox
     
 
+#design 1: 4 L stringers, all on the corners
 
-def Ixx_total(Ixx_wingbox,Ixx_stringer,n): #n number of stringers but recheck it probably incorrect interpretation
+def Ixx_L_stringer(blah, blah, blah):
 
-    Ixx = Ixx_wingbox + n * Ixx_stringers
+    return Ixx_L_stringer
 
-    return Ixx
-
-
-
-
-def Izz_total(Izz_wingbox,Izz_stringer,n): #n number of stringers but recheck it probably incorrect interpretation
-
-    Izz = Izz_wingbox + n * Izz_stringer
-
-    return Izz
+def Izz_L_stringer(blah,blah,blah):
 
 
+    return Izz_L_stringer
 
 
-def Ixz_total(Ixz_wingbox, Ixz_stringers,n): #n number of stringers but recheck it probably incorrect interpretation
+def Ixz_L_stringer(blah,blah,blah):
 
-    Ixz = Ixz_wingbox + n * Izz_stringer
+    return Ixz_L_stringer
 
 
-    return Ixz
+def Ixx_something_stringer(...):
 
 
 
 
+def Izz_something_stringer(...):
+
+
+
+def Ixz_something_stringer(...):
+
+
+
+def design_1_MOI(Ixx_wingbox, Ixz_wingbox, Izz_wingbox, Ixx_L_stringer, Izz_L_stringer, Ixz_L_stringer):
+    
+    Ixx_design_1 = Ixx_wingbox + 2 * (Ixx_L_stringer + area * distance_above**2) + 2 * (Ixx_L_striger + area * distance_below**2)
+                                                                                    
+    Izz_design_1 =
+
+    Ixz_design_1 =
+
+    return Ixx_design_1, Izz_design_1, Ixz_design_1
+
+    
+
+
+#design 2: 4 L stringers all on the corners  + 1 stringer placed exactly at the middle of the top face (Shape TBD)
+
+
+
+
+#design 3: 4 L stringers all on the corners + 1 stringer placed exactly at the middle of the top face (Shape TBD) + 1 stringer placed exactly at the middle of the lower face (Shape TBD)
 
 
 def normal_stress(Ixx,Ixz,Izz,CG_Z,CG_X,M_x):
