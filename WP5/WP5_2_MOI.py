@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy as sp
 from scipy import interpolate
-
 from math import tan
 from math import sin
 from math import cos
@@ -198,6 +197,8 @@ i = 0
 
 
 
+
+
 alpha, beta, b, DeltaX, Cr  = ChordLength.WingboxDimensions(RCr, TCr, Span, ylst)
 
 
@@ -209,26 +210,26 @@ i = 0
 
 
 while i <= len(ylst):
-    Ixx_wingbox = Ixx_wingbox(DeltaX,beta,alpha,CG_Z,t)
+    Ixx_wingbox = Ixx_wingbox(DeltaX[i],beta,alpha,CG_Z[i],t)
     i= i + 1
 
 i = 0
 while i <= len(ylst):
-    Izz_wingbox = Izz_wingbox(DeltaX,beta,alpha,CG_X,t)
+    Izz_wingbox = Izz_wingbox(DeltaX[i],beta,alpha,CG_X[i],t)
     i= i + 1
 
 i = 0
 
 while i <= len(ylst):
-    Ixz_wingbox = Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t)
-    i= i +1
+    Ixz_wingbox = Ixz_wingbox(DeltaX[i],beta,alpha,CG_X[i],CG_Z[i],t)
+    i= i + 1
 
 i = 0
 
 
 while i <= len(ylst) :
     max_tensile_stress = stress_calculator(Ixx_wingbox[i],Ixz_wingbox[i],Izz_wingbox,CG_Z[i],CG_X[i],M_x[i],DeltaX[i],beta)
-    i = i +1
+    i = i + 1
 
     stress.append(max_tensile_stress)
 
