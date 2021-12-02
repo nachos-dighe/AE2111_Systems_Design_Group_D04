@@ -1,4 +1,3 @@
-
 from math import tan
 from math import sin
 from math import cos
@@ -53,8 +52,10 @@ def Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t):
     Ixz4 = b * t * (DeltaX - CG_X) * (-CG_Z -((b+DeltaX * tan(beta))/2))  #vertical profile on the right (+x)*(+z)
 
     Ixz_wingbox = Ixz1 + Ixz2 + Ixz3 + Ixz4
+    
+    return Ixz_wingbox
 
- def normal_stress(Ixx,Ixz,Izz,CG_Z,CG_X,M_x):
+def normal_stress(Ixx,Ixz,Izz,CG_Z,CG_X,M_x):
 
 
     sigma_y = (M_x * Izz * z + M_x * Ixz * x)/(Ixx*Izz-((Ixz)**2))
@@ -64,15 +65,15 @@ def Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t):
 
         # 2 critical positions for max tension (bottom left or bottom right)
 
-     max_tensile_Stress_1 = (M_x * Izz * (-CG_Z) + M_x * Ixz * (-CG_X))/(Ixx*Izz-((Ixz)**2))
+    max_tensile_Stress_1 = (M_x * Izz * (-CG_Z) + M_x * Ixz * (-CG_X))/(Ixx*Izz-((Ixz)**2))
 
-     max_tensile_Stress_2 = (M_x * Izz * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz * (DetlaX-CG_X))/(Ixx*Izz-((Ixz)**2))
+    max_tensile_Stress_2 = (M_x * Izz * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz * (DetlaX-CG_X))/(Ixx*Izz-((Ixz)**2))
 
-     max_tensile_Stress = max(max_tensile_Stress_1,max_tensile_Stress_2)
+    max_tensile_Stress = max(max_tensile_Stress_1,max_tensile_Stress_2)
 
     return max_tensile_stress
 
 
 
 
-    return Ixz_wingbox
+ 

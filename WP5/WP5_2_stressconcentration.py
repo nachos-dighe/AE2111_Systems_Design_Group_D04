@@ -5,8 +5,8 @@
 #k1c fracture toughness which is a material property
 #stress_nom is crackless stress due to bending
 
-def stress_concentration_factor (c, rho, k1c, stress_nom): 
+def safety (c, rho, k1c, stress_nom): 
     stress_max = (1 + 2*((c/rho)**0.5))*stress_nom
-    prop_stress = k1c/((pi * c)**0.5)
-    safety_margin = prop_stress/stress_max
+    fail_stress = k1c/((pi * c)**0.5)
+    safety_margin = fail_stress/stress_max
     return safety_margin
