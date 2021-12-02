@@ -23,6 +23,7 @@ Span = 24.64 # [m] Span
 dT = 0.1
 c = 0.005 # [m]
 k1c = 29*(10**6) # [Pa]
+t = 0.00198 #[m]
 
 
 
@@ -93,31 +94,31 @@ alpha, beta, b, DeltaX, Cr = Length.WingboxDimensions(RCr, TCr, Span, y_lst)
 for i in range(0,len(y_lst)):
     #obtaining the max bending stress in the cross section
     CG_X, CG_Z = CG.cg_calculation (alpha, beta, b[i], DeltaX[i])
-    Ixx = MOI.Ixx_wingbox (DeltaX,beta,alpha,CG_Z,t)
-    Ixz = MOI.Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t)
-    Izz = MOI.Izz_wingbox(DeltaX,beta,alpha,CG_X,t)
+    Ixx = MOI.Ixx_wingbox (DeltaX[i],beta,alpha,CG_Z,t,b[i])
+    Ixz = MOI.Ixz_wingbox(DeltaX[i],beta,alpha,CG_X,CG_Z,t,b[i])
+    Izz = MOI.Izz_wingbox(DeltaX[i],beta,alpha,CG_X,t,b[i])
     M_x = M_lst[i]
-    stress_nom = stress_app.normal_stress (Ixx,Ixz,Izz,CG_Z,CG_X,M_x)
+    stress_nom = MOI.normal_stress (Ixx,Ixz,Izz,CG_Z,CG_X,M_lst[i], DeltaX[i], beta)
     
     #defining rho, checking influence
     rho = 0.001
     while True:
-        safety_margin1 = StressCon.safety(c, rho, k1c, stress_mom)
+        safety_margin1 = StressCon.safety(c, rho, k1c, stress_nom)
         rho = rho + 0.001
-        safety_margin2 = StressCon.safety (c, rho, k1c, stress_mom)
+        safety_margin2 = StressCon.safety (c, rho, k1c, stress_nom)
         difference = ((safety_margin2 - safety_margin1)/safety_margin1)*100
         if difference <= 1:
             break
 
     #now the rho is used after which it has negl. influence on the safety margin
-    safety_margin = StressCon.safety (c, rho, k1c, stress_mom)
+    safety_margin = StressCon.safety (c, rho, k1c, stress_nom)
 
     #check if safety_margin is bigger than 1.5
     while True:
         if safety_margin <= 1.5:
             break
         rho = rho - 0.001
-        safety_margin = StressCon.safety (c, rho, k1c, stress_mom)
+        safety_margin = StressCon.safety (c, rho, k1c, stress_nom)
         if rho <= 0:
             print("The 1.5 safety margin is never reached for any rho, the moment of inertia should be re-evaluated")
             break

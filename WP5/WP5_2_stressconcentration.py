@@ -4,9 +4,16 @@
 #rho is a variable of which the influence on the design is to be determined
 #k1c fracture toughness which is a material property
 #stress_nom is crackless stress due to bending
+c = 0.005
+rho = 0.001
+k1c = 26*(10**6)
+stress_nom = 10**9
 
+from math import *
 def safety (c, rho, k1c, stress_nom): 
-    stress_max = (1 + 2*((c/rho)**0.5))*stress_nom
+    stress_max = (1 + 2*((c/rho)**0.5)*stress_nom)
     fail_stress = k1c/((pi * c)**0.5)
     safety_margin = fail_stress/stress_max
     return safety_margin
+
+print(safety (c, rho, k1c, stress_nom))
