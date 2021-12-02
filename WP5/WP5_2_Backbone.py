@@ -18,6 +18,10 @@ RCr = 4.4 # [m] Root chord
 TCr = 1.76 # [m] Tip chord
 Span = 24.64 # [m] Span
 dT = 0.1
+c = 0.005 # [m]
+k1c = 29*(10**6) # [Pa]
+
+
 
 # Material properties
 
@@ -79,9 +83,30 @@ for line in M_lstRAW :
 #---------------------------------------------------------------------------------------------
 # Main code
 
+#defining rho, checking influence
+rho = 0.001
+while True:
+    safety_margin1 = StressCon(0.005, rho, 29*(10**6), stress_mom)
+    rho = rho + 0.001
+    safety_margin2 = StressCon (0.005, rho, 29*(10**6), stress_mom)
+    difference = ((safety_margin2 - safety_margin1)/safety_margin1)*100
+    if difference <= 1:
+        break
 
+#now the rho is used after which it has negl. influence on the safety margin
+stress_max = (1 + 2*((c/rho)**0.5))*stress_nom
+fail_stress = k1c/((pi * c)**0.5)
+safety_margin = prop_stress/stress_max
 
-
+#check if safety_margin is bigger than 1.5
+while True:
+    if safety_margin <= 1.5:
+        break
+    rho = rho - 0.001
+    safety_margin = StressCon (0.005, rho, 29*(10**6), stress_mom)
+    if rho <= 0:
+        print("The 1.5 safety margin is never reached for any rho, the moment of inertia should be re-evaluated")
+        break
 
 
 
