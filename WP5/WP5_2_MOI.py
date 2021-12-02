@@ -15,11 +15,11 @@ import math
 #4. Stress calculator at extreme points for tension for each design
 
 
+import CG_wingboxFRANK as CG
+import WP5_2_Chord_Length as ChordLength
 
 
-
-
-max_tensile_stress = []
+stress = []
 
 t = 1.98 * 10**(-3)
 
@@ -176,11 +176,8 @@ def Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t):
 
     #return Ixx_design_1, Izz_design_1, Ixz_design_1
 
-    
 
-
-
-def stress_calculator(sigma_y,Ixx_wingbox,Ixz_wingbox,Izz_wingbox,CG_Z,CG_X,M_x,DeltaX,beta):
+def stress_calculator(Ixx_wingbox,Ixz_wingbox,Izz_wingbox,CG_Z,CG_X,M_x,DeltaX,beta):
     
     max_tensile_Stress_1 = (M_x * Izz_wingbox * (-CG_Z) + M_x * Ixz_wingbox * (-CG_X))/(Ixx_wingbox*Izz_wingbox-((Ixz_wingbox)**2))
 
@@ -192,6 +189,54 @@ def stress_calculator(sigma_y,Ixx_wingbox,Ixz_wingbox,Izz_wingbox,CG_Z,CG_X,M_x,
 
 
 
+
+RCr = 4.4 # [m] Root chord
+TCr = 1.76 # [m] Tip chord
+Span = 24.64 # [m] Span
+dT = 5
+i = 0
+
+
+
+alpha, beta, b, DeltaX, Cr  = ChordLength.WingboxDimensions(RCr, TCr, Span, ylst)
+
+
+while i <= len(ylst) :
+  CG_X, CG_Z = CG.cg_calculation(alpha, beta, b[i], DeltaX[i])
+  i = i +1
+
+i = 0
+
+
+while i <= len(ylst):
+    Ixx_wingbox = Ixx_wingbox(DeltaX,beta,alpha,CG_Z,t)
+    i= i + 1
+
+i = 0
+while i <= len(ylst):
+    Izz_wingbox = Izz_wingbox(DeltaX,beta,alpha,CG_X,t)
+    i= i + 1
+
+i = 0
+
+while i <= len(ylst):
+    Ixz_wingbox = Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t)
+    i= i +1
+
+i = 0
+
+
+while i <= len(ylst) :
+    max_tensile_stress = stress_calculator(Ixx_wingbox[i],Ixz_wingbox[i],Izz_wingbox,CG_Z[i],CG_X[i],M_x[i],DeltaX[i],beta)
+    i = i +1
+
+    stress.append(max_tensile_stress)
+
+print(stress)
+
+
+
+    
 #def normal_stress(Ixx,Ixz,Izz,CG_Z,CG_X,M_x):
 
 
