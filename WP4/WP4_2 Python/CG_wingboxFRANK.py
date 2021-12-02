@@ -52,6 +52,7 @@ def cg_calculation(alpha, beta, b, DeltaX):
 
     return CG_x, CG_z
 
+print(cg_calculation)
 
 
 

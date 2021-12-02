@@ -32,6 +32,8 @@ def cg_calculation(Theta2, Theta3, b2, DeltaX):
 
 
     return CG_x, CG_z
+
+print(cg_calculation)
 #This is basically wrong, need to consider edges instead of the inner area
 #Also need to introduce stringers
 

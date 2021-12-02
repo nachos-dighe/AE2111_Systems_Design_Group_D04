@@ -22,14 +22,14 @@ j = 0
 k = 0
 
 # The begin tichness which we than slowly increase until it matches requirement
-tRot= 0.00001
+tRot= 0.0001
 tDef = 0.00001
 
 MaxRotReq = (10*0.0174532952) / 1.5 # This is the max required rotation angle times the safety factor
 MaxDefReq = (Span *0.15) / 1.5 # This is the max required deflection times the safety factor
 
 G = 26*(10**9)     # http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=ma6061t6
-E = 68.9*(10**9)    # http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=ma6061t6
+E = 207*(10**9)    # http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=ma6061t6
 
 # Defining lists
 CG_XList = []
@@ -63,11 +63,18 @@ import Torsional_stiffness as PMOI
 
 
 LoadChoice = input(" Which load case do you want to evaluate?\nPos_Crit?(1)\nNeg_crit?(2)")
-StringersBoolean = True 
+    
+##Stringers = input("Are you considering stringers? ('yes' or 'no') ")
+##
+##if "yes" or "Yes" in Stringers:
+StringersBoolean = True # Temp false, should be True
+##else:
+##    StringersBoolean = True
+##    
 
 if StringersBoolean == True:
-    nr_top = int(input("How many stringers are we using at the top (PLEASE INCLUDING CORNNER STRINGER (SO ADD 2!!))? "))
-    nr_bot = int(input("How many stringers are we using at the bottem (PLEASE INCLUDING CORNNER STRINGER (SO ADD 2!!))? "))
+    nr_top = int(input("How many stringers are we using at the top? "))
+    nr_bot = int(input("How many stringers are we using at the bottem? "))
 
     if nr_top and nr_bot !=0 :
         L_s = float(input("What is the length of the symetric stringers? "))
@@ -81,6 +88,8 @@ if StringersBoolean == True:
 
 with open("ylstFRANK.dat", "r") as file : # Reads the y position file 
     ylstRAW = file.readlines()
+
+
 
 for line in ylstRAW :
     y = line.replace("\n", "")
@@ -109,6 +118,7 @@ for line in M_lstRAW :
     M = line.replace("\n", "")
     M = float(M)
     M_lst.append(M)  
+
 
 alpha, beta, b, DeltaX, Cr = Lengths.WingboxDimensions(RCr, TCr, Span, ylst) # All geometry is now defined togheter with ylst
 
@@ -144,9 +154,8 @@ while True :
         break 
     j = j + 1
 
-
 while True :
-    tDef = tDef + 0.00001
+    tDef = tDef + 0.000001
     i = 0
     
     while i<= 999:
@@ -154,10 +163,10 @@ while True :
         Ix_totalList.append(Ix_total) 
         
         if StringersBoolean == True :
-            Is_xx = Stringer_MOI.moi_stringers(nr_top, nr_bot, L_s, tDef, t_s, alpha, beta, b[i], DeltaX[i])
+            Is_xx, A, s_top, s_bot = Stringer_MOI.moi_stringers(nr_top, nr_bot, L_s, tDef, t_s, alpha, beta, b[i], DeltaX[i])
             Ix_totalList[i] = Ix_totalList[i] + Is_xx
-            
-        i = i + 1
+
+        i = i + 1    
     Def_lst = Deflection.deflection(M_lst, Ix_totalList, ylst) *(1/(68.9*10**9))
 
     if Def_lst[5] > 0 :
@@ -165,23 +174,16 @@ while True :
     else :
         MaxDef = min(Def_lst) * -1
 
-##    E1 = Ix_total - Ix_totalList[999]
-##    print(Is_xx, Ix_total, Ix_totalList[999], E1)
     Ix_totallistPlot = Ix_totalList
-    
+    Ix_totalList = []
 
     if MaxDef <= MaxDefReq :
-        print(Ix_totalList)
         break
-    Ix_totalList = []
     k = k + 1
-
 
 
 print("Our thickness for torsion is: ", round(tRot, 6), "m")
 print("Our thickness for bending is: ", round(tDef, 5), "m")
-
-
 
 
 plt.subplot(211)
@@ -191,7 +193,6 @@ plt.xlabel("The y coordinate of half a wing [m]")
 plt.ylabel("The rotational angle [radians] ")
 
 
-
 plt.subplot(212)
 plt.plot(ylst ,Def_lst)
 plt.title("The deflection against the span")
@@ -199,6 +200,24 @@ plt.xlabel("The y coordinate of half a wing [m]")
 plt.ylabel("The polar moment of inertia [m] ")
 
 
-#plt.show()
+plt.show()
+
+
+
+
+
+##plt.subplot(211)
+##plt.plot(ylst, Ix_totallistPlot)
+##plt.title("The moment of inertia of the X against the span")
+##plt.xlabel("The y coordinate of half a wing [m]")
+##plt.ylabel("The second moment of area for in the x direction [m^4] ")
+##
+##
+##plt.subplot(212)
+##plt.plot(ylst, JlistPlot)
+##plt.title("The polar moment of inertia against the span")
+##plt.xlabel("The y coordinate of half a wing [m]")
+##plt.ylabel("The polar moment of inertia [m^4] ")
+
 
 
