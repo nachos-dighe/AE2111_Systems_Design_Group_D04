@@ -77,7 +77,54 @@ def Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t):
 
     return Ixz_wingbox
     
+# Defining lists
+y_lst = []
+T_lst = []
+M_lst = []
 
+SafeMar_lst = []
+
+
+#---------------------------------------------------------------------------------------------
+# Reading files to get the spanwise coordinates, bending loads and torisonal loads
+
+LoadChoice = input("Which load case do you want to evaluate?\nPos_Crit?(1)\nNeg_crit?(2)")
+
+with open("ylst.dat", "r") as file : # Reads the y position file 
+    y_lstRAW = file.readlines()
+
+for line in y_lstRAW :
+    y = line.replace("\n", "")
+    y = float(y)
+    y_lst.append(y)
+
+
+if "1" in LoadChoice:
+    with open("Critical_Load_Torsion_Pos_Crit.dat", "r") as file : 
+        T_lstRAW = file.readlines()
+    with open("Critical_Load_Bending_Pos_Crit.dat", "r") as file : 
+        M_lstRAW = file.readlines()
+
+elif "2" in LoadChoice:
+    with open("Critical_Load_Torsion_Neg_Crit.dat", "r") as file : 
+        T_lstRAW = file.readlines()
+    with open("Critical_Load_Bending_Neg_Crit.dat", "r") as file : 
+        M_lstRAW = file.readlines()
+
+else :
+    print("Answer either '1' or '2' for choice. Please restart the code to work!")
+
+for line in T_lstRAW :
+    T = line.replace("\n", "")
+    T = float(T)
+    T_lst.append(T)
+    
+for line in M_lstRAW :
+    M = line.replace("\n", "")
+    M = float(M)
+    M_lst.append(M)
+
+    
 ############################################################################################################################################################################################
 
 
@@ -199,35 +246,35 @@ i = 0
 
 
 
-alpha, beta, b, DeltaX, Cr  = ChordLength.WingboxDimensions(RCr, TCr, Span, ylst)
+alpha, beta, b, DeltaX, Cr  = ChordLength.WingboxDimensions(RCr, TCr, Span, y_lst)
 
 
-while i <= len(ylst) :
+while i <= len(y_lst) :
   CG_X, CG_Z = CG.cg_calculation(alpha, beta, b[i], DeltaX[i])
   i = i +1
 
 i = 0
 
 
-while i <= len(ylst):
+while i <= len(y_lst):
     Ixx_wingbox = Ixx_wingbox(DeltaX[i],beta,alpha,CG_Z[i],t)
     i= i + 1
 
 i = 0
-while i <= len(ylst):
+while i <= len(y_lst):
     Izz_wingbox = Izz_wingbox(DeltaX[i],beta,alpha,CG_X[i],t)
     i= i + 1
 
 i = 0
 
-while i <= len(ylst):
+while i <= len(y_lst):
     Ixz_wingbox = Ixz_wingbox(DeltaX[i],beta,alpha,CG_X[i],CG_Z[i],t)
     i= i + 1
 
 i = 0
 
 
-while i <= len(ylst) :
+while i <= len(y_lst) :
     max_tensile_stress = stress_calculator(Ixx_wingbox[i],Ixz_wingbox[i],Izz_wingbox,CG_Z[i],CG_X[i],M_x[i],DeltaX[i],beta)
     i = i + 1
 
