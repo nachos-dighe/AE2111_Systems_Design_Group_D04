@@ -55,7 +55,9 @@ def Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t,b):
     
     return Ixz_wingbox
 
+
 def normal_stress(Ixx,Ixz,Izz,CG_Z,CG_X,M_x, DeltaX, beta):
+
 
 
         #we thing that the sign between the two terms in the numerator is + but from normal stress equation is should be -.
