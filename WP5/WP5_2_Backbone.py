@@ -105,29 +105,38 @@ for i in range(0,len(y_lst)):
     while True:
         safety_margin1 = StressCon.safety(c, rho, k1c, stress_nom)
         rho = rho + 0.001
-        safety_margin2 = StressCon.safety (c, rho, k1c, stress_nom)
+        safety_margin2 = StressCon.safety(c, rho, k1c, stress_nom)
         difference = ((safety_margin2 - safety_margin1)/safety_margin1)*100
         if difference <= 1:
             break
 
     #now the rho is used after which it has negl. influence on the safety margin
-    safety_margin = StressCon.safety (c, rho, k1c, stress_nom)
-
-    #check if safety_margin is bigger than 1.5
-    while True:
-        if safety_margin <= 1.5:
-            break
-        rho = rho - 0.001
-        safety_margin = StressCon.safety (c, rho, k1c, stress_nom)
-        if rho <= 0:
-            print("The 1.5 safety margin is never reached for any rho, the moment of inertia should be re-evaluated")
-            break
+    
+    safety_margin = StressCon.safety(c, rho, k1c, stress_nom)
     SafeMar_lst.append(safety_margin)
-print(SafeMar_lst)
+    
+    #check if safety_margin is bigger than 1.5
+exceed_lst = []
+for j in range(0,1000):
+    print(j, SafeMar_lst[j])
+    if SafeMar_lst[j] <= 1.5:
+        print(j, SafeMar_lst[j])
+        exceed_lst.append(j)
 
+#    while True:
+ #       if safety_margin >= 1.5:
+  #          
+   #         break
+    #    rho = rho - 0.001
+     #   safety_margin = StressCon.safety (c, rho, k1c, stress_nom)
+      #  if rho <= 0.001:
+       #     j = j +1            
+        #    break
 
+#if j >= 1:
+ #   print("The 1.5 safety margin is never reached for any rho, the moment of inertia should be re-evaluated")
 
-
+print(exceed_lst)
 
 
 
