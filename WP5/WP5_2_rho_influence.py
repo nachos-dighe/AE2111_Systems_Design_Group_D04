@@ -13,5 +13,3 @@ while True:
     difference = ((safety_margin2 - safety_margin1)/safety_margin1)*100
     if difference <= 1:
         break
-        
-    

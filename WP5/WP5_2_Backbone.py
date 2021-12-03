@@ -115,14 +115,12 @@ for i in range(0,len(y_lst)):
     safety_margin = StressCon.safety(c, rho, k1c, stress_nom)
     SafeMar_lst.append(safety_margin)
     
-    #check if safety_margin is bigger than 1.5
+#check if safety_margin is bigger than 1.5
 exceed_lst = []
 for j in range(0,1000):
-    print(j, SafeMar_lst[j])
     if SafeMar_lst[j] <= 1.5:
-        print(j, SafeMar_lst[j])
         exceed_lst.append(j)
-
+#if len(exceed_lst)
 #    while True:
  #       if safety_margin >= 1.5:
   #          
