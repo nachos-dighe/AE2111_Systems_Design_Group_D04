@@ -9,6 +9,9 @@ def min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t):
     rho_lst = []
     SafeMar_rho_lst = []
     rhodiff_lst = []
+
+    #finding max nominal stress:
+    i_max = M_lst.index(max(M_lst))
     
     for i in range(0,300):
     #obtaining the max bending stress in the cross section
@@ -16,8 +19,8 @@ def min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t):
         Ixx = MOI.Ixx_wingbox (DeltaX[i],beta,alpha,CG_Z,t,b[i])
         Ixz = MOI.Ixz_wingbox(DeltaX[i],beta,alpha,CG_X,CG_Z,t,b[i])
         Izz = MOI.Izz_wingbox(DeltaX[i],beta,alpha,CG_X,t,b[i])
-        stress_nom = MOI.normal_stress (Ixx,Ixz,Izz,CG_Z,CG_X,abs(M_lst[i]), DeltaX[i], beta)
-
+        stress_nom = MOI.normal_stress (Ixx,Ixz,Izz,CG_Z,CG_X,M_lst[i_max], DeltaX[i], beta)
+        
         rho = 0.001
         
         while True:
@@ -26,11 +29,11 @@ def min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t):
             safety_margin2 = StressCon.safety(c, rho, k1c, stress_nom)
             difference = ((safety_margin2 - safety_margin1)/safety_margin1)*100
             if safety_margin2 >= 1.5:
-                print(safety_margin2,rho)
+                #print(safety_margin2,rho)
                 SafeMar_rho_lst.append(safety_margin2)
-                rho_lst.append(rho-0.001)
+                rho_lst.append(rho)
                 rhodiff_lst.append(difference)
                 break
     min_rho = min(rho_lst)
-    return min_rho, rho_lst
+    return min_rho
 
