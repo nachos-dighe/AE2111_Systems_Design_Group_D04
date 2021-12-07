@@ -10,7 +10,7 @@ from math import *
 # Import files
 import WP5_2_Chord_Length as Length
 import WP5_2_stressconcentration as StressCon
-import MOI_trial as MOI
+import WP5_2_MOI_trial as MOI
 import WP5_2_CG_Wingbox as CG
 
 
