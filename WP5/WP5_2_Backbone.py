@@ -10,8 +10,9 @@ from math import *
 # Import files
 import WP5_2_Chord_Length as Length
 import WP5_2_stressconcentration as StressCon
-import MOI_trial as MOI
+import WP5_2_MOI_trial as MOI
 import WP5_2_CG_Wingbox as CG
+import WP5_2_min_rho as MinRho
 
 
 #---------------------------------------------------------------------------------------------
@@ -39,7 +40,7 @@ k = 0
 y_lst = []
 T_lst = []
 M_lst = []
-
+rhodiff_lst = []
 SafeMar_lst = []
 
 
@@ -82,7 +83,6 @@ for line in M_lstRAW :
     M = float(M)
     M_lst.append(M)
 
-
 # Output, y_lst, M_lst, T_lst
 #---------------------------------------------------------------------------------------------
 # Main code
@@ -90,70 +90,40 @@ for line in M_lstRAW :
 #Wingbox dimension lists
 alpha, beta, b, DeltaX, Cr = Length.WingboxDimensions(RCr, TCr, Span, y_lst)
 
-#iterate per data point in spanwise direction
-for i in range(0,len(y_lst)):
-    #obtaining the max bending stress in the cross section
-    CG_X, CG_Z = CG.cg_calculation (alpha, beta, b[i], DeltaX[i])
-    Ixx = MOI.Ixx_wingbox (DeltaX[i],beta,alpha,CG_Z,t,b[i])
-    Ixz = MOI.Ixz_wingbox(DeltaX[i],beta,alpha,CG_X,CG_Z,t,b[i])
-    Izz = MOI.Izz_wingbox(DeltaX[i],beta,alpha,CG_X,t,b[i])
-    M_x = M_lst[i]
-    stress_nom = MOI.normal_stress (Ixx,Ixz,Izz,CG_Z,CG_X,M_lst[i], DeltaX[i], beta)
-    
-    #defining rho, checking influence
-    rho = 0.001
-    rho_lst = []
-    while True:
-        safety_margin1 = StressCon.safety(c, rho, k1c, stress_nom)
-        rho = rho + 0.001
-        safety_margin2 = StressCon.safety(c, rho, k1c, stress_nom)
-        difference = ((safety_margin2 - safety_margin1)/safety_margin1)*100
-        if difference <= 1:
-            break
-    rho_lst.append(rho)
+#obtain minimal rho satisfying minimum safety factor of 1.5
+CG_X, CG_Z = CG.cg_calculation (alpha, beta, b[i], DeltaX[i])
+Ixx = MOI.Ixx_wingbox (DeltaX[i],beta,alpha,CG_Z,t,b[i])
+Ixz = MOI.Ixz_wingbox(DeltaX[i],beta,alpha,CG_X,CG_Z,t,b[i])
+Izz = MOI.Izz_wingbox(DeltaX[i],beta,alpha,CG_X,t,b[i])
+stress_nom = MOI.normal_stress (Ixx,Ixz,Izz,CG_Z,CG_X,abs(M_lst[i]), DeltaX[i], beta)
+#note to self: right now it doesn't give the lowest rho for which the margin > 1.5
+min_rho = MinRho.min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t)
+print(min_rho)
 
-    #now the rho is used after which it has negl. influence on the safety margin 
-    safety_margin = StressCon.safety(c, rho, k1c, stress_nom)
+#iterate per data point in spanwise direction
+for i in range(0,300):
+    stress_nom = MOI.normal_stress (Ixx,Ixz,Izz,CG_Z,CG_X,abs(M_lst[i]), DeltaX[i], beta)
+    safety_margin = StressCon.safety(c, min_rho, k1c, stress_nom)
     SafeMar_lst.append(safety_margin)
     
-#check if safety_margin is bigger than 1.5
-exceed_lst = []
-for j in range(0,1000):
-    if SafeMar_lst[j] <= 1.5:
-        exceed_lst.append(j)
 
-print(rho_lst)
-        
-        
-    
-#    while True:
- #       if safety_margin >= 1.5:
-  #          
-   #         break
-    #    rho = rho - 0.001
-     #   safety_margin = StressCon.safety (c, rho, k1c, stress_nom)
-      #  if rho <= 0.001:
-       #     j = j +1            
-        #    break
-
-#if j >= 1:
- #   print("The 1.5 safety margin is never reached for any rho, the moment of inertia should be re-evaluated")
-
-print(exceed_lst)
-
-
-
-# Output (for graphs to work) SafeMar_lst
 #---------------------------------------------------------------------------------------------
 # Graphs
+y_lst_plt = []
+for i in range(0,300):
+    y = y_lst[i]
+    y_lst_plt.append(y)
+    
+print(len(y_lst_plt))
+print(len(SafeMar_lst))
+plt.subplot(211)
+plt.plot(y_lst_plt ,SafeMar_lst)
+plt.title("Saftey margin")
+plt.xlabel("The y coordinate of half a wing [m]")
+plt.ylabel("")
+plt.show()
 
-##plt.subplot(211)
-##plt.plot(ylst ,SafeMar_lst)
-##plt.title("Saftey margin")
-##plt.xlabel("The y coordinate of half a wing [m]")
-##plt.ylabel("")
-##
-##
+
 ##plt.subplot(212)
 ##plt.plot(ylst ,SafeMar_lst)
 ##plt.title("The deflection against the span")
@@ -163,8 +133,8 @@ print(exceed_lst)
 
 
 
-#lower rho higher safety factor
-#lower rho is better, so higher is more critical
+#lower rho higher safety stress constr => lower safety margin
+#higher rho is better, so low is more critical
 
 
 
