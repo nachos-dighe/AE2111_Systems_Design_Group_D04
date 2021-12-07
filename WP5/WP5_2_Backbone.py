@@ -10,7 +10,7 @@ from math import *
 # Import files
 import WP5_2_Chord_Length as Length
 import WP5_2_stressconcentration as StressCon
-import WP5_2_MOI_trial as MOI
+import MOI_trial as MOI
 import WP5_2_CG_Wingbox as CG
 
 
@@ -102,6 +102,7 @@ for i in range(0,len(y_lst)):
     
     #defining rho, checking influence
     rho = 0.001
+    rho_lst = []
     while True:
         safety_margin1 = StressCon.safety(c, rho, k1c, stress_nom)
         rho = rho + 0.001
@@ -109,9 +110,9 @@ for i in range(0,len(y_lst)):
         difference = ((safety_margin2 - safety_margin1)/safety_margin1)*100
         if difference <= 1:
             break
+    rho_lst.append(rho)
 
-    #now the rho is used after which it has negl. influence on the safety margin
-    
+    #now the rho is used after which it has negl. influence on the safety margin 
     safety_margin = StressCon.safety(c, rho, k1c, stress_nom)
     SafeMar_lst.append(safety_margin)
     
@@ -120,7 +121,11 @@ exceed_lst = []
 for j in range(0,1000):
     if SafeMar_lst[j] <= 1.5:
         exceed_lst.append(j)
-#if len(exceed_lst)
+
+print(rho_lst)
+        
+        
+    
 #    while True:
  #       if safety_margin >= 1.5:
   #          
@@ -158,7 +163,8 @@ print(exceed_lst)
 
 
 
-
+#lower rho higher safety factor
+#lower rho is better, so higher is more critical
 
 
 
