@@ -23,6 +23,12 @@ t = 1.98 * 10**(-3)
 #VERY IMPORTANT: CG_X VALUE IS +, CG_Z VALUE IS NEGATIVE (from the output of cg calculator)
 
 
+
+############################################################################################################################################################################################
+
+#section for wingbox MOI calculation
+
+
 def Ixx_wingbox(DeltaX,beta,alpha,CG_Z,t):
     
     Ixx1  =((t*((DeltaX)**3)*((sin(beta))**2))/(12*((cos(beta))**3)))+((t*DeltaX)/cos(beta))*(-CG_Z+((DeltaX * tan(beta))/2))**2 #lower left angled profile
@@ -73,101 +79,36 @@ def Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t):
     
 ############################################################################################################################################################################################
 
-#ASSUMPTION: Stringers have negligable or no effect on position of cg
 
-#def Ixx_L_stringer(blah, blah, blah):
-
-    #return Ixx_L_stringer
-
-#def Izz_L_stringer(blah,blah,blah):
-
-
-    #return Izz_L_stringer
-
-
-#def Ixz_L_stringer(blah,blah,blah):
-
-    #return Ixz_L_stringer
-
-
-#def Ixx_something_stringer(...):
+#section for local stringer MOI calculation 
 
 
 
 
-#def Izz_something_stringer(...):
 
 
 
-#def Ixz_something_stringer(...):
+
+#input stringer dimensions and shape
+
+
+
+
+
+
+
+
 
 
 ############################################################################################################################################################################################
 
 
-#design 1: 4 L stringers, all on the corners
-    
-#def design_1_max_stress(Ixx_wingbox, Ixz_wingbox, Izz_wingbox, Ixx_L_stringer, Izz_L_stringer, Ixz_L_stringer):
-    
-    #Ixx_design_1 = Ixx_wingbox + 2 * (Ixx_L_stringer + area * distance_above**2) + 2 * (Ixx_L_striger + area * distance_below**2)
-                                                                                    
-    #Izz_design_1 =
-
-    #Ixz_design_1 =
-
-    #max_tensile_Stress_1 = (M_x * Izz_design_1 * (-CG_Z) + M_x * Ixz_design_1 * (-CG_X))/(Ixx_design_1*Izz_design_1 -((Ixz_design_1)**2))
-
-    #max_tensile_Stress_2 = (M_x * Izz_design_1 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_1 * (DetlaX-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
-
-    #max_tensile_Stress_design_1 = max(max_tensile_Stress_1,max_tensile_Stress_2)
-
-    #return max_tensile_design_1
-
-#design 2: 4 L stringers all on the corners  + 1 stringer placed exactly at the middle of the top face (Shape TBD)
+#section for MOI calculation of each design option
 
 
-#def design_2_max_stress(Ixx_wingbox, Ixz_wingbox, Izz_wingbox, Ixx_L_stringer, Izz_L_stringer, Ixz_L_stringer): #change when stringers chosen
-    
-    #Ixx_design_2 = Ixx_wingbox + 2 * (Ixx_L_stringer + area * distance_above**2) + 2 * (Ixx_L_striger + area * distance_below**2)
-                                                                                    
-    #Izz_design_2 =
-
-    #Ixz_design_2 = 
-
-    #max_tensile_Stress_1 = (M_x * Izz_design_2 * (-CG_Z) + M_x * Ixz_design_2 * (-CG_X))/(Ixx_design_2*Izz_design_2 -((Ixz_design_2)**2))
-
-    #max_tensile_Stress_2 = (M_x * Izz_design_2 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_2 * (DetlaX-CG_X))/(Ixx_design_2*Izz_design_2-((Ixz_design_2)**2))
-
-    #max_tensile_Stress_design_2 = max(max_tensile_Stress_1,max_tensile_Stress_2)
-
-    #return max_tensile_design_2
-
-#design 3: 4 L stringers all on the corners + 1 stringer placed exactly at the middle of the top face (Shape TBD) + 1 stringer placed exactly at the middle of the lower face (Shape TBD)
 
 
-#def design_3_max_stress(Ixx_wingbox, Ixz_wingbox, Izz_wingbox, Ixx_L_stringer, Izz_L_stringer, Ixz_L_stringer): #change when stringers chosen
-    
-    #Ixx_design_3 = Ixx_wingbox + 2 * (Ixx_L_stringer + area * distance_above**2) + 2 * (Ixx_L_striger + area * distance_below**2)
-                                                                                    
-    #Izz_design_3 = 
-
-    #Ixz_design_3 =
-
-    #max_tensile_Stress_1 = (M_x * Izz_design_1 * (-CG_Z) + M_x * Ixz_design_1 * (-CG_X))/(Ixx_design_1*Izz_design_1 -((Ixz_design_1)**2))
-
-    #max_tensile_Stress_2 = (M_x * Izz_design_1 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_1 * (DetlaX-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
-
-    #max_tensile_Stress_design_3 = max(max_tensile_Stress_1,max_tensile_Stress_2)
-
-    #return max_tensile_design_3
-
-
-#max_tensile_stress.append(max_tensile_design_1,max_tensile_design_2, max_tensile_design_3)
-
-
-    
-
-    #return Ixx_design_1, Izz_design_1, Ixz_design_1
+#input wingbox moi xx zz xz, stringer local moi, number of stringers, stringer positions
 
 
 
@@ -179,6 +120,10 @@ def Ixz_wingbox(DeltaX,beta,alpha,CG_X,CG_Z,t):
 
 
 
+
+############################################################################################################################################################################################
+
+#section for normal stress calculation for each design option
     
 def normal_stress_design_1(Ixx_design_1,Ixz_design_1,Izz_design_1,CG_Z,CG_X,M_x):
     sigma_y = (M_x * Izz_design_1 * z + M_x * Ixz_design_1* x)/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
