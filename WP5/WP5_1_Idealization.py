@@ -66,7 +66,6 @@ def shearflow ( xlst, ylst, A_str, M_x, I_xx, I_zz, I_xz, B1, B2, B3, B4, n_t, n
 
     def dQ (
         
-
     #I_r = ystr_r ** 2 * B_r
 
     #top sheet stringers 
