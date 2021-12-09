@@ -13,7 +13,7 @@ def min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t):
     #finding max nominal stress:
     i_max = M_lst.index(max(M_lst))
     
-    for i in range(0,300):
+    for i in range(0,1000):
     #obtaining the max bending stress in the cross section
         CG_X, CG_Z = CG.cg_calculation (alpha, beta, b[i], DeltaX[i])
         Ixx = MOI.Ixx_wingbox (DeltaX[i],beta,alpha,CG_Z,t,b[i])
@@ -29,7 +29,6 @@ def min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t):
             safety_margin2 = StressCon.safety(c, rho, k1c, stress_nom)
             difference = ((safety_margin2 - safety_margin1)/safety_margin1)*100
             if safety_margin2 >= 1.5:
-                #print(safety_margin2,rho)
                 SafeMar_rho_lst.append(safety_margin2)
                 rho_lst.append(rho)
                 rhodiff_lst.append(difference)
@@ -37,3 +36,4 @@ def min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t):
     min_rho = min(rho_lst)
     return min_rho
 
+#Now the function bases the minimum rho on the maximum moment
