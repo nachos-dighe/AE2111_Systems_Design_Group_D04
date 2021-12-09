@@ -10,7 +10,7 @@ from math import *
 # Import files
 import WP5_2_Chord_Length as Length
 import WP5_2_stressconcentration as StressCon
-import WP5_2_MOI_trial as MOI
+import WP5_2_MOI_trial as MOI #needs to be changed when done
 import WP5_2_CG_Wingbox as CG
 import WP5_2_min_rho as MinRho
 
@@ -23,12 +23,11 @@ TCr = 1.76 # [m] Tip chord
 Span = 24.64 # [m] Span
 dT = 0.1
 c = 0.005 # [m]
-k1c = 29*(10**6) # [Pa]
 t = 0.00198 #[m]
 
-
-
 # Material properties
+k1c = 29*(10**6) # [Pa]
+stress_allow = (276/1.5) *(10**6) #[Pa], tensile
 
 
 # Counters
@@ -41,7 +40,9 @@ y_lst = []
 T_lst = []
 M_lst = []
 rhodiff_lst = []
-SafeMar_lst = []
+SafeMar_lst1 = []
+SafeMar_lst2 = []
+SafeMar_lst3 = []
 
 
 #---------------------------------------------------------------------------------------------
@@ -83,12 +84,6 @@ for line in M_lstRAW :
     M = float(M)
     M_lst.append(M)
 
-plt.subplot(211)
-plt.plot(y_lst ,M_lst)
-plt.title("Saftey margin")
-plt.xlabel("The y coordinate of half a wing [m]")
-plt.ylabel("")
-plt.show()
 
 # Output, y_lst, M_lst, T_lst
 #---------------------------------------------------------------------------------------------
@@ -98,48 +93,46 @@ plt.show()
 alpha, beta, b, DeltaX, Cr = Length.WingboxDimensions(RCr, TCr, Span, y_lst)
 
 #obtain minimal rho satisfying minimum safety factor of 1.5
-CG_X, CG_Z = CG.cg_calculation (alpha, beta, b[i], DeltaX[i])
-Ixx = MOI.Ixx_wingbox (DeltaX[i],beta,alpha,CG_Z,t,b[i])
-Ixz = MOI.Ixz_wingbox(DeltaX[i],beta,alpha,CG_X,CG_Z,t,b[i])
-Izz = MOI.Izz_wingbox(DeltaX[i],beta,alpha,CG_X,t,b[i])
-
-#note to self: right now it doesn't give the lowest rho for which the margin > 1.5
 min_rho = MinRho.min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t)
-#print(min_rho)
+min_rho = 0.052 #the min rho most limiting neg/pos case
+#min_rho not final bc mom of I is not final
 
 #iterate per data point in spanwise direction
-for i in range(0,300):
+for i in range(0,1000):
+    CG_X, CG_Z = CG.cg_calculation (alpha, beta, b[i], DeltaX[i])
+    Ixx = MOI.Ixx_wingbox (DeltaX[i],beta,alpha,CG_Z,t,b[i])
+    Ixz = MOI.Ixz_wingbox(DeltaX[i],beta,alpha,CG_X,CG_Z,t,b[i])
+    Izz = MOI.Izz_wingbox(DeltaX[i],beta,alpha,CG_X,t,b[i])
     stress_nom = MOI.normal_stress (Ixx,Ixz,Izz,CG_Z,CG_X,abs(M_lst[i]), DeltaX[i], beta)
-    print(stress_nom)
     safety_margin = StressCon.safety(c, min_rho, k1c, stress_nom)
-    SafeMar_lst.append(safety_margin)
+    SafeMar_lst1.append(safety_margin)
+    safety_margin2 = stress_allow / stress_nom
+    SafeMar_lst2.append(safety_margin2)
     
 
 #---------------------------------------------------------------------------------------------
 # Graphs
 y_lst_plt = []
-for i in range(0,300):
+
+for i in range(0,1000):
     y = y_lst[i]
     y_lst_plt.append(y)
     
-print(len(y_lst_plt))
-print(len(SafeMar_lst))
-plt.subplot(211)
-plt.plot(y_lst_plt ,SafeMar_lst)
+
+plt.plot(y_lst_plt , SafeMar_lst1, label="Crack propagation")
+plt.plot(y_lst_plt , SafeMar_lst2, label="Tensile yield strength")
 plt.title("Saftey margin")
 plt.xlabel("The y coordinate of half a wing [m]")
 plt.ylabel("")
+plt.grid()
+plt.legend(loc='best')
 plt.show()
 
 
-##plt.subplot(212)
-##plt.plot(ylst ,SafeMar_lst)
-##plt.title("The deflection against the span")
-##plt.xlabel("The y coordinate of half a wing [m]")
-##plt.ylabel("")
 
-
-
+#the negative case can withstand rho of 2 mm
+#the positive 0.052 so 52 mm
+#
 
 #lower rho higher safety stress constr => lower safety margin
 #higher rho is better, so low is more critical

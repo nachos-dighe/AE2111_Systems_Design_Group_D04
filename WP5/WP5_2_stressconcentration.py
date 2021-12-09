@@ -15,5 +15,3 @@ def safety (c, rho, k1c, stress_nom):
     fail_stress = k1c/((pi * c)**0.5)
     safety_margin = fail_stress/stress_max
     return safety_margin
-
-print(safety (c, rho, k1c, stress_nom))
