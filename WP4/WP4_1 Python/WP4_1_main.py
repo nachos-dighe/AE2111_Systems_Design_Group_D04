@@ -67,10 +67,10 @@ internal_plots(ylst_0, Vres_negcrit,BMres_negcrit,TMres_negcrit,
 #np.savetxt('Critical_Load_Bending_Neg_Crit.txt',
 #            BMres_negcrit, delimiter='\\')
 
-np.savetxt('Critical_Load_Torsion_Pos_Crit.txt',
+#np.savetxt('Critical_Load_Torsion_Pos_Crit.txt',
            TMres_poscrit, delimiter='\\')
 
-np.savetxt('Critical_Load_Bending_Pos_Crit.txt',
+#np.savetxt('Critical_Load_Bending_Pos_Crit.txt',
            BMres_poscrit, delimiter='\\')
 
 
