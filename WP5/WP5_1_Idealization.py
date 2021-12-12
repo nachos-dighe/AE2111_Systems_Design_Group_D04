@@ -76,9 +76,9 @@ for i in range(n_t):
     
     z_pos_t[i,:] = ( (0.038 - 0.0856) + 0.55 * np.sin(alp) ) * x_pos_t[i,:]
 
-    B_area_t[1,:] = ( ( t * spac_t ) / 6 ) * ( 2 + ( Izz_lst * z_pos_t[0,:] - Ixz_lst * x_pos_t[0,:] ) )
+    B_area_t[i,:] = ( ( t * spac_t ) / 6 ) * ( 2 + ( Izz_lst * z_pos_t[i+1,:] - Ixz_lst * x_pos_t[i+1,:] )
+                                               / ( Izz_lst * z_pos_t[i,:] - Ixz_lst * x_pos_t[i,:] ))
 
-    print(B_area_t[1,:])
 
 
 
