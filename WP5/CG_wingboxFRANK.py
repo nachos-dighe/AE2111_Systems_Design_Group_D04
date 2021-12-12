@@ -38,7 +38,19 @@ def cg_calculation(dy):
     Span = 24.64 # [m] Span
     i = 0
     dT = ( Span / 2 ) / dy
-    alpha, beta, b2, DeltaX, Cr, y, CrList = Lengths.WingboxDimensions(RCr, TCr, Span, dT)
+    y_lst = []
+
+    # Reading the y positions from the file 
+
+    with open("ylst.dat", "r") as file : # Reads the y position file 
+        y_lstRAW = file.readlines()
+
+    for line in y_lstRAW :
+        y = line.replace(",", "")
+        y = float(y)
+        y_lst.append(y)
+    
+    alpha, beta, b2, DeltaX, Cr, y, CrList = Lengths.WingboxDimensions(RCr, TCr, Span, y_lst)
     while (dT * i ) <= Span/2 :
         j = i - 1
         c = DeltaX[j] * tan(alpha)
