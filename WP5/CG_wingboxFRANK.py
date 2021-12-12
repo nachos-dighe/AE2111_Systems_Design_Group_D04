@@ -37,11 +37,11 @@ def cg_calculation(dy):
     TCr = 1.76 # [m] Tip chord
     Span = 24.64 # [m] Span
     i = 0
+    l = 0
     dT = ( Span / 2 ) / dy
     y_lst = []
 
     # Reading the y positions from the file 
-
     with open("ylst.dat", "r") as file : # Reads the y position file 
         y_lstRAW = file.readlines()
 
@@ -49,9 +49,13 @@ def cg_calculation(dy):
         y = line.replace(",", "")
         y = float(y)
         y_lst.append(y)
+
+
     
-    alpha, beta, b2, DeltaX, Cr, y, CrList = Lengths.WingboxDimensions(RCr, TCr, Span, y_lst)
-    while (dT * i ) <= Span/2 :
+    alpha, beta, b2, DeltaX, Cr = Lengths.WingboxDimensions(RCr, TCr, Span, y_lst)
+    while l <= 999 :
+        
+        l = l +1
         j = i - 1
         c = DeltaX[j] * tan(alpha)
         d = DeltaX[j] * tan(beta)
@@ -77,8 +81,8 @@ def cg_calculation(dy):
         CG_xList.append(CG_x)
         CG_zList.append(CG_z)
         i = i + 1
-        FracX = CG_x/CrList[j] # This are the relavtive positions of the CG comapred to the chord length
-        FracZ = CG_z/CrList[j] # This are the relavtive positions of the CG comapred to the chord length
+        #FracX = CG_x/CrList[j] # This are the relavtive positions of the CG comapred to the chord length
+        #FracZ = CG_z/CrList[j] # This are the relavtive positions of the CG comapred to the chord length
     return CG_xList, CG_zList, Cr
 
 CG_xList, CG_zList, Cr = cg_calculation(999)
