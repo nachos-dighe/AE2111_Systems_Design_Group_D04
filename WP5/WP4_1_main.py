@@ -54,11 +54,11 @@ def internal_plots(ylst,Vlst, BMlst, TMlst, title):
 #internal load plots: design and critical conditions (uncomment)
 
 #internal_plots(ylst_0,Vres_des, BMres_des, TMres_des)
-internal_plots(ylst_0, Vres_poscrit,BMres_poscrit,TMres_poscrit,
-               'Positive Critical load Factor')
-
-internal_plots(ylst_0, Vres_negcrit,BMres_negcrit,TMres_negcrit,
-               'Negative Critical load Factor')
+##internal_plots(ylst_0, Vres_poscrit,BMres_poscrit,TMres_poscrit,
+##               'Positive Critical load Factor')
+##
+##internal_plots(ylst_0, Vres_negcrit,BMres_negcrit,TMres_negcrit,
+##               'Negative Critical load Factor')
 
 #save crit loading list 3DO NOT RUN THIS!!!
 
@@ -74,5 +74,5 @@ np.savetxt('Critical_Load_Bending_Pos_Crit.txt',
            BMres_poscrit, delimiter='\\')
 
 
-print('shear at tip: pos_crit ', Vres_poscrit[-1],
-      '\n shear at tip: neg_crit',Vres_negcrit[-1])
+##print('shear at tip: pos_crit ', Vres_poscrit[-1],
+##      '\n shear at tip: neg_crit',Vres_negcrit[-1])
