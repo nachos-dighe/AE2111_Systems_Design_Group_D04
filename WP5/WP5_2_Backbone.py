@@ -92,13 +92,14 @@ for line in M_lstRAW :
 #Wingbox dimension lists
 alpha, beta, b, DeltaX, Cr = Length.WingboxDimensions(RCr, TCr, Span, y_lst)
 
-#obtain minimal rho satisfying minimum safety factor of 1.5
+#obtain minimal rho satisfying minimum safety factor of 1
 min_rho = MinRho.min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t)
-min_rho = 0.052 #the min rho most limiting neg/pos case
+print(min_rho)
+min_rho = 0.023 #the min rho most limiting neg/pos case
 #min_rho not final bc mom of I is not final
 
 #iterate per data point in spanwise direction
-for i in range(0,1000):
+for i in range(0,300):
     CG_X, CG_Z = CG.cg_calculation (alpha, beta, b[i], DeltaX[i])
     Ixx = MOI.Ixx_wingbox (DeltaX[i],beta,alpha,CG_Z,t,b[i])
     Ixz = MOI.Ixz_wingbox(DeltaX[i],beta,alpha,CG_X,CG_Z,t,b[i])
@@ -114,7 +115,7 @@ for i in range(0,1000):
 # Graphs
 y_lst_plt = []
 
-for i in range(0,1000):
+for i in range(0,300):
     y = y_lst[i]
     y_lst_plt.append(y)
     
