@@ -59,7 +59,7 @@ def tau_critical(h, n_ribs):
     k_s =  np.interp(frac, ab_lst, ks_lst)
     k_s[0] = np.interp(frac, ab_lst, clamped_lst)[0]
 
-    tau_cr =(( np.pi ** 2 * k_s * E ) / ( 12 * ( 1 - nu ) ** 2 ) ) * ( ( t / b ) ** 2 )
+    tau_cr =(( np.pi ** 2 * k_s * E ) / ( 12 * ( 1 - nu**2 ) ) ) * ( ( t / b ) ** 2 )
 
     return tau_cr
 
@@ -70,7 +70,7 @@ def rib_calc(tau_appl):
     for i in range(1,len(ylst)):
 
         b = ylst[i] - ribs[-1]
-        height = h_f[i]
+        height = h_f[ribs_index[-1]]
 
         if b >= height:
             large = b
@@ -82,12 +82,11 @@ def rib_calc(tau_appl):
         k_s =  np.interp(frac, ab_lst, ks_lst)
         
 
-        tau_crit = (( np.pi ** 2 * k_s * E ) / ( 12 * ( 1 - nu ) ** 2 ) ) * ( ( t / small ) ** 2 )
+        tau_crit = (( np.pi ** 2 * k_s * E ) / ( 12 * ( 1 - nu**2 ) ) ) * ( ( t / small ) ** 2 )
 
-        if tau_crit <= tau_appl[i] * 1.02:
+        if tau_crit <= tau_appl[i] * 1.05:
             ribs.append(ylst[i])
             ribs_index.append(i)
-            print("p")
     ribs.append(ylst[-1])
     ribs_index.append(len(ylst))
 
@@ -146,37 +145,37 @@ tau_tot_r_pos = np.absolute(shearstress_ave(Vres_poscrit, t_f, t_r) * 1.5 - shea
 tau_tot_f_neg = np.absolute(shearstress_ave(Vres_negcrit, t_f, t_r) * 1.5 + shearstress_T(t_f, TMres_negcrit))
 tau_tot_r_neg = np.absolute(shearstress_ave(Vres_negcrit, t_f, t_r) * 1.5 - shearstress_T(t_f, TMres_negcrit))
 
-###plotting
-##plt.subplot(4,1,1)  # positive front 
-##plt.plot(ylst, tau_tot_f_pos)
-##plt.plot(ylst,t_crit_f_36)
-##plt.plot(ylst,t_crit_f_60)
-##plt.plot(ylst,t_crit_f_100)
-##plt.title("positive loadcase front spar")
-##plt.legend(['tau max', '36 ribs', '60 ribs', '100 ribs'], loc='upper right')
-##
-##plt.subplot(4,1,2)
-##plt.plot(ylst, tau_tot_r_pos)
-##plt.plot(ylst, t_crit_r_36)
-##plt.plot(ylst,t_crit_r_60 )
-##plt.plot(ylst,t_crit_r_100)
-##plt.title("positive loadcase rear spar")
-##
-##plt.subplot(4,1,3)
-##plt.plot(ylst, tau_tot_f_neg)
-##plt.plot(ylst,t_crit_f_36)
-##plt.plot(ylst,t_crit_f_60)
-##plt.plot(ylst,t_crit_f_100)
-##plt.title("negative loadcase front spar")
-##
-##plt.subplot(4,1,4)
-##plt.plot(ylst, tau_tot_r_neg)
-##plt.plot(ylst, t_crit_r_36)
-##plt.plot(ylst,t_crit_r_60 )
-##plt.plot(ylst,t_crit_r_100)
-##plt.title("negative loadcase rear spar")
-##
-##plt.show()
+#plotting
+plt.subplot(4,1,1)  # positive front 
+plt.plot(ylst, tau_tot_f_pos)
+plt.plot(ylst,t_crit_f_36)
+plt.plot(ylst,t_crit_f_60)
+plt.plot(ylst,t_crit_f_100)
+plt.title("positive loadcase front spar")
+plt.legend(['tau max', '36 ribs', '60 ribs', '100 ribs'], loc='upper right')
+
+plt.subplot(4,1,2)
+plt.plot(ylst, tau_tot_r_pos)
+plt.plot(ylst, t_crit_r_36)
+plt.plot(ylst,t_crit_r_60 )
+plt.plot(ylst,t_crit_r_100)
+plt.title("positive loadcase rear spar")
+
+plt.subplot(4,1,3)
+plt.plot(ylst, tau_tot_f_neg)
+plt.plot(ylst,t_crit_f_36)
+plt.plot(ylst,t_crit_f_60)
+plt.plot(ylst,t_crit_f_100)
+plt.title("negative loadcase front spar")
+
+plt.subplot(4,1,4)
+plt.plot(ylst, tau_tot_r_neg)
+plt.plot(ylst, t_crit_r_36)
+plt.plot(ylst,t_crit_r_60 )
+plt.plot(ylst,t_crit_r_100)
+plt.title("negative loadcase rear spar")
+
+plt.show()
 
 #spacing list 
 ribs, indices = rib_calc(tau_tot_f_pos)
@@ -210,7 +209,7 @@ for i in range(len(ylst)):
 
     k_s =  np.interp(frac, ab_lst, ks_lst)
         
-    tau_cr =(( np.pi ** 2 * k_s * E ) / ( 12 * ( 1 - nu ) ** 2 ) ) * ( ( t / small ) ** 2 )
+    tau_cr =(( np.pi ** 2 * k_s * E ) / ( 12 * ( 1 - nu ** 2) )) * ( ( t / small ) ** 2 )
     checklist.append(tau_cr)
 
         
