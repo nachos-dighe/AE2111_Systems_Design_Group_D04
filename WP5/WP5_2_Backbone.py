@@ -23,7 +23,7 @@ TCr = 1.76 # [m] Tip chord
 Span = 24.64 # [m] Span
 dT = 0.1
 c = 0.005 # [m]
-t = 0.00198 #[m]
+t = 0.004 #[m]
 
 # Material properties
 k1c = 29*(10**6) # [Pa]
@@ -95,7 +95,7 @@ alpha, beta, b, DeltaX, Cr = Length.WingboxDimensions(RCr, TCr, Span, y_lst)
 #obtain minimal rho satisfying minimum safety factor of 1
 min_rho = MinRho.min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t)
 print(min_rho)
-min_rho = 0.023 #the min rho most limiting neg/pos case
+min_rho = 0.006 #the min rho most limiting neg/pos case
 #min_rho not final bc mom of I is not final
 
 #iterate per data point in spanwise direction
@@ -133,7 +133,6 @@ plt.show()
 
 #the negative case can withstand rho of 2 mm
 #the positive 0.052 so 52 mm
-#
 
 #lower rho higher safety stress constr => lower safety margin
 #higher rho is better, so low is more critical

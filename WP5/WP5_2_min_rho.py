@@ -1,8 +1,13 @@
+import WP5_2_CG_Wingbox as CG
+import WP5_2_MOI_trial as MOI
+import WP5_2_stressconcentration as StressCon
+
 def min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t):    
     #finding max nominal stress:
     i_max = M_lst.index(max(M_lst))
     
     #obtaining the max bending stress in that cross section
+    print(alpha, beta, b[i_max], DeltaX[i_max])
     CG_X, CG_Z = CG.cg_calculation (alpha, beta, b[i_max], DeltaX[i_max])
     Ixx = MOI.Ixx_wingbox (DeltaX[i_max],beta,alpha,CG_Z,t,b[i_max])
     Ixz = MOI.Ixz_wingbox(DeltaX[i_max],beta,alpha,CG_X,CG_Z,t,b[i_max])
