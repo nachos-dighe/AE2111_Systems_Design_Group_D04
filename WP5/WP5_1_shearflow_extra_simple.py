@@ -12,11 +12,11 @@ ylst = ylst_0
 
 E = 68.9 * 10 ** 9
 nu = 0.33
-t = 0.00198
+t = 0.004
 h_f = 0.0856 * xlst
 h_r = 0.0542 * xlst
-t_f = 0.00198
-t_r = 0.00198
+t_f = 0.004
+t_r = 0.004
 
 #k_s generation
 ab_lst_init = np.arange(1,5.25,0.25)
@@ -111,10 +111,10 @@ print("average shearstress rear positive is:", shearstress_ave(Vres_poscrit, t_f
 print()
 print("shearstress due to torque:", shearstress_T(t_f, TMres_poscrit) )
 
-tau_tot_f_pos = np.absolute(shearstress_ave(Vres_poscrit, t_f, t_r)) * 1.5 #+ shearstress_T(t_f, TMres_poscrit))
+tau_tot_f_pos = np.absolute(shearstress_ave(Vres_poscrit, t_f, t_r) * 1.5 + shearstress_T(t_f, TMres_poscrit))
 tau_tot_r_pos = np.absolute(shearstress_ave(Vres_poscrit, t_f, t_r) * 1.5 - shearstress_T(t_f, TMres_poscrit))
 
-tau_tot_f_neg = np.absolute(shearstress_ave(Vres_negcrit, t_f, t_r)) * 1.5 #+ shearstress_T(t_f, TMres_negcrit))
+tau_tot_f_neg = np.absolute(shearstress_ave(Vres_negcrit, t_f, t_r) * 1.5 + shearstress_T(t_f, TMres_negcrit))
 tau_tot_r_neg = np.absolute(shearstress_ave(Vres_negcrit, t_f, t_r) * 1.5 - shearstress_T(t_f, TMres_negcrit))
 
 #plotting
@@ -124,7 +124,7 @@ plt.plot(ylst,t_crit_f_36)
 plt.plot(ylst,t_crit_f_60)
 plt.plot(ylst,t_crit_f_100)
 plt.title("positive loadcase front spar")
-plt.legend(['tau max', '36 ribs', '60 ribs', '100 ribs'], loc='upper left')
+plt.legend(['tau max', '36 ribs', '60 ribs', '100 ribs'], loc='upper right')
 
 plt.subplot(4,1,2)
 plt.plot(ylst, tau_tot_r_pos)
