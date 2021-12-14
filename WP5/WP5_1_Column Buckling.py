@@ -49,7 +49,7 @@ def column_buckling(z_LE_0, z_TE_0, I_wb, BM, n_stringer, type_stringer_lst, Ast
     Sf = 1.5 #safety factor
 
     #stringer applied stress:
-    zlst = np.linspace(z_LE_0, z_TE_0, n_stringer, endpoint=True)
+    zlst = np.linspace(z_LE_0, z_TE_0, n_stringer, endpoint=False)
     sigma_allow_lst = np.empty([n_stringer, len(BM)])
     MOS_lst_lst = np.empty([n_stringer, len(BM)])
 
@@ -108,14 +108,38 @@ I_wb = MOI_calculator(DeltaX, beta, alpha, z_LE_bottom, z_TE)
 #spanwise margin of safety
 MOS_lst_lst_top, sigma_allow_top_lst = column_buckling(z_LE_top, z_TE_top, I_wb, BMres_poscrit, n_stringer_top, type_stringer_lst_top, Astringer_lst, t_stringer)
 MOS_lst_lst_bottom, sigma_allow_bottom_lst = column_buckling(z_LE_bottom, z_TE_bottom, I_wb, BMres_negcrit, n_stringer_bottom, type_stringer_lst_bottom, Astringer_lst, t_stringer)
-
+'''
 save_input = int(input('To save the bending stress files as .txt, input 1 '))
 if save_input == 1:
     np.savetxt('Normal_Stress_Top_Panel.txt', sigma_allow_top_lst[0], delimiter='\\')
     np.savetxt('Normal_Stress_Bottom_Panel.txt',sigma_allow_bottom_lst[0], delimiter='\\')
+'''
 
+#plots
 
-#plots\
+# multiple line plots
+for n in range(n_stringer_top):
+    label_txt = 'Stringer' + str(n_stringer_top+1)
+    plt.plot(ylst_0,MOS_lst_lst_top[n], label = label_txt)
+plt.legend
+plt.show()
+'''
+def MOS_plot(MOS_lst_lst, ylst_0):
+    for i in 
+    plt.plot(x1, y1, label="line 1")
+
+    plt.plot( 'x_values', 'y1_values', data=df, marker='o', markerfacecolor='blue', markersize=12, color='skyblue', linewidth=4)
+    plt.plot( 'x_values', 'y2_values', data=df, marker='', color='olive', linewidth=2)
+    plt.plot( 'x_values', 'y3_values', data=df, marker='', color='olive', linewidth=2, linestyle='dashed', label="toto")
+
+    # show legend
+    plt.legend()
+
+    # show graph
+    plt.show()
+
+'''
+
 '''
 plt.plot(ylst_0, MOS_lst_4L_stringer)
 plt.show()
