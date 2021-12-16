@@ -209,7 +209,7 @@ def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c
     def maximum_tensile_stress(M_x, Izz_design_1,CG_Z,Ixz_design_1,CG_X, Ixx_design_1,DeltaX,beta,Izz_design_2,Ixz_design_2,Ixx_design_2,Izz_design_3,Ixz_design_3,Ixx_design_3):
         max_tensile_Stress_1_design_1 = (M_x * Izz_design_1* (-CG_Z) + M_x * Ixz_design_1 * (-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
         max_tensile_Stress_2_design_1 = (M_x * Izz_design_1 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_1 * (DetlaX-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
-        max_stress_design_1: = max(max_tensile_Stress_1_design_1,max_tensile_Stress_2_design_1)
+        max_stress_design_1 = max(max_tensile_Stress_1_design_1,max_tensile_Stress_2_design_1)
     
 
         max_tensile_Stress_1_design_2 = (M_x * Izz_design_2 * (-CG_Z) + M_x * Ixz_design_2 * (-CG_X))/(Ixx_design_2*Izz_design_2-((Ixz_design_2)**2))
@@ -226,7 +226,7 @@ def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c
 
     return max_stress_design_1,max_stress_design_2,max_stress_design_3
 
-stress_max_1, stress_max_2, stress_max_3 = normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,number_of_I_stringers_top,number_of_I_stringers_bottom,A_L,M_x)
+max_stress_design_1,max_stress_design_2,max_stress_design_3 = normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,number_of_I_stringers_top,number_of_I_stringers_bottom,A_L,M_x)
         
 
     
