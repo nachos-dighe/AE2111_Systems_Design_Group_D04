@@ -25,6 +25,12 @@ dT = 0.1
 c = 0.005 # [m]
 t = 0.004 #[m]
 t_side = 0.00198 # [m]
+L_L = 0.01 #[m]
+I_c = 0.075 #[m]
+I_a = 0.03 #[m]
+I_b = 0.075 #[m]
+t_L = 0.001
+t_I = 0.001
 
 # Material properties
 k1c = 29*(10**6) # [Pa]
@@ -88,13 +94,24 @@ print(min_rho)
 #iterate per data point in spanwise direction
 for i in range(0,300):
     CG_X, CG_Z = CG.cg_calculation (alpha, beta, b[i], DeltaX[i])
-    stress_nom = MOI.normal_stress (Ixx,Ixz,Izz,CG_Z,CG_X,abs(M_lst[i]), DeltaX[i], beta) #update to sress1, stess2, stress3 = call function
+
     if DesignChoice == 1:
-        stress_nom = stress1
+        number_of_I_stringers_top = 2
+        number_of_I_stringers_bottom = 2
     if DesignChoice == 2:
-        stress_nom = stress2
+        number_of_I_stringers_top = 3
+        number_of_I_stringers_bottom = 2
     if DesignChoice == 3:
-        stress_nom = stress3
+        number_of_I_stringers_top = 3
+        number_of_I_stringers_bottom = 3
+    maxstres1, maxstress2, maxstress2 = MOI.normal_stress_calculator(CG_X,CG_Z,alpha,beta[i],DeltaX[i],b,t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,number_of_I_stringers_top,number_of_I_stringers_bottom,A_L,abs(M_lst[i]))
+    #stress_nom = MOI.normal_stress (Ixx,Ixz,Izz,CG_Z,CG_X,abs(M_lst[i]), DeltaX[i], beta) #update to sress1, stess2, stress3 = call function
+    if DesignChoice == 1:
+        stress_nom = maxstress1
+    if DesignChoice == 2:
+        stress_nom = maxstress2
+    if DesignChoice == 3:
+        stress_nom = maxstress3
     safety_margin = StressCon.safety(c, min_rho, k1c, stress_nom)
     SafeMar_lst1.append(safety_margin)
     safety_margin2 = stress_allow / stress_nom
@@ -135,7 +152,7 @@ plt.show()
 #Make the plots and put them in overleaf
 #Talk per plot about how the safetymargin should stay above 1 for both loading cases of each design
 
-
+#In the end re-upload the code files to overleaf to have the up to date files in there
 
 
 
