@@ -10,7 +10,7 @@ from math import *
 # Import files
 import WP5_2_Chord_Length as Length
 import WP5_2_stressconcentration as StressCon
-import WP5_2_MOI_trial as MOI #needs to be changed when done
+import WP5_2_MOI as MOI 
 import WP5_2_CG_Wingbox as CG
 import WP5_2_min_rho as MinRho
 
@@ -24,6 +24,13 @@ Span = 24.64 # [m] Span
 dT = 0.1
 c = 0.005 # [m]
 t = 0.004 #[m]
+t_side = 0.00198 # [m]
+L_L = 0.01 #[m]
+I_c = 0.075 #[m]
+I_a = 0.03 #[m]
+I_b = 0.075 #[m]
+t_L = 0.001
+t_I = 0.001
 
 # Material properties
 k1c = 29*(10**6) # [Pa]
@@ -37,18 +44,15 @@ k = 0
 
 # Defining lists
 y_lst = []
-T_lst = []
 M_lst = []
-rhodiff_lst = []
 SafeMar_lst1 = []
 SafeMar_lst2 = []
-SafeMar_lst3 = []
-
 
 #---------------------------------------------------------------------------------------------
-# Reading files to get the spanwise coordinates, bending loads and torisonal loads
+# Reading files to get the spanwise coordinates and bending loads
 
 LoadChoice = input("Which load case do you want to evaluate?\nPos_Crit?(1)\nNeg_crit?(2)")
+DesignChoice = input("Which design choice do you want to evaluate?\nDesign 1\nDesign 2\nDesign3")
 
 with open("ylst.dat", "r") as file : # Reads the y position file 
     ylstRAW = file.readlines()
@@ -58,34 +62,23 @@ for line in ylstRAW :
     y = float(y)
     y_lst.append(y)
 
-
 if "1" in LoadChoice:
-    with open("Critical_Load_Torsion_Pos_Crit.dat", "r") as file : 
-        T_lstRAW = file.readlines()
     with open("Critical_Load_Bending_Pos_Crit.dat", "r") as file : 
         M_lstRAW = file.readlines()
 
 elif "2" in LoadChoice:
-    with open("Critical_Load_Torsion_Neg_Crit.dat", "r") as file : 
-        T_lstRAW = file.readlines()
     with open("Critical_Load_Bending_Neg_Crit.dat", "r") as file : 
         M_lstRAW = file.readlines()
 
 else :
     print("Answer either '1' or '2' for choice. Please restart the code to work!")
-
-for line in T_lstRAW :
-    T = line.replace("\n", "")
-    T = float(T)
-    T_lst.append(T)
     
 for line in M_lstRAW :
     M = line.replace("\n", "")
     M = float(M)
     M_lst.append(M)
+# Output, y_lst, M_lst
 
-
-# Output, y_lst, M_lst, T_lst
 #---------------------------------------------------------------------------------------------
 # Main code
 
@@ -94,22 +87,35 @@ alpha, beta, b, DeltaX, Cr = Length.WingboxDimensions(RCr, TCr, Span, y_lst)
 
 #obtain minimal rho satisfying minimum safety factor of 1
 min_rho = MinRho.min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t)
+
 print(min_rho)
-min_rho = 0.006 #the min rho most limiting neg/pos case
-#min_rho not final bc mom of I is not final
+#min_rho = 0.006 #the min rho most limiting neg/pos case
 
 #iterate per data point in spanwise direction
 for i in range(0,300):
     CG_X, CG_Z = CG.cg_calculation (alpha, beta, b[i], DeltaX[i])
-    Ixx = MOI.Ixx_wingbox (DeltaX[i],beta,alpha,CG_Z,t,b[i])
-    Ixz = MOI.Ixz_wingbox(DeltaX[i],beta,alpha,CG_X,CG_Z,t,b[i])
-    Izz = MOI.Izz_wingbox(DeltaX[i],beta,alpha,CG_X,t,b[i])
-    stress_nom = MOI.normal_stress (Ixx,Ixz,Izz,CG_Z,CG_X,abs(M_lst[i]), DeltaX[i], beta)
+
+    if DesignChoice == 1:
+        number_of_I_stringers_top = 2
+        number_of_I_stringers_bottom = 2
+    if DesignChoice == 2:
+        number_of_I_stringers_top = 3
+        number_of_I_stringers_bottom = 2
+    if DesignChoice == 3:
+        number_of_I_stringers_top = 3
+        number_of_I_stringers_bottom = 3
+    maxstres1, maxstress2, maxstress2 = MOI.normal_stress_calculator(CG_X,CG_Z,alpha,beta[i],DeltaX[i],b,t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,number_of_I_stringers_top,number_of_I_stringers_bottom,A_L,abs(M_lst[i]))
+    #stress_nom = MOI.normal_stress (Ixx,Ixz,Izz,CG_Z,CG_X,abs(M_lst[i]), DeltaX[i], beta) #update to sress1, stess2, stress3 = call function
+    if DesignChoice == 1:
+        stress_nom = maxstress1
+    if DesignChoice == 2:
+        stress_nom = maxstress2
+    if DesignChoice == 3:
+        stress_nom = maxstress3
     safety_margin = StressCon.safety(c, min_rho, k1c, stress_nom)
     SafeMar_lst1.append(safety_margin)
     safety_margin2 = stress_allow / stress_nom
     SafeMar_lst2.append(safety_margin2)
-    
 
 #---------------------------------------------------------------------------------------------
 # Graphs
@@ -138,7 +144,15 @@ plt.show()
 #higher rho is better, so low is more critical
 
 
+#Manual to complete it once the moment of inertia's are finalised
+#Run the code per design for the positive as well as the negative load case
+#Check what is the higher min rho, then take that as the rho to calculate the final safety margin graphs for that design
+#Iterate this for all 3 designs, clearly state what the min rho's are per design
 
+#Make the plots and put them in overleaf
+#Talk per plot about how the safetymargin should stay above 1 for both loading cases of each design
+
+#In the end re-upload the code files to overleaf to have the up to date files in there
 
 
 
