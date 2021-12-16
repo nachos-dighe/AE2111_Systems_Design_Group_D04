@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e20cf24e-9354-4490-b49f-194b4fa98d46" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WP5/WP5_1_Column Buckling.py" beforeDir="false" afterPath="$PROJECT_DIR$/WP5/WP5_1_Column Buckling.py" afterDir="false" />
-    </list>
+    <list default="true" id="e20cf24e-9354-4490-b49f-194b4fa98d46" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,6 +40,9 @@
       <module name="AE2111_Systems_Design_Group_D04" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="C:\Users\frank\PycharmProjects\PhytonPyCharmFirstTry\venv\Scripts\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/WP4/WP4_2 Python" />
       <option name="IS_MODULE_SDK" value="false" />
@@ -62,6 +62,9 @@
       <module name="AE2111_Systems_Design_Group_D04" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/WP5" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -117,6 +120,7 @@
       <workItem from="1636551076095" duration="991000" />
       <workItem from="1636639610265" duration="1000" />
       <workItem from="1638091164159" duration="98000" />
+      <workItem from="1639650094425" duration="13000" />
     </task>
     <servers />
   </component>
