@@ -85,7 +85,8 @@ ab_lst_E = np.linspace(min(ab_lst_init_E), max(ab_lst_init_E), num=1000, endpoin
 kc_interp_E = sp.interpolate.interp1d(ab_lst_init_E, kc_lst_E_init, kind = "quadratic", fill_value="extrapolate")
 kc_lst_E = kc_interp_E(ab_lst_E)
 
-
+##plt.plot(ab_lst_C, kc_lst_C)
+##plt.show()
 # --------------------------------------------------------------------
 # Making the function to calculate everything
 
@@ -95,7 +96,7 @@ def Sigma_critical(h, n_stringers):
 
     a = []
     b = []
-    n_ribs = 60 #!! Don't know
+    n_ribs = 40 #!! Don't know
     Span = 12.35 #!! check
 
 
@@ -114,7 +115,11 @@ def Sigma_critical(h, n_stringers):
     k_c[999] = np.interp(frac, ab_lst_E, kc_lst_E)[999]
 
     Sigma_cr =(( np.pi ** 2 * k_c * E ) / ( 12 * ( 1 - nu **2 ) ) ) * ( ( t / b ) ** 2 )
-
+    
+    print("a", a)
+    print("b", b)
+    print("frac", a/b)
+    print("k_c", k_c)
     return Sigma_cr
 
 
@@ -156,7 +161,8 @@ plt.show()
 
 # needs to be done:
 # [ ] Put Max load in to the code
-# [ ] Make graph titles
+# [V] Make graph titles
+# [ ] Ask what the ribs pacing is
 # [ ] Tidy up the code
 # [ ] Check code
 
