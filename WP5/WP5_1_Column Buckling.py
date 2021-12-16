@@ -3,41 +3,65 @@ import matplotlib.pyplot as plt
 from WP4_XFLR5_Raw_Data import xlst_0, ylst_0
 from WP4_1_main import BMres_poscrit, BMres_negcrit
 
+#WARNING
+print('------WARNING------\n Always use *variable_mod* syntaxin this program to avoid singular points.\n -------------')
+
+#singular point, BM[-1] approaches 0, MOS[-1] tends to infty 
+conds = ((abs(BMres_poscrit)>10000) & (abs(BMres_negcrit)>5000))
+ylst_0_mod=ylst_0[np.where(conds)]
+xlst_0_mod=xlst_0[np.where(conds)]
+BMres_poscrit_mod = BMres_poscrit[conds]
+BMres_negcrit_mod = BMres_negcrit[conds]
+
+#old implementation
+'''
+BMres_poscrit = np.delete(BMres_poscrit, [-1])
+BMres_negcrit = np.delete(BMres_negcrit, [-1])
+ylst_0 = np.delete(ylst_0, [-1])
+xlst_0 = np.delete(xlst_0, [-1])
+'''
+
 #wingbox dimensions (z from centroidal x-axis)
 alpha = np.deg2rad(2.54)
 beta = np.deg2rad(0.73)
-DeltaX = 0.55*xlst_0
+DeltaX = 0.55*xlst_0_mod
 
-z_LE = 0.0856*xlst_0
-z_TE = 0.0542*xlst_0 #b
+#wingbox dimension: LE/TE
+z_LE = 0.0856*xlst_0_mod
+z_TE = 0.0542*xlst_0_mod #b
 
-z_LE_bottom = 0.038*xlst_0
+#centroid to bottom plate at LE/TE
+z_LE_bottom = 0.038*xlst_0_mod
 z_TE_bottom = z_LE_bottom-DeltaX*np.tan(beta)
 
+#centroid to top plate at LE/TE
 z_LE_top = z_LE-z_LE_bottom
 z_TE_top = z_LE-z_LE_bottom-DeltaX*np.tan(alpha)
 
-def MOI_calculator(DeltaX, beta, alpha, z, b):
-    Ixx1 = ((((DeltaX) ** 3) * ((np.sin(beta)) ** 2)) / (12 * ((np.cos(beta)) ** 3))) + ((DeltaX) / np.cos(beta)) * (
+#wingbox thickness
+t_wingbox = 0.00198 #as checked last time
+
+#MOI per unit thickness
+def MOI_calculator(DeltaX, beta, alpha, z, b, t_wingbox):
+    Ixx1_per_t = ((((DeltaX) ** 3) * ((np.sin(beta)) ** 2)) / (12 * ((np.cos(beta)) ** 3))) + ((DeltaX) / np.cos(beta)) * (
                 z - ((DeltaX * np.tan(beta)) / 2)) ** 2  # lower left angled profile
 
-    Ixx2 = (((DeltaX) ** 3) * ((np.sin((alpha)) ** 2)) / (12 * ((np.cos(alpha)) ** 3))) + (DeltaX / (np.cos(alpha))) * (
+    Ixx2_per_t = (((DeltaX) ** 3) * ((np.sin((alpha)) ** 2)) / (12 * ((np.cos(alpha)) ** 3))) + (DeltaX / (np.cos(alpha))) * (
                 (-DeltaX * np.tan(beta)) - b - ((DeltaX * np.tan(alpha)) / 2) + z) ** 2  # upper right angled profile
 
-    Ixx3 = 1 / 12 * ((DeltaX * np.tan(beta) + b + DeltaX * np.tan(alpha)) ** 3) + (
+    Ixx3_per_t = 1 / 12 * ((DeltaX * np.tan(beta) + b + DeltaX * np.tan(alpha)) ** 3) + (
                 DeltaX * np.tan(beta) + b + DeltaX * np.tan(alpha)) * (
                        z - ((DeltaX * np.tan(beta) + b + DeltaX * np.tan(alpha)) / 2)) ** 2  # vertical profile on the left
 
-    Ixx4 = 1 / 12 * b ** 3 + b * (DeltaX * np.tan(beta) + (b / 2) - z) ** 2  # vertical profile on the right
+    Ixx4_per_t = 1 / 12 * b ** 3 + b * (DeltaX * np.tan(beta) + (b / 2) - z) ** 2  # vertical profile on the right
 
-    Ixx = Ixx1 + Ixx2 + Ixx3 + Ixx4
+    Ixx = (Ixx1_per_t + Ixx2_per_t + Ixx3_per_t + Ixx4_per_t)*t_wingbox
     return Ixx
 
 #I_wb =((((DeltaX)**3)*((sin(beta))**2))/(12*((cos(beta))**3)))+((DeltaX)/cos(beta))*(z-((DeltaX * tan(beta))/2))**2 + (((DeltaX)**3)*((sin((alpha))**2))/(12*((cos(alpha))**3)))+(DeltaX/(cos(alpha)))*((-DeltaX*tan(beta))-b-((DeltaX*tan(alpha))/2)+z)**2 + 1/12 * ((DeltaX*tan(beta)+b+DeltaX*tan(alpha))**3) +(DeltaX*tan(beta)+b+DeltaX*tan(alpha))*(z-((DeltaX*tan(beta)+b+DeltaX*tan(alpha))/2))**2 + 1/12 * b**3 + b*(DeltaX*tan(beta)+(b/2)-z)**2
 #I_wb/t = ((0.0856*xlst_0)**3+(0.268*xlst_0)**2*0.0856*xlst_0)+((0.0856*xlst_0)**3+(0.268*xlst_0)**2*0.0856*xlst_0)
 #z_wbbottom_lst = np.linspace(z_LE_bottom, z_TE_bottom, n_stringer, endpoint=True)
 #z_wbtop_lst = np.linspace(z_LE_top, z_TE_top, n_stringer, endpoint=True)
-
 #type stringer: (0,1) = (I, L) for #I,L stringer respectively
 def column_buckling(z_LE_0, z_TE_0, I_wb, BM, n_stringer, type_stringer_lst, Astringer_lst, t):  #z_LE_0,z_TE_0  (0: can be replaced with top/bottom), BM: pos/neg crit,
 
@@ -55,7 +79,7 @@ def column_buckling(z_LE_0, z_TE_0, I_wb, BM, n_stringer, type_stringer_lst, Ast
 
     for i in range(0, n_stringer):
         #allowable stress
-        sigma_allow= BM*I_wb/zlst[i]*Sf
+        sigma_allow= BM*zlst[i]/I_wb*Sf
         sigma_allow_lst[i, :] = sigma_allow
 
         if type_stringer_lst[i] ==0: #I-stringer
@@ -72,12 +96,11 @@ def column_buckling(z_LE_0, z_TE_0, I_wb, BM, n_stringer, type_stringer_lst, Ast
 
         #failure stress
         sigma_crit_lst = (K*np.pi**2*E*Iminlst)/(L**2*Astringer_lst)
-
         #print(Iminlst[-1], sigma_crit_lst[-1]) #testing #works
         #sigma_crit_lst /= n_stringer  # assume stress equally divided across stringers #INCORRECT
 
         #margin of safety for ith stringer, spanwise
-        MOS_lst = sigma_crit_lst/sigma_allow
+        MOS_lst = sigma_crit_lst/np.abs(sigma_allow)
         #margin of safety for all stringers, spanwise
         MOS_lst_lst[i, :] = MOS_lst
         #MOS_lst_lst = np.append(MOS_lst_lst, MOS_lst, axis=1)
@@ -93,7 +116,7 @@ def column_buckling(z_LE_0, z_TE_0, I_wb, BM, n_stringer, type_stringer_lst, Ast
 #initialisation (area stringer)
 A_stringer_root = 0.0003 #assumed [m]
 A_stringer_tip = 0.0003 #assumed [m]
-Astringer_lst=np.linspace(A_stringer_root, A_stringer_tip,len(ylst_0))
+Astringer_lst=np.linspace(A_stringer_root, A_stringer_tip,len(ylst_0_mod))
 t_stringer = 0.001 #assumed [m] #const thickness
 
 #initialisation (stringer instances)
@@ -103,11 +126,17 @@ type_stringer_lst_top = np.array([1,0,0,1]) #0: I-stringer; 1: L-stringer (come 
 type_stringer_lst_bottom = np.array([1,0,1]) #0: I-stringer; 1: L-stringer (come up with better implementation)
 
 #calculate MOI of WB (w/o stringer)
-I_wb = MOI_calculator(DeltaX, beta, alpha, z_LE_bottom, z_TE)
+I_wb = MOI_calculator(DeltaX, beta, alpha, z_LE_bottom, z_TE, t_wingbox)
+
+#plot testing MOI
+'''
+plt.plot(ylst_0_mod, I_wb) #testing
+plt.show()
+'''
 
 #spanwise margin of safety
-MOS_lst_lst_top, sigma_allow_top_lst = column_buckling(z_LE_top, z_TE_top, I_wb, BMres_poscrit, n_stringer_top, type_stringer_lst_top, Astringer_lst, t_stringer)
-MOS_lst_lst_bottom, sigma_allow_bottom_lst = column_buckling(z_LE_bottom, z_TE_bottom, I_wb, BMres_negcrit, n_stringer_bottom, type_stringer_lst_bottom, Astringer_lst, t_stringer)
+MOS_lst_lst_top, sigma_allow_top_lst = column_buckling(z_LE_top, z_TE_top, I_wb, BMres_poscrit_mod, n_stringer_top, type_stringer_lst_top, Astringer_lst, t_stringer)
+MOS_lst_lst_bottom, sigma_allow_bottom_lst = column_buckling(z_LE_bottom, z_TE_bottom, I_wb, BMres_negcrit_mod, n_stringer_bottom, type_stringer_lst_bottom, Astringer_lst, t_stringer)
 '''
 save_input = int(input('To save the bending stress files as .txt, input 1 '))
 if save_input == 1:
@@ -116,13 +145,30 @@ if save_input == 1:
 '''
 
 #plots
+#print(sigma_allow_top_lst[1,-1]) #testing #does not work #fixed
 
 # multiple line plots
+fig1, ax1 = plt.subplots()
+fig2, ax2 = plt.subplots()
+
 for n in range(n_stringer_top):
-    label_txt = 'Stringer' + str(n_stringer_top+1)
-    plt.plot(ylst_0,MOS_lst_lst_top[n], label = label_txt)
-plt.legend
+    label_txt = 'Stringer: ' + str(n+1)
+    ax1.plot(ylst_0_mod,MOS_lst_lst_top[n,:], label = label_txt)
+ax1.legend()
+ax1.set_ylabel(r'MOS [-]')
+ax1.set_xlabel(r'Span [m]')
+ax1.set_title('Spanwise Margin of Safety Graphs: Top Panel Stringers')
+
+for n in range(n_stringer_bottom):
+    label_txt = 'Stringer: ' + str(n+1)
+    ax2.plot(ylst_0_mod,MOS_lst_lst_top[n,:], label = label_txt)
+ax2.legend()
+ax2.set_ylabel(r'MOS [-]')
+ax2.set_xlabel(r'Span [m]')
+ax2.set_title('Spanwise Margin of Safety Graphs: Bottom Panel Stringers')
+
 plt.show()
+
 '''
 def MOS_plot(MOS_lst_lst, ylst_0):
     for i in 
