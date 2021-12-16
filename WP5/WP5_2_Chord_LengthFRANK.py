@@ -38,7 +38,7 @@ def WingboxDimensions(RCr, TCr, Span, ylst):
     i = 0
     while i <= 999 :
         ylst[i] = float(ylst[i])
-        Cr_RAW = RCr - (RCr-TCr)/Span * ylst[i]
+        Cr_RAW = RCr - (RCr-TCr)/(Span/2)* ylst[i]
         Cr.append(Cr_RAW)
         FSparL.append(round(0.08562876 * Cr_RAW,3)) # a The value given was generated in Catia
         b.append(round(0.05423628 * Cr_RAW,3)) # b The value given was generated in Catia
