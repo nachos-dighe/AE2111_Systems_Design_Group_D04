@@ -159,28 +159,28 @@ print("rib positions are:",ribs)
 print(indices)
 
 #plotting
-plt.subplot(4,1,1)  # positive front 
-plt.plot(ylst, tau_tot_f_pos)
-plt.plot(ylst,checklist)
-plt.title("positive loadcase front spar")
-plt.legend(['tau max', '36 ribs', '60 ribs', '100 ribs'], loc='upper right')
-
-plt.subplot(4,1,2)
-plt.plot(ylst, tau_tot_r_pos)
-plt.plot(ylst,checklist)
-plt.title("positive loadcase rear spar")
-
-plt.subplot(4,1,3)
-plt.plot(ylst, tau_tot_f_neg)
-plt.plot(ylst,checklist)
-plt.title("negative loadcase front spar")
-
-plt.subplot(4,1,4)
-plt.plot(ylst, tau_tot_r_neg)
-plt.plot(ylst,checklist)
-plt.title("negative loadcase rear spar")
-
-plt.show()
+##plt.subplot(4,1,1)  # positive front 
+##plt.plot(ylst, tau_tot_f_pos)
+##plt.plot(ylst,checklist)
+##plt.title("positive loadcase front spar")
+##plt.legend(['tau max', '36 ribs', '60 ribs', '100 ribs'], loc='upper right')
+##
+##plt.subplot(4,1,2)
+##plt.plot(ylst, tau_tot_r_pos)
+##plt.plot(ylst,checklist)
+##plt.title("positive loadcase rear spar")
+##
+##plt.subplot(4,1,3)
+##plt.plot(ylst, tau_tot_f_neg)
+##plt.plot(ylst,checklist)
+##plt.title("negative loadcase front spar")
+##
+##plt.subplot(4,1,4)
+##plt.plot(ylst, tau_tot_r_neg)
+##plt.plot(ylst,checklist)
+##plt.title("negative loadcase rear spar")
+##
+##plt.show()
 
 
 
