@@ -157,7 +157,8 @@ plt.show()
 
 
 
-
+#Plots graphs for root bc there all the stringers are still gonna be
+#We do positive load case only bc way higher stress
 
 
 
