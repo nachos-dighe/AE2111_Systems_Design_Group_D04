@@ -29,7 +29,7 @@ def min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t, DesignChoice,t_side,L_
     rho = 0.001 
     while True:
         safety_margin = StressCon.safety(c, rho, k1c, stress_nom)
-        if safety_margin >= 1:
+        if safety_margin >= 1 :
             break
         rho = rho + 0.001
     return rho

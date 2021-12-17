@@ -88,7 +88,7 @@ print(min_rho)
 
 #min_rho = 0.467 #the min rho most limiting neg/pos case design 1
 #min_rho = 0.475  #the min rho most limiting neg/pos case design 2
-min_rho = 0.455  #the min rho most limiting neg/pos case design 2
+#min_rho = 0.455  #the min rho most limiting neg/pos case design 2
 #iterate per data point in spanwise direction
 for i in range(0,325):
     CG_X, CG_Z = CG.cg_calculation (alpha, beta, b[i], DeltaX[i])
@@ -139,8 +139,6 @@ plt.show()
 #Because this rho is the most critical crack radius of curvature this design can withstand
 
 #Make the plots and put them in overleaf
-#Note that total plots go to infinity in the end, but make plots in range (0,1000), note that you have to change it in min_rho file as well
-#Then make same plots but for range (0,300) for 'zoomed in' version
 #Talk per plot about how the safetymargin should stay above 1 for both loading cases of each design
 
 #In the end re-upload the code files to overleaf to have the up to date files in there
