@@ -7,21 +7,36 @@ import math
 
 #1. Ixx Ixz Izz formula for wingbox (Done)
 #2. Ixx Ixz Izz local of stringers chosen (Done)
-#3. Design type specific total Ixx Ixz Izz (step 1 + design specific stringer configuration) (Waiting)
+#3. Design type specific total Ixx Ixz Izz (step 1 + design specific stringer configuration) (PARTIALLY DONE)
 #4. Stress calculator at extreme points for tension for each design (Done)
 
 ############################################################################################################################################################################################
+DeltaX = 1
+beta = 0.4
+alpha = 0.5
+b = 2
+CG_X = 0.3
+CG_Z = 2
+t = 0.001
+t_side = 0.0005
+L_L = 0.005
+t_L = 0.001
+I_c = 0.005
+I_a = 0.005
+I_b = 0.005
+t_I = 0.005
+M_x = 5
 
 
 #INPUTS
 
-#dimensions of wingbox: DeltaX,beta,alpha,CG_X, CG_Z,t
+#dimensions of wingbox: DeltaX,beta,alpha,CG_X, CG_Z,t, t_side
 
 
 #dimensions of stringers (I & L stringers): L_L, t_L, I_c, I_a, I_b,t_I
 
 
-#configuration of stringers: number_of_I_stringers_top, number_of_I_stringers_bottom,  number_of_I_stringers_top, number_of_I_stringers_bottom
+#configuration of stringers: number_of_I_stringers_top, number_of_I_stringers_bottom
 
 #extenal loads: M_x at a given point
 
@@ -43,15 +58,17 @@ import math
 
 #SOME DIMENSIONS
 
-t_sides = 4 * 10**(-3) #meters
+t_side = 4 * 10**(-3) #meters
 
 t = 1.98 * 10**(-3) #meters (for top and bottom sheets)
+
+A_L = 300 * (10**-6) #area of L stringers
 
 ############################################################################################################################################################################################
 
 #section for wingbox MOI calculation
 
-def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,number_of_I_stringers_top,number_of_I_stringers_bottom,A_L,M_x):
+def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,A_L,M_x):
     
     def Ixx_wingbox(DeltaX,beta,alpha,CG_Z,t_side,t, b):
     
@@ -135,24 +152,11 @@ def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c
 
         Izz_I = (1/12) * (I_a)**3 * t_I + (1/12) *(I_c)**3 * t_I
 
+        A_I = I_a * t_I + I_b * t_I +I_c * t_I
 
-        return Ixx_I, Izz_I
+        return Ixx_I, Izz_I, A_I
 
-    Ixx_I, Izz_I = local_MOI_I_stringer(I_c, I_a, I_b,t_I)
-
-
-    def I_stringer_spacing(DeltaX, number_of_I_stringers_top,number_of_I_stringers_bottom):
-    #s = spacing between I stringers or between I and L stringers
-
-        s_top = DeltaX / (number_of_I_stringers_top + 1)
-
-        s_bottom = DeltaX / (number_of_I_stringers_bottom + 1)
-
-        return s_top, s_bottom
-
-    s_top, s_bottom = I_stringer_spacing(DeltaX, number_of_I_stringers_top,number_of_I_stringers_bottom)
-
-
+    Ixx_I, Izz_I, A_I= local_MOI_I_stringer(I_c, I_a, I_b,t_I)
 
 
 
@@ -162,13 +166,8 @@ def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c
 
 #section for MOI calculation of each design option
 
-    def I_design_option_1(Ixx_wingbox,Izz_wingbox,Ixz_wingbox, Ixx_L, Izz_L, I_c,I_a,I_b,t_I, number_of_I_stringers_top, number_of_I_stringers_bottom, A_L, CG_Z, CG_X,DeltaX, b ,alpha, beta): #no I stringers, only L stringers on corners
+    def I_design_option_1(Ixx_wingbox,Izz_wingbox,Ixz_wingbox, Ixx_L, Izz_L, I_c,I_a,I_b,t_I, A_L, CG_Z, CG_X,DeltaX, b ,alpha, beta): #no I stringers, only L stringers on corners
 
-        A_L = 300 * (10**-6) #area of single L stringer 
-
-        number_of_I_stringers_top = 0 #number of center stringer on top sheet
-
-        number_of_I_stringers_bottom = 0 #number of center stringer on bottom sheet
 
         Ixx_design_1 = Ixx_wingbox + Ixx_L + A_L * (CG_Z)**2 + Ixx_L + A_L * (-(DeltaX * tan(alpha) + b + DeltaX * tan(beta)) - CG_Z)**2 + Ixx_L + A_L * (-DeltaX * tan(beta) - CG_Z)**2 + Ixx_L + A_L * (-(DeltaX * tan(alpha) + b)-CG_Z)**2
 
@@ -178,50 +177,59 @@ def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c
 
         return Ixx_design_1, Izz_design_1, Ixz_design_1
 
-    Ixx_design_1, Izz_design_1, Ixz_design_1 = I_design_option_1(Ixx_wingbox,Izz_wingbox,Ixz_wingbox, Ixx_L, Izz_L, I_c,I_a,I_b,t_I, number_of_I_stringers_top, number_of_I_stringers_bottom, A_L, CG_Z, CG_X,DeltaX, b ,alpha, beta)
-
-    def I_design_option_2(Ixx_wingbox,Izz_wingbox,Ixz_wingbox, Ixx_L, Izz_L, I_c,I_a,I_b,t_I, number_of_I_stringers_top, number_of_I_stringers_bottom, A_L, CG_Z, CG_X,DeltaX, b ,alpha, beta): #one I stringers plus L stringers on corners
-
-        A_L = 300 * (10**-6) #area of single L stringer 
-
-        number_of_I_stringers_top = 1 #number of center stringer on top sheet
-
-        number_of_I_stringers_bottom = 0 #number of center stringer on bottom sheet
+    Ixx_design_1, Izz_design_1, Ixz_design_1 = I_design_option_1(Ixx_wingbox,Izz_wingbox,Ixz_wingbox, Ixx_L, Izz_L, I_c,I_a,I_b,t_I, A_L, CG_Z, CG_X,DeltaX, b ,alpha, beta)
 
 
-        #How to implement the extra center stringer in the momI???
+    
+
+
+#assumption: stringers do not have an angle alpha or beta but they are horizontal and the displacement term for the steiners term is from cg of wingbox to vertical position of the sheet and not stringers (stringers relatively small)
+    def I_design_option_2(Ixx_design_1,Izz_design_1,Ixz_design_1,CG_Z,DeltaX,alpha,beta,Ixx_I,Izz_I,CG_X,A_I): #one stringer on top
+
+
+        Ixx_design_2 = Ixx_design_1 + Ixx_I + A_I* (DeltaX*tan(beta)+b+((DeltaX*tan(alpha))/2)+CG_Z)**2
+
+        Izz_design_2 = Izz_design_1 + Izz_I +A_I* ((DeltaX/2)-CG_X)**2
+
+        Ixz_design_2 = Ixz_design_1 + A_I*(-DeltaX*tan(beta)-b-((DeltaX*tan(alpha))/2)-CG_Z) * ((DeltaX/2)-CG_X)
+
+        return Ixx_design_2,Izz_design_2,Ixz_design_2
+    
+    Ixx_design_2, Izz_design_2, Ixz_design_2 = I_design_option_2(Ixx_design_1,Izz_design_1,Ixz_design_1,CG_Z,DeltaX,alpha,beta,Ixx_I,Izz_I,CG_X,A_I)
+
+
+    def I_design_option_3(Ixx_design_2,Ixz_design_2,Izz_design_2,CG_X,CG_Z,DeltaX,alpha,beta,b,Ixx_I,Izz_I,A_I): #one stringer on top and one on bottom
+
         
-        Ixx_design_2 = Ixx_wingbox + Ixx_L + A_L * (CG_Z)**2 + Ixx_L + A_L * (-(DeltaX * tan(alpha) + b + DeltaX * tan(beta)) - CG_Z)**2 + Ixx_L + A_L * (-DeltaX * tan(beta) - CG_Z)**2 + Ixx_L + A_L * (-(DeltaX * tan(alpha) + b)-CG_Z)**2
+        Ixx_design_3 = Ixx_design_2 + Ixx_I +A_I* (CG_Z + ((DeltaX*tan(beta))/2))**2
 
-        Izz_design_2 = Izz_wingbox + 2*(Izz_L + A_L * (CG_X)**2) + 2* (Izz_L + A_L * (DeltaX - CG_X)**2)
+        Izz_design_3 = Izz_design_2 + Izz_I+ A_I * ((DeltaX/2)-CG_X)**2
 
-        Ixz_design_2 = Ixz_wingbox + A_L * (-CG_X)*(-CG_Z) + A_L * (-CG_X) * (-(DeltaX * tan(alpha) + b + DeltaX * tan(beta))-CG_Z) + A_L * (DeltaX - CG_X) * (-CG_Z - DeltaX* tan(beta)) + A_L * (DeltaX - CG_X) * (-(DeltaX * tan(alpha) + b + DeltaX * tan(beta))-CG_Z)
-
-        return Ixx_design_2, Izz_design_2, Ixz_design_2
-
-    Ixx_design_2, Izz_design_2, Ixz_design_2 = I_design_option_2(Ixx_wingbox,Izz_wingbox,Ixz_wingbox, Ixx_L, Izz_L, I_c,I_a,I_b,t_I, number_of_I_stringers_top, number_of_I_stringers_bottom, A_L, CG_Z, CG_X,DeltaX, b ,alpha, beta)
-
-    def I_design_option_3(Ixx_wingbox,Izz_wingbox,Ixz_wingbox, Ixx_L, Izz_L, I_c,I_a,I_b,t_I, number_of_I_stringers_top, number_of_I_stringers_bottom, A_L, CG_Z, CG_X,DeltaX, b ,alpha, beta): #one I stringers plus L stringers on corners
-
-        A_L = 300 * (10**-6) #area of single L stringer 
-
-        number_of_I_stringers_top = 1 #number of center stringer on top sheet
-
-        number_of_I_stringers_bottom = 0 #number of center stringer on bottom sheet
-
-
-        #How to implement the extra center stringer in the momI???
-                
-        Ixx_design_3 = Ixx_wingbox + Ixx_L + A_L * (CG_Z)**2 + Ixx_L + A_L * (-(DeltaX * tan(alpha) + b + DeltaX * tan(beta)) - CG_Z)**2 + Ixx_L + A_L * (-DeltaX * tan(beta) - CG_Z)**2 + Ixx_L + A_L * (-(DeltaX * tan(alpha) + b)-CG_Z)**2
-
-        Izz_design_3 = Izz_wingbox + 2*(Izz_L + A_L * (CG_X)**2) + 2* (Izz_L + A_L * (DeltaX - CG_X)**2)
-
-        Ixz_design_3 = Ixz_wingbox + A_L * (-CG_X)*(-CG_Z) + A_L * (-CG_X) * (-(DeltaX * tan(alpha) + b + DeltaX * tan(beta))-CG_Z) + A_L * (DeltaX - CG_X) * (-CG_Z - DeltaX* tan(beta)) + A_L * (DeltaX - CG_X) * (-(DeltaX * tan(alpha) + b + DeltaX * tan(beta))-CG_Z)
-
-        return Ixx_design_3, Izz_design_3, Ixz_design_3
-            
-    Ixx_design_3, Izz_design_3, Ixz_design_3 = I_design_option_2(Ixx_wingbox,Izz_wingbox,Ixz_wingbox, Ixx_L, Izz_L, I_c,I_a,I_b,t_I, number_of_I_stringers_top, number_of_I_stringers_bottom, A_L, CG_Z, CG_X,DeltaX, b ,alpha, beta)
+        Ixz_design_3 = Ixz_design_2 + A_I* ((DeltaX/2)-CG_X) * (CG_Z+((DeltaX*tan(beta))/2))
         
+
+        return Ixx_design_3,Izz_design_3,Ixz_design_3
+
+    Ixx_design_3,Izz_design_3,Ixz_design_3 = I_design_option_3(Ixx_design_2,Ixz_design_2,Izz_design_2,CG_X,CG_Z,DeltaX,alpha,beta,b,Ixx_I,Izz_I,A_I)
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -230,13 +238,13 @@ def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c
 #section for normal stress calculation for each design option
     
     def maximum_tensile_stress(M_x, Izz_design_1,CG_Z,Ixz_design_1,CG_X, Ixx_design_1,DeltaX,beta,Izz_design_2,Ixz_design_2,Ixx_design_2,Izz_design_3,Ixz_design_3,Ixx_design_3):
-        max_tensile_Stress_1_design_1 = (M_x * Izz_design_1* (-CG_Z) + M_x * Ixz_design_1 * (-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
-        max_tensile_Stress_2_design_1 = (M_x * Izz_design_1 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_1 * (DeltaX-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
+        max_tensile_Stress_1_design_1 = abs((M_x * Izz_design_1* (-CG_Z) + M_x * Ixz_design_1 * (-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2)))
+        max_tensile_Stress_2_design_1 = abs((M_x * Izz_design_1 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_1 * (DeltaX-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2)))
         max_stress_design_1 = max(max_tensile_Stress_1_design_1,max_tensile_Stress_2_design_1)
     
 
-        max_tensile_Stress_1_design_2 = (M_x * Izz_design_2 * (-CG_Z) + M_x * Ixz_design_2 * (-CG_X))/(Ixx_design_2*Izz_design_2-((Ixz_design_2)**2))
-        max_tensile_Stress_2_design_2 = (M_x * Izz_design_2 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_2 * (DeltaX-CG_X))/(Ixx_design_2*Izz_design_2-((Ixz_design_2)**2))
+        max_tensile_Stress_1_design_2 = abs((M_x * Izz_design_2 * (-CG_Z) + M_x * Ixz_design_2 * (-CG_X))/(Ixx_design_2*Izz_design_2-((Ixz_design_2)**2)))
+        max_tensile_Stress_2_design_2 = abs((M_x * Izz_design_2 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_2 * (DeltaX-CG_X))/(Ixx_design_2*Izz_design_2-((Ixz_design_2)**2)))
         max_stress_design_2 = max(max_tensile_Stress_1_design_2,max_tensile_Stress_2_design_2)
 
         max_tensile_Stress_1_design_3 = (M_x * Izz_design_3 * (-CG_Z) + M_x * Ixz_design_3 * (-CG_X))/(Ixx_design_3*Izz_design_3-((Ixz_design_3)**2))
@@ -249,18 +257,17 @@ def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c
 
     return max_stress_design_1,max_stress_design_2,max_stress_design_3
 
-#max_stress_design_1,max_stress_design_2,max_stress_design_3 = normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,number_of_I_stringers_top,number_of_I_stringers_bottom,A_L,M_x)
+max_stress_design_1,max_stress_design_2,max_stress_design_3 = normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,A_L,M_x)
         
 
     
 
     
-    
 
     
 
     
-        
+#IGNORE AFTER THIS        
 
   #  max_tensile_stress_point_1 = (M_x * Izz_desi* (-CG_Z) + M_x * Ixz_design_1 * (-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
 
