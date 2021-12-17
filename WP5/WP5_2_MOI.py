@@ -124,7 +124,7 @@ def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c
 
         Izz_L = (1/12) * (L_L**3) * t_L + L_L * t_L * ((L_L/2)-CG_X_L)**2 + L_L * t_L * (CG_X_L)**3
 
-        Ixz_L = L_L * t_L * -(L_L/4 - t_L + (t_L/2)) * (L_L/4 - L_L/2) + L_L * t_L * (L/2-L/4) * (L/4)
+        Ixz_L = L_L * t_L * -(L_L/4 - t_L + (t_L/2)) * (L_L/4 - L_L/2) + L_L * t_L * (L_L/2-L_L/4) * (L_L/4)
 
         return Ixx_L, Izz_L, Ixz_L
 

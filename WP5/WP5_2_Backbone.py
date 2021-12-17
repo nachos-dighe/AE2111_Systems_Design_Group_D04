@@ -24,7 +24,7 @@ Span = 24.64        #[m] Span
 dT = 0.1            #[Nm]
 c = 0.005           #[m]
 t = 0.004           #[m]
-t_side = 0.00198    #[m]
+t_side = 0.004    #[m]
 L_L = 0.01          #[m]
 I_c = 0.075         #[m]
 I_a = 0.03          #[m]
@@ -86,9 +86,10 @@ min_rho = MinRho.min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t, DesignCho
 
 print(min_rho)
 
-#min_rho = 0.467 #the min rho most limiting neg/pos case design 1
-#min_rho = 0.475  #the min rho most limiting neg/pos case design 2
-#min_rho = 0.455  #the min rho most limiting neg/pos case design 2
+#min_rho = 0.172 #the min rho most limiting neg/pos case design 1
+#min_rho = 0.167  #the min rho most limiting neg/pos case design 2
+#min_rho = 0.163  #the min rho most limiting neg/pos case design 2
+
 #iterate per data point in spanwise direction
 for i in range(0,325):
     CG_X, CG_Z = CG.cg_calculation (alpha, beta, b[i], DeltaX[i])
@@ -123,32 +124,6 @@ plt.grid()
 plt.legend(loc='best')
 plt.show()
 
-
-
-#the negative case can withstand rho of 2 mm
-#the positive 0.052 so 52 mm
-
-#lower rho higher safety stress constr => lower safety margin
-#higher rho is better, so low is more critical
-
-
-#Manual to complete it once the moment of inertia's are finalised
-#Run the code per design for the positive as well as the negative load case
-#Check what is the higher min rho, then take that as the rho to calculate the final safety margin graphs for that design
-#Iterate this for all 3 designs, clearly state what the min rho's are per design in the overleaf
-#Because this rho is the most critical crack radius of curvature this design can withstand
-
-#Make the plots and put them in overleaf
-#Talk per plot about how the safetymargin should stay above 1 for both loading cases of each design
-
-#In the end re-upload the code files to overleaf to have the up to date files in there
-
-
-
-
-
-#Plots graphs for root bc there all the stringers are still gonna be
-#We do positive load case only bc way higher stress
 
 
 
