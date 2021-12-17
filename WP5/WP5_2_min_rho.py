@@ -17,7 +17,7 @@ def min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t, DesignChoice,t_side,L_
         number_of_I_stringers_top = 1
         number_of_I_stringers_bottom = 1
     
-    maxstress1, maxstress2, maxstress3 = MOI.normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX[i_max],b[i_max],t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,number_of_I_stringers_top,number_of_I_stringers_bottom,A_L,abs(M_lst[i_max]))
+    maxstress1, maxstress2, maxstress3 = MOI.normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX[i_max],b[i_max],t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,A_L,abs(M_lst[i_max]))
     if "1" in DesignChoice:
         stress_nom = maxstress1
     if "2" in DesignChoice:

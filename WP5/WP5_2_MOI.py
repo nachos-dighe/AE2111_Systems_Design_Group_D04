@@ -246,7 +246,7 @@ def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c
 
     return max_stress_design_1,max_stress_design_2,max_stress_design_3
 
-max_stress_design_1,max_stress_design_2,max_stress_design_3 = normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,A_L,M_x)
+#max_stress_design_1,max_stress_design_2,max_stress_design_3 = normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,A_L,M_x)
         
 
     
