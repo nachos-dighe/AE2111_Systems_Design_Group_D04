@@ -85,23 +85,15 @@ alpha, beta, b, DeltaX, Cr = Length.WingboxDimensions(RCr, TCr, Span, y_lst)
 min_rho = MinRho.min_rho(c, k1c, M_lst, alpha, beta, b, DeltaX, Cr, t, DesignChoice,t_side,L_L,t_L,I_c,I_a,I_b,t_I,A_L)
 
 print(min_rho)
-#min_rho = 0.006 #the min rho most limiting neg/pos case
 
+#min_rho = 0.467 #the min rho most limiting neg/pos case design 1
+#min_rho = 0.475  #the min rho most limiting neg/pos case design 2
+min_rho = 0.455  #the min rho most limiting neg/pos case design 2
 #iterate per data point in spanwise direction
-for i in range(0,300):
+for i in range(0,325):
     CG_X, CG_Z = CG.cg_calculation (alpha, beta, b[i], DeltaX[i])
-
-    if "1" in DesignChoice:
-        number_of_I_stringers_top = 0
-        number_of_I_stringers_bottom = 0
-    if "2" in DesignChoice:
-        number_of_I_stringers_top = 1
-        number_of_I_stringers_bottom = 0
-    if "3" in DesignChoice:
-        number_of_I_stringers_top = 1
-        number_of_I_stringers_bottom = 1
-    
-    maxstress1, maxstress2, maxstress3 = MOI.normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX[i],b[i],t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,number_of_I_stringers_top,number_of_I_stringers_bottom,A_L,abs(M_lst[i]))
+ 
+    maxstress1, maxstress2, maxstress3 = MOI.normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX[i],b[i],t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,A_L,abs(M_lst[i]))
     if "1" in DesignChoice:
         stress_nom = maxstress1
     if "2" in DesignChoice:
@@ -117,7 +109,7 @@ for i in range(0,300):
 # Graphs
 y_lst_plt = []
 
-for i in range(0,300):
+for i in range(0,325):
     y = y_lst[i]
     y_lst_plt.append(y)
     
