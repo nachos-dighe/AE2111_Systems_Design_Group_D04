@@ -47,7 +47,6 @@ t_side = 4 * 10**(-3) #meters
 
 t = 1.98 * 10**(-3) #meters (for top and bottom sheets)
 
-A_L = 300 * (10**-6) #area of L stringers
 
 ############################################################################################################################################################################################
 
@@ -120,15 +119,17 @@ def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c
 
         CG_Z_L = - L_L/4 #above corner of L stringer
 
-        Ixx_L = L_L * t_L * (CG_Z_L)**2 + (1/12) * t_L * (L_L**3) + L_L * t_L *((-L_L/2) - CG_Z_L)**2
+        Ixx_L = L_L * t_L * (CG_Z_L)**2 + (1/12) * t_L * (L_L**3) + L_L * t_L *((-t_L/2) - CG_Z_L)**2
 
-        Izz_L = (1/12) * (L_L**3) * t_L + L_L * t_L * ((L_L/2)-CG_X_L)**2 + L_L * t_L * (CG_X_L)**3
+        Izz_L = (1/12) * (L_L**3) * t_L + L_L * t_L * ((L_L/2)-CG_X_L)**2 + L_L * t_L * (CG_X_L)**2
 
-        Ixz_L = L_L * t_L * -(L_L/4 - t_L + (t_L/2)) * (L_L/4 - L_L/2) + L_L * t_L * (L_L/2-L_L/4) * (L_L/4)
+        Ixz_L = L_L * t_L * (-CG_X_L) * (-L_L/2 - CG_Z_L) + t_L * L_L * (L_L/2 - CG_X_L) * (-CG_Z_L)
 
-        return Ixx_L, Izz_L, Ixz_L
+        A_L = 2 * L_L * t_L
 
-    Ixx_L,Izz_L, Ixz_L = local_MOI_L_stringer_local(L_L,t_L)
+        return Ixx_L, Izz_L, Ixz_L, A_L
+
+    Ixx_L,Izz_L, Ixz_L, A_L = local_MOI_L_stringer_local(L_L,t_L)
     
 
     def local_MOI_I_stringer(I_c, I_a, I_b,t_I):
@@ -187,14 +188,14 @@ def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c
     Ixx_design_2, Izz_design_2, Ixz_design_2 = I_design_option_2(Ixx_design_1,Izz_design_1,Ixz_design_1,CG_Z,DeltaX,alpha,beta,Ixx_I,Izz_I,CG_X,A_I)
 
 
-    def I_design_option_3(Ixx_design_2,Ixz_design_2,Izz_design_2,CG_X,CG_Z,DeltaX,alpha,beta,b,Ixx_I,Izz_I,A_I): #one stringer on top and one on bottom
+    def I_design_option_3(Ixx_design_1,Ixz_design_1,Izz_design_1,CG_X,CG_Z,DeltaX,alpha,beta,b,Ixx_I,Izz_I,A_I): #one stringer on top and one on bottom
 
         
-        Ixx_design_3 = Ixx_design_2 + Ixx_I +A_I* (CG_Z + ((DeltaX*tan(beta))/2))**2
+        Ixx_design_3 = Ixx_design_1 + 3 * Ixx_I + A_I * ((DeltaX * tan(beta) + b + ((2 * DeltaX * tan(alpha))/3))+CG_Z)**2 + A_I * (DeltaX * tan(beta) + b + ((DeltaX * tan(alpha))/3)+CG_Z)**2 + A_I * (((DeltaX * tan(beta))/2)+CG_Z)**2
 
-        Izz_design_3 = Izz_design_2 + Izz_I+ A_I * ((DeltaX/2)-CG_X)**2
+        Izz_design_3 = Izz_design_1 + 3 * Izz_I + A_I *(CG_X -(DeltaX/3))**2 + A_I *(((2*DeltaX)/3)-CG_X)**2 + A_I *((DeltaX/2)-CG_X)**2
 
-        Ixz_design_3 = Ixz_design_2 + A_I* ((DeltaX/2)-CG_X) * (CG_Z+((DeltaX*tan(beta))/2))
+        Ixz_design_3 = Ixz_design_1 + 3 * Ixz_I + A_I * ((DeltaX/3) - CG_X)*(-DeltaX*tan(beta) - b - ((2/3) * DeltaX * tan(alpha))-CG_Z) + A_I * (((2*DeltaX)/3)-CG_X)*(-DeltaX *tan(beta)-b-((1/3)*DeltaX * tan(alpha))-CG_Z) + A_I * (((DeltaX/2)-CG_X)*(-(1/2)*DeltaX * tan(beta))-CG_Z)
         
 
         return Ixx_design_3,Izz_design_3,Ixz_design_3
@@ -203,22 +204,6 @@ def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c
 
 
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -244,85 +229,8 @@ def normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c
 
     max_stress_design_1,max_stress_design_2,max_stress_design_3 = maximum_tensile_stress(M_x, Izz_design_1,CG_Z,Ixz_design_1,CG_X, Ixx_design_1,DeltaX,beta,Izz_design_2,Ixz_design_2,Ixx_design_2,Izz_design_3,Ixz_design_3,Ixx_design_3)
 
+
     return max_stress_design_1,max_stress_design_2,max_stress_design_3
-
-#max_stress_design_1,max_stress_design_2,max_stress_design_3 = normal_stress_calculator(CG_X,CG_Z,alpha,beta,DeltaX,b,t_side, t,L_L,t_L,I_c,I_a,I_b,t_I,A_L,M_x)
-        
-
-    
-
-    
-
-    
-
-    
-#IGNORE AFTER THIS        
-
-  #  max_tensile_stress_point_1 = (M_x * Izz_desi* (-CG_Z) + M_x * Ixz_design_1 * (-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
-
-   # max_tensile_stress_point_2 = (M_x * Izz_design_1 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_1 * (DetlaX-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
-
-
-
-
-                  
-#def normal_stress_design_1(Ixx_design_1,Ixz_design_1,Izz_design_1,CG_Z,CG_X,M_x):
-#    sigma_y = (M_x * Izz_design_1 * z + M_x * Ixz_design_1* x)/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
-
-        #we thing that the sign between the two terms in the numerator is + but from normal stress equation is should be -.
-        #We think it should be + since we defined x + right, in formula sheet its defined x + left.
-
-        # 2 critical positions for max tension (bottom left or bottom right)
-
-    
-
-#    max_tensile_Stress_2 = (M_x * Izz_design_1 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_1 * (DetlaX-CG_X))/(Ixx_design_1*Izz_design_1-((Ixz_design_1)**2))
-
- #   max_tensile_Stress = max(max_tensile_stress_point_1,max_tensile_stress_point_2)
-
- #   return max_tensile_stress
-
-#max_tensile_stress_design_1 = normal_stress_design_1(Ixx_design_1,Ixz_design_1,Izz_design_1,CG_Z,CG_X,M_x)
-        
-#def normal_stress_design_2(Ixx_design_2,Ixz_design_2,Izz_design_2,CG_Z,CG_X,M_x):
-#    sigma_y = (M_x * Izz_design_2 * z + M_x * Ixz_design_2 * x)/(Ixx_design_2*Izz_design_2-((Ixz_design_2)**2))
-
-        #we thing that the sign between the two terms in the numerator is + but from normal stress equation is should be -.
-        #We think it should be + since we defined x + right, in formula sheet its defined x + left.
-
-        # 2 critical positions for max tension (bottom left or bottom right)
-
-  #  max_tensile_Stress_1 = (M_x * Izz_design_2 * (-CG_Z) + M_x * Ixz_design_2 * (-CG_X))/(Ixx_design_2*Izz_design_2-((Ixz_design_2)**2))
-
-  #  max_tensile_Stress_2 = (M_x * Izz_design_2 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_2 * (DetlaX-CG_X))/(Ixx_design_2*Izz_design_2-((Ixz_design_2)**2))
-
-    #max_tensile_Stress_design_2 = max(max_tensile_Stress_1,max_tensile_Stress_2)
-
-    #return max_tensile_stress_design_2
-
-#max_tensile_stress_design_2 = normal_stress_design_2(Ixx_design_2,Ixz_design_2,Izz_design_2,CG_Z,CG_X,M_x)
-        
-
-    
-#def normal_stress_design_3(Ixx_design_3,Ixz_design_3,Izz_design_3,CG_Z,CG_X,M_x):
-#    sigma_y = (M_x * Izz_design_3 * z + M_x * Ixz_design_3 * x)/(Ixx_design_3*Izz_design_3-((Ixz_design_3)**2))
-
-        #we thing that the sign between the two terms in the numerator is + but from normal stress equation is should be -.
-        #We think it should be + since we defined x + right, in formula sheet its defined x + left.
-
-        # 2 critical positions for max tension (bottom left or bottom right)
-
- #   max_tensile_Stress_1 = (M_x * Izz_design_3 * (-CG_Z) + M_x * Ixz_design_3 * (-CG_X))/(Ixx_design_3*Izz_design_3-((Ixz_design_3)**2))
-
- #   max_tensile_Stress_2 = (M_x * Izz_design_3 * (-CG_Z-(DeltaX*tan(beta))) + M_x * Ixz_design_3 * (DetlaX-CG_X))/(Ixx_design_3*Izz_design_3-((Ixz_design_3)**2))
-
-#    max_tensile_Stress_design_3 = max(max_tensile_Stress_1,max_tensile_Stress_2)
-
-#    return max_tensile_stress_design_3
-
-#max_tensile_stress_design_3 = normal_stress_design_3(Ixx_design_3,Ixz_design_3,Izz_design_3,CG_Z,CG_X,M_x)
-   
-    
 
 
 
