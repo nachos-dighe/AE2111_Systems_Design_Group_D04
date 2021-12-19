@@ -2,9 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from WP4_XFLR5_Raw_Data import xlst_0, ylst_0
 from WP4_1_main import BMres_poscrit, BMres_negcrit
-from sympy import *
-x, y, z = symbols('x y z')
-init_printing(use_unicode=True)
 
 #WARNING
 print('------WARNING------\n Always use *variable_mod* syntaxin this program to avoid singular points.\n -------------')
@@ -72,8 +69,8 @@ def column_buckling(z_LE_0, z_TE_0, I_wb, BM, n_stringer, type_stringer_lst, Ast
     
     for i in range(0, n_stringer):
         if type_stringer_lst[i] ==0: #I-stringer
-            alst = (Astringer_lst/t)/4.1 #based on optimised design
-            blst = alst
+            alst = (Astringer_lst/t)/4.2 #based on optimised design
+            blst = 1.1*alst
             clst = 2.1*alst
             yclst = (alst*blst+blst*blst/2)/(alst+blst+clst)
             Iminlst =((blst-yclst)**2*alst+yclst**2*clst+(blst/2-yclst)**2*blst+blst**3/12) #Ixx/t= Imin/t [m^3]
